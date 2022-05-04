@@ -1,0 +1,23 @@
+tidy up types and their names, possibly make a utils class for Timeline->Gallery conversion rather than constructor
+tidy up CSS for components
+homepage search box
+error handling
+regex
+UX/UI
+infinite scroll
+doublecheck NextJs suggested layouts/design practices
+
+consider if the current folder structure works
+consider using TailwindElements? (Bootstrap inspired, but breaks the idea of TailwindCSS design practices)
+consider "profile" page format for @ searches
+consider relaxed shape grids or view options like zoom/gallery(<-x:[]:x->)
+
+add dark mode button (<html className='dark'> toggle)
+add extra endpoints for handling search by #tag, or general topic searching, considering:
+	- for hashtags, do /tags/[...slug] where /tag/some tag/another tag/last tag
+	- followed by /search/[...slug] where /search/keyword a/topic name/etc.
+add rate limit handling
+add nextAuth for twitter logins, fixes rate limits and exposes protected followers for user
+
+AWS deployment
+Apply for elevated api access
