@@ -12,7 +12,7 @@ export default function GalleryMediaItem({ item }: Props) {
 			className="m-1 rounded-xl overflow-hidden shadow-xl"
 			style={{ width: 150, height: 150 }}
 		>
-			<Image src={item.previmg} width={150} height={150} placeholder='empty' />
+			<Image src={item.previmg} width={150} height={150} placeholder='empty' quality={100} />
 		</a>
 	);
 }

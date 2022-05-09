@@ -18,7 +18,7 @@ interface User {
 	username: string;
 }
 
-interface Meta {
+export interface Meta {
 	result_count: number;
 	newest_id: string;
 	oldest_id: string;

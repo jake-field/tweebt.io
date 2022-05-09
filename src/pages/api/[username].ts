@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	//also do full error handling here
 
 	let handle = username as string;
-	if(handle.startsWith('@')) handle = handle.substring(1);
+	handle = handle.replaceAll('@', '');
 
 	const result = await getTimeline(handle);
 

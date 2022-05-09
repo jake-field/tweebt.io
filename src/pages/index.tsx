@@ -1,4 +1,4 @@
-import { SearchIcon } from '@heroicons/react/solid'
+import Searchbar from "../common/components/searchbar";
 
 export default function Home() {
 	return (
@@ -13,10 +13,7 @@ export default function Home() {
 				</p>
 
 				<div className='mt-10 p-5 flex flex-col items-center justify-center' >
-					<form className='p-1 flex flex-row'>
-						<input type='text' name='query' className='rounded-sm p-1 text-black' />
-						<button className="bg-blue-400 text-black p-1 ml-1 rounded-sm w-9" type='submit'><SearchIcon /></button>
-					</form>
+					<Searchbar route='/' placeholder='Search by @' />
 				</div>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-import { Timeline } from "../../twitter/types/timeline";
+import { Meta, Timeline } from "../../twitter/types/timeline";
 
 export interface GalleryItem {
 	media_key: string;
@@ -13,6 +13,7 @@ export interface GalleryItem {
 
 export interface Gallery {
 	tweetMedia: GalleryItem[];
+	pagination?: Meta;
 	error?: string;
 }
 
