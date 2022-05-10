@@ -5,9 +5,9 @@ import { User } from "./types/user";
 const authHeader: RequestInit = { headers: { authorization: `Bearer ${process.env.TWITTER_API_TOKEN}` } };
 
 export async function getUserByUsername(username: string) {
-	username = username.replaceAll("@", "");
+	username = username.replaceAll(/@/g, "");
 	console.log(username);
-	const res = await fetch(`${process.env.TWITTER_API}/users/by/username/${username}?user.fields=url,protected,description,profile_image_url`, authHeader);
+	const res = await fetch(`${process.env.TWITTER_API}/users/by/username/${username}?user.fields=protected,verified,description,profile_image_url,entities`, authHeader);
 
 	if (res.status != 200) {
 		//error check
@@ -17,23 +17,53 @@ export async function getUserByUsername(username: string) {
 
 	const user: User = await res.json();
 
-	//profile image upsize
-	if(user && user.data) {
+	//adjust the user data that we recieve
+	if (user && user.data) {
+		//profile image upsize
 		user.data.profile_image_url = user.data.profile_image_url.replace(/normal/gi, "400x400");
-		console.log(user.data.profile_image_url);
+
+		//attempt to convert links in bio
+		if (user.data.description) {
+			let bio: string = user.data.description;
+			const urls = user.data.entities?.description?.urls;
+			//const mentions = user.data.entities?.description?.mentions;
+			//const hashtags = user.data.entities?.description?.hashtags;
+
+			if (urls) {
+				for (let i = 0; i < urls.length; i++) {
+					bio = bio.replace(urls[i].url, urls[i].display_url);
+				}
+			}
+
+			//These have been replaced by regex on the clientside for JSX & router.push functionality
+			// if(mentions) {
+			// 	for (let i = 0; i < mentions.length; i++) {
+			// 		//bio = bio.replace(`@${mentions[i].username}`, `<a href='/${mentions[i].username}'>$&</a>`);
+			// 		//bio = bio.replace(`@${mentions[i].username}`, `<a target='_blank' href='https://twitter.com/${mentions[i].username}'>$&</a>`);
+			// 	}
+			// }
+
+			// if(hashtags) {
+			// 	for (let i = 0; i < hashtags.length; i++) {
+			// 		bio = bio.replace(`#${hashtags[i].tag}`, `<a target='_blank' href='https://twitter.com/search?q=%23${hashtags[i].tag}'>$&</a>`);
+			// 	}
+			// }
+
+			user.data.description = bio;
+		}
 	}
 
 	return user;
 }
 
-export async function getTimelineByUsername(username: string) {
-	const user = await getUserByUsername(username);
-	return getTimeline(user?.data?.id);
-}
-
-export async function getTimeline(userid: string | undefined) {
+export async function getTimeline(userid: string | undefined, next?:string) {
 	if (userid) {
-		const query = '?expansions=attachments.media_keys,author_id&tweet.fields=possibly_sensitive&user.fields=username&media.fields=media_key,preview_image_url,type,url,width,height&exclude=replies,retweets&max_results=100';
+		let query = '?expansions=attachments.media_keys,author_id&tweet.fields=possibly_sensitive&user.fields=username&media.fields=media_key,preview_image_url,type,url,width,height&exclude=replies,retweets&max_results=50';
+		
+		if(next) query += `&pagination_token=${next}`;
+
+		console.log(query);
+		
 		const res = await fetch(`${process.env.TWITTER_API}/users/${userid}/tweets` + query, authHeader);
 
 		if (res.status != 200) {

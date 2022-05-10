@@ -22,17 +22,17 @@ export default function Searchbar({ route, placeholder, value }: Props) {
     }
 
     return (
-        <form className='flex flex-row rounded-lg bg-white' onSubmit={handleSubmit}>
+        <form className='flex flex-row rounded-lg overflow-hidden bg-slate-50' onSubmit={handleSubmit}>
             <input
                 type='text'
                 name='query'
-                className='rounded-l-lg p-1 text-black'
+                className='px-2 w-48 text-black bg-slate-50'
                 autoComplete='off'
                 defaultValue={value}
                 placeholder={placeholder}
                 onChange={handleChange}
             />
-            <button className="bg-blue-400 text-black p-1 ml-1 rounded-r-lg w-9" type='submit'><SearchIcon /></button>
+            <button className="text-slate-900 p-1 w-9" type='submit'><SearchIcon /></button>
         </form>
     )
 }

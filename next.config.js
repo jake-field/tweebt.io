@@ -2,7 +2,7 @@
 const nextConfig = {
 	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
 	images: {
-		domains: ['pbs.twimg.com'], //for next/image security
+		domains: ['pbs.twimg.com','abs.twimg.com'], //for next/image security
 	},
 }
 

@@ -3,36 +3,69 @@ import { useEffect, useState } from 'react'
 import Searchbar from '../common/components/searchbar';
 import Title from '../common/components/title';
 import GalleryMediaItem from '../modules/gallery/components/galleryitem';
-import Placeholder from '../modules/gallery/components/placeholder';
 import { Gallery } from '../modules/gallery/types/gallery';
 import { getUserByUsername } from '../modules/twitter/twitterapi';
 import { User } from '../modules/twitter/types/user';
 import ProfileCard from '../common/components/profilecard';
+import InfiniteScroll from 'react-infinite-scroller';
+import Placeholder from '../modules/gallery/components/placeholder';
+import Footer from '../common/components/footer';
 
 interface Props {
 	user: User | null;
 }
 
 export default function AtHandle({ user }: Props) {
-	const [gallery, setGallery] = useState<Gallery | null>(null);
-	const [isLoading, setLoading] = useState(false);
+	const [currentUser, setCurrentUser] = useState<User | null>(null);
+	const [galleries, setGalleries] = useState<Gallery[] | null>(null);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (!user || user.errors) return;
 		setLoading(true);
+		setCurrentUser(user);
 		fetch(`api/${user?.data?.id}`)
 			.then((res) => res.json())
 			.then((data) => {
-				setGallery(data);
+				setGalleries([data]);
 				setLoading(false);
 			});
-	}, [user, setGallery, setLoading]);
+	}, [user, setGalleries, setLoading]);
+
+	async function fetchData(page: number) {
+		const url = `api/${user?.data?.id}`;
+		const pagination = galleries ? `?next=${galleries[galleries.length - 1].pagination?.next_token}` : '';
+
+		if (!user) return null;
+
+		await fetch(page > 0 ? url + pagination : url)
+			.then((res) => res.json())
+			.then((data) => {
+				if (user.data?.id === currentUser?.data?.id) {
+					setGalleries([...galleries!, data]);
+				} else {
+					setGalleries([data]);
+					setCurrentUser(user);
+				}
+			});
+	}
+
+	function hasMore(): boolean {
+		return !galleries || galleries && galleries[galleries.length - 1].pagination?.next_token !== undefined || false;
+	}
+
+	if (!user) return null;
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen py-2">
+		<div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gradient-to-b from-slate-900 to-slate-800">
 			<Title title={`@${user?.data?.username}`} />
 
-			<div className="flex flex-col items-center w-full flex-1 px-20 text-center mt-10">
+			<div className="flex flex-col items-center w-full flex-1 px-20 text-center pt-16">
+				<div className='p-3 shadow-2xl flex flex-row items-center justify-center absolute top-0 w-full bg-slate-900 border-b border-slate-800' >
+					<h1 className='mr-auto font-bold'>Tweebt Gallery</h1>
+					<Searchbar route='/' placeholder='Search by @' value={`@${user?.data?.username}`} />
+				</div>
+
 				<p hidden={!user?.errors}>
 					{user?.errors?.map(error => {
 						return <p>{error.detail}</p>
@@ -41,24 +74,33 @@ export default function AtHandle({ user }: Props) {
 
 				{user && <ProfileCard user={user} />}
 
-				<div className='p-5 flex flex-col items-center justify-center' >
-					<Searchbar route='/' placeholder='Search by @' value={`@${user?.data?.username}`} />
-				</div>
-
-				<div className="flex flex-wrap items-center justify-center max-w-7xl mt-10 sm:w-full">
-					{gallery && !isLoading ? (
-						gallery?.tweetMedia.map(item => {
-							return <GalleryMediaItem key={item.media_key} item={item} />
-						})
-					) : (
-						<>
-							<Placeholder />
-							<Placeholder />
-							<Placeholder />
-						</>
-					)}
-				</div>
+				{!loading && galleries && galleries[0].tweetMedia.length ? (
+					<InfiniteScroll
+						className='flex flex-wrap items-center justify-center max-w-7xl mt-7 w-fit'
+						pageStart={0}
+						loadMore={fetchData}
+						initialLoad={false}
+						hasMore={hasMore()}
+						loader={<Placeholder key={0} />}
+					>
+						{galleries ? (
+							galleries.map(gallery => {
+								return gallery.tweetMedia.map(item => {
+									return <GalleryMediaItem key={item.media_key} item={item} />
+								})
+							})
+						) : (
+							<p>Nothing to see here</p>
+						)}
+					</InfiniteScroll>
+				) : user?.data?.protected ? (
+					<p className='m-10'>@{user.data.username}'s tweets are protected</p>
+				) : (
+					<Placeholder />
+				)}
 			</div>
+
+			<Footer />
 		</div>
 	)
 }

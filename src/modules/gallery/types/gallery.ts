@@ -18,15 +18,16 @@ export interface Gallery {
 }
 
 export class Gallery implements Gallery {
-	constructor({ includes, data }: Timeline) {
+	constructor({ includes, data, meta, errors }: Timeline) {
 		this.tweetMedia = [];
+		this.pagination = meta;
 		if (includes && data) {
 			includes.media.map(mediaItem => {
 				const tweetId = data.find(t => t.attachments?.media_keys?.find(key => key === mediaItem.media_key))?.id || 'cannot resolve tweet id';
 				const authorUsername = includes.users?.find(u => u.id === data.find(t => t.id === tweetId)?.author_id)?.username || 'cannot resolve author username';
 				this.tweetMedia.push({
 					media_key: mediaItem.media_key,
-					srcimg: mediaItem.url || 'no source url',
+					srcimg: mediaItem.url || mediaItem.preview_image_url || 'error',
 					previmg: mediaItem.preview_image_url || mediaItem.url && (mediaItem.url + '?name=thumb') || 'no preview url',
 					type: mediaItem.type,
 					width: mediaItem.width,

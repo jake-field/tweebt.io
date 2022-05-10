@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getTimeline } from "../../modules/twitter/twitterapi";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { query: { username }, method } = req;
+	const { query: { username, next }, method } = req;
 
 	//method check here
 	//then check query count, should be just a string not string[]
@@ -10,9 +10,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	//also do full error handling here
 
 	let handle = username as string;
-	handle = handle.replaceAll('@', '');
+	handle = handle.replaceAll(/@/g, '');
 
-	const result = await getTimeline(handle);
+	const result = await getTimeline(handle, next as string);
 
 	if (result)
 		return res.status(200).json(result);
