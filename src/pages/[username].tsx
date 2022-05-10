@@ -68,7 +68,7 @@ export default function AtHandle({ user }: Props) {
 
 				<p hidden={!user?.errors}>
 					{user?.errors?.map(error => {
-						return <p>{error.detail}</p>
+						return <p key={error.detail}>{error.detail}</p>
 					})}
 				</p>
 
@@ -94,7 +94,7 @@ export default function AtHandle({ user }: Props) {
 						)}
 					</InfiniteScroll>
 				) : user?.data?.protected ? (
-					<p className='m-10'>@{user.data.username}'s tweets are protected</p>
+					<p className='m-10'>@{user.data.username}&apos;s tweets are protected</p>
 				) : (
 					<Placeholder />
 				)}
