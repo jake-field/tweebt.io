@@ -26,13 +26,13 @@ export default function Searchbar({ route, placeholder, value }: Props) {
             <input
                 type='text'
                 name='query'
-                className='px-2 w-48 text-black bg-slate-50'
+                className='px-2 py-1 text-black bg-slate-50'
                 autoComplete='off'
                 defaultValue={value}
                 placeholder={placeholder}
                 onChange={handleChange}
             />
-            <button className="text-slate-900 p-1 w-9" type='submit'><SearchIcon /></button>
+            <button className="text-slate-500 p-1 w-7" type='submit'><SearchIcon /></button>
         </form>
     )
 }

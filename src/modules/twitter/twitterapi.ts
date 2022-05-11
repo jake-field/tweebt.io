@@ -29,6 +29,9 @@ export async function getUserByUsername(username: string) {
 			//const mentions = user.data.entities?.description?.mentions;
 			//const hashtags = user.data.entities?.description?.hashtags;
 
+			//Merge multiple newlines into one to keep styling on page
+			bio = bio.replace(/\n{2,}/gi, '\n');
+
 			if (urls) {
 				for (let i = 0; i < urls.length; i++) {
 					bio = bio.replace(urls[i].url, urls[i].display_url);

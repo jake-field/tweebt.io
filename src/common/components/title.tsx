@@ -14,7 +14,7 @@ export default function Title({ title, desc }: Props) {
 			<link rel="icon" href="/favicon.ico" />
 
 			<meta property="og:title" content={title ? title : 'Tweebt Gallery'} />
-			<meta property="og:description" content={desc ? desc : 'View Twitter as a gallery of media'} />
+			<meta property="og:description" content={desc ? desc : 'A useful website to display Twitter as a compiled gallery of media from tweets'} />
 			<meta property="og:url" content={router.asPath} />
 		</Head>
 	)

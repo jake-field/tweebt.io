@@ -8,12 +8,19 @@ import { getUserByUsername } from '../modules/twitter/twitterapi';
 import { User } from '../modules/twitter/types/user';
 import ProfileCard from '../common/components/profilecard';
 import InfiniteScroll from 'react-infinite-scroller';
-import Placeholder from '../modules/gallery/components/placeholder';
+import Placeholder from '../common/components/placeholder';
 import Footer from '../common/components/footer';
+import Masonry from 'react-masonry-css';
 
 interface Props {
 	user: User | null;
 }
+
+const breakpointColumnsObj = {
+	default: 4,
+	1100: 3,
+	700: 2,
+  };
 
 export default function AtHandle({ user }: Props) {
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -58,9 +65,9 @@ export default function AtHandle({ user }: Props) {
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gradient-to-b from-slate-900 to-slate-800">
-			<Title title={`@${user?.data?.username}`} />
+			<Title title={`@${user.data?.username}'s Twitter Gallery`} desc={`Check out ${user.data?.name}'s (@${user.data?.username}) gallery compiled from their most recent tweets!`} />
 
-			<div className="flex flex-col items-center w-full flex-1 px-20 text-center pt-16">
+			<div className="flex flex-col items-center w-full flex-1 px-3 text-center pt-10 sm:pt-0 md:px-20">
 				<div className='p-3 shadow-2xl flex flex-row items-center justify-center absolute top-0 w-full bg-slate-900 border-b border-slate-800' >
 					<h1 className='mr-auto font-bold'>Tweebt Gallery</h1>
 					<Searchbar route='/' placeholder='Search by @' value={`@${user?.data?.username}`} />
@@ -76,22 +83,29 @@ export default function AtHandle({ user }: Props) {
 
 				{!loading && galleries && galleries[0].tweetMedia.length ? (
 					<InfiniteScroll
-						className='flex flex-wrap items-center justify-center max-w-7xl mt-7 w-fit'
+						className='w-fit'
 						pageStart={0}
 						loadMore={fetchData}
 						initialLoad={false}
 						hasMore={hasMore()}
 						loader={<Placeholder key={0} />}
 					>
-						{galleries ? (
-							galleries.map(gallery => {
-								return gallery.tweetMedia.map(item => {
-									return <GalleryMediaItem key={item.media_key} item={item} />
+						<Masonry
+							breakpointCols={breakpointColumnsObj}
+							className='flex w-auto'
+							columnClassName=''
+						>
+							{galleries ? (
+								galleries.map(gallery => {
+									return gallery.tweetMedia.map(item => {
+										return <GalleryMediaItem key={item.media_key} item={item} />
+									})
 								})
-							})
-						) : (
-							<p>Nothing to see here</p>
-						)}
+							) : (
+								<p>Nothing to see here</p>
+							)}
+						</Masonry>
+
 					</InfiniteScroll>
 				) : user?.data?.protected ? (
 					<p className='m-10'>@{user.data.username}&apos;s tweets are protected</p>
