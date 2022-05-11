@@ -15,9 +15,8 @@ export default function ProfileCard({ user }: Props) {
     return (
         <div className='flex flex-col items-center w-fit max-w-sm text-center'>
             <Head>
+                <meta property="twitter:image" content={user.data.profile_image_url} />
                 <meta property="og:image" content={user.data.profile_image_url} />
-                <meta property="og:image:width" content="400" />
-                <meta property="og:image:height" content="400" />
             </Head>
 
             <div className='rounded-full overflow-hidden shadow-lg w-[100px] h-[100px] border-4 border-slate-800 relative top-7 z-10 hover:scale-[1.5] transition ease-in-out delay-150 duration-300'>

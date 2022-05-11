@@ -2,7 +2,6 @@
 
 const nextConfig = {
 	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
-	darkMode: 'class',
 	images: {
 		domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
 	},
