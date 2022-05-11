@@ -17,7 +17,8 @@ interface Props {
 }
 
 const breakpointColumnsObj = {
-	default: 4,
+	default: 5,
+	1700: 4,
 	1100: 3,
 	700: 2,
   };
@@ -83,7 +84,7 @@ export default function AtHandle({ user }: Props) {
 
 				{!loading && galleries && galleries[0].tweetMedia.length ? (
 					<InfiniteScroll
-						className='w-fit'
+						className='w-fit max-w-[2500px]'
 						pageStart={0}
 						loadMore={fetchData}
 						initialLoad={false}
