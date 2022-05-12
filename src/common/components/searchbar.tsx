@@ -10,29 +10,24 @@ interface Props {
 
 export default function Searchbar({ route, placeholder, value }: Props) {
     const router = useRouter();
-    const [query, setQuery] = useState(value || '');
 
-    function handleChange(e: ChangeEvent<HTMLInputElement>) {
-        setQuery(e.target.value);
-    }
-
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    function handleSubmit(e: any) {
         e.preventDefault();
-        router.push(`${route}${query}`);
+        router.push(`${route}${e.target[0].value}`);
     }
 
     return (
-        <form className='flex flex-row rounded-lg overflow-hidden bg-slate-50' onSubmit={handleSubmit}>
+        <form className='flex flex-row rounded-lg overflow-hidden bg-slate-50 border border-slate-300 w-min' onSubmit={handleSubmit}>
             <input
                 type='text'
                 name='query'
-                className='px-2 py-1 text-black bg-slate-50'
+                className='px-2 py-1 text-black bg-slate-50 min-w-[32px]'
                 autoComplete='off'
                 defaultValue={value}
                 placeholder={placeholder}
-                onChange={handleChange}
+                spellCheck='false'
             />
-            <button className="text-slate-500 p-1 w-7" type='submit'><SearchIcon /></button>
+            <button className="text-slate-500 p-1 w-7" title="Search" type='submit'><SearchIcon /></button>
         </form>
     )
 }

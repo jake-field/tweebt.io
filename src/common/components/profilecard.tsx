@@ -1,51 +1,59 @@
 import { BadgeCheckIcon, ExternalLinkIcon, LinkIcon, LockClosedIcon } from "@heroicons/react/solid";
-import Head from "next/head";
 import Image from "next/image";
-import { User } from "../../modules/twitter/types/user";
-import FormatBio from "../utils/formatBio";
+import Link from "next/link";
+import Profile from "../types/profile";
 
 interface Props {
-    user: User;
+    profile: Profile;
 }
 
 //TODO: add a placeholder here and allow null user
 //      then if no data, display an error here for cleanliness
-export default function ProfileCard({ user }: Props) {
-    if (!user.data) return null;
+export default function ProfileCard({ profile }: Props) {
+    if (!profile) return null;
     return (
         <div className='flex flex-col items-center w-fit max-w-sm text-center'>
-            <Head>
-                <meta property="twitter:image" content={user.data.profile_image_url} />
-                <meta property="og:image" content={user.data.profile_image_url} />
-            </Head>
-
-            <div className='rounded-full overflow-hidden shadow-lg w-[100px] h-[100px] border-4 border-slate-800 relative top-7 z-10 hover:scale-[1.5] transition ease-in-out delay-150 duration-300'>
-                <Image src={user.data.profile_image_url} priority={true} height={400} width={400} quality={100} placeholder='empty' />
+            <div className='rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-200 dark:border-slate-800 relative top-7 z-10 hover:scale-[1.5] transition ease-in-out delay-150 duration-300'>
+                <Image src={profile.image} priority={true} height={400} width={400} quality={100} placeholder='empty' />
             </div>
 
-            <div className='max-w-100 bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2'>
+            <div className='max-w-100 bg-slate-200 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2'>
                 <p className='text-xl font-bold inline-flex gap-1 justify-center'>
-                    {user.data.name}
-                    {user.data.protected && <LockClosedIcon className='w-5' />}
-                    {user.data.verified && <BadgeCheckIcon className='w-5' />}
+                    {profile.name}
+                    {profile.protected && <LockClosedIcon className='w-5' />}
+                    {profile.verified && <BadgeCheckIcon className='w-5' />}
                 </p>
 
                 <p>
-                    <a href={`https://twitter.com/${user.data.username}`} target='_blank' className='bg-slate-900 rounded-lg p-1 inline-flex'>
-                        @{user.data.username}<ExternalLinkIcon className='w-4' />
+                    <a href={`https://twitter.com/${profile.handle}`} target='_blank' className='bg-slate-50 dark:bg-slate-900 rounded-lg p-1 inline-flex'>
+                        @{profile.handle}<ExternalLinkIcon className='w-4' />
                     </a>
                 </p>
 
-                {user.data.description &&
+                {profile.bio &&
                     <p className='whitespace-pre-line'>
-                        <FormatBio bio={user.data.description} />
+                        {(profile.bio instanceof Array) ? (
+                            profile.bio.map((value, index) => {
+                                if (value.text) {
+                                    return value.text;
+                                }
+                                else if (value.link) {
+                                    if (value.link.startsWith('@')) return <Link key={index} href={value.link}>{value.link}</Link>;
+                                    else if (value.link.startsWith('#')) return <a key={index} href={`https://twitter.com/search?q=%23${value.link.substring(1)}`} target='_blank'>{value.link}</a>;
+                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} target='_blank'>{value.link}</a>
+                                }
+                                return 'error';
+                            })
+                        ) : (
+                            profile.bio
+                        )}
                     </p>
                 }
 
-                {user.data.entities?.url?.urls &&
+                {profile.url &&
                     <p>
-                        <a href={`${user.data.entities.url.urls[0].expanded_url}`} target='_blank' className='inline-flex gap-1'>
-                            <LinkIcon className='w-4' /> {user.data.entities.url.urls[0].display_url}
+                        <a href={(!profile.url.startsWith('http') ? 'https://' : '') + profile.url} target='_blank' className='inline-flex gap-1'>
+                            <LinkIcon className='w-4' />{profile.url}
                         </a>
                     </p>
                 }

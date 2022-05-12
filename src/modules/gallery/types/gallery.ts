@@ -22,7 +22,7 @@ export class Gallery implements Gallery {
 		this.tweetMedia = [];
 		this.pagination = meta;
 		if (includes && data) {
-			includes.media.map(mediaItem => {
+			includes.media?.map(mediaItem => {
 				const tweetId = data.find(t => t.attachments?.media_keys?.find(key => key === mediaItem.media_key))?.id || 'cannot resolve tweet id';
 				const authorUsername = includes.users?.find(u => u.id === data.find(t => t.id === tweetId)?.author_id)?.username || 'cannot resolve author username';
 				this.tweetMedia.push({

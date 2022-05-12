@@ -1,8 +1,9 @@
 import { Error } from "./errors";
+import { PublicUserMetrics } from "./metrics";
 
 interface Entities {
 	url?: {
-		urls?: {
+		urls: {
 			start: number;
 			end: number;
 			url: string;
@@ -41,6 +42,7 @@ export interface User {
 		description?: string;
 		protected?: boolean;
 		verified?: boolean;
+		public_metrics?: PublicUserMetrics;
 		entities?: Entities;
 	}
 	errors?: Error[];

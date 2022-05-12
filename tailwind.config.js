@@ -1,5 +1,5 @@
 module.exports = {
-	//darkMode: 'class', //uncommenting makes darkmode manual via HTML className="dark"
+	darkMode: 'class',
 	content: [
 		"./src/pages/**/*.{js,ts,jsx,tsx}",
 		"./src/common/components/**/*.{js,ts,jsx,tsx}",

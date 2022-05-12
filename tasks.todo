@@ -1,8 +1,6 @@
 tidy up types and their names, possibly make a utils class for Timeline->Gallery conversion rather than constructor
-error handling
 doublecheck NextJs suggested layouts/design practices
 
-add dark mode button (<html className='dark'> toggle)
 add extra endpoints for handling search by #tag, or general topic searching, considering:
 	- for hashtags, do /tags/[...slug] where /tag/some tag/another tag/last tag
 	- followed by /search/[...slug] where /search/keyword a/topic name/etc.
@@ -10,28 +8,18 @@ add rate limit handling
 add nextAuth for twitter logins, fixes rate limits and exposes protected followers for user
 
 AWS deployment
-Apply for elevated api access
-
-
-
 
 finish gallery popup, move to gallery component for keyboard/mouse intercept
 fix mmb hook, try lock scrolling, maybe consider npm install gallery something
-finish theming items, add a dark mode button
 
 add filtering, nsfw blur
 
 add api/tags
 consider performance over large DOMs 
 fix infinitescroll hang when window is too small and not many tweets returned
-nav bar styling and tidyup
 
 json reduction to clientside with less stacked types, more focused elements and optionals
-double check Image tag qualities, install nextSharp for image optimization on production
 remove old endpoints
 add scroll to top
 
 consider derendering old galleries if scrolled too far down using top-fixed to keep the scrollbar valid
-
-failed regex:
-trello.com/b/Cn2rSuhR/kir…
