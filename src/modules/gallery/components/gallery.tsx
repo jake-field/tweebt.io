@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroller"
 import Masonry from "react-masonry-css"
-import ImageModal from "../../../common/components/imagepopup"
+import ImagePopup from "../../../common/components/imagepopup"
 import LoadingSpinner from "../../../common/components/loadingspinner"
 import Profile from "../../../common/types/profile"
 import { Gallery, GalleryItem } from "../types/gallery"
@@ -84,13 +84,13 @@ export default function GalleryComponent({ profile }: Props) {
 
 			{galleries && galleries[0].tweetMedia.length > 0 &&
 				<>
-					{selectedGalleryItem !== null && <ImageModal galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => closeImageModal()} />}
+					{selectedGalleryItem !== null && <ImagePopup galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => closeImageModal()} />}
 					<InfiniteScroll
 						className='w-fit max-w-[2500px] select-none'
-						pageStart={0}
 						initialLoad={false}
 						loadMore={fetchData}
 						hasMore={hasMore()}
+						threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns
 						loader={<div key={0} className='flex flex-row items-center justify-center '><LoadingSpinner className='w-10 h-10' /></div>}
 					>
 						<Masonry

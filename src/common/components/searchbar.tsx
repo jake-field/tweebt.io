@@ -1,6 +1,5 @@
 import { SearchIcon } from "@heroicons/react/solid";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useState } from "react";
 
 interface Props {
     route: string;
@@ -17,7 +16,7 @@ export default function Searchbar({ route, placeholder, value }: Props) {
     }
 
     return (
-        <form className='flex flex-row rounded-lg overflow-hidden focus-within:ring-1 dark:ring-slate-200 bg-slate-50 border border-slate-300 w-min' onSubmit={handleSubmit}>
+        <form className='flex flex-row rounded-lg overflow-hidden shadow-inner focus-within:ring-1 dark:ring-slate-200 bg-slate-50 border border-slate-300 w-min' onSubmit={handleSubmit}>
             <input
                 type='text'
                 name='query'

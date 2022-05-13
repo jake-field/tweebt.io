@@ -35,7 +35,7 @@ export class Gallery implements Gallery {
 					type: mediaItem.type,
 					width: mediaItem.width,
 					height: mediaItem.height,
-					possibly_sensitive: possiblySensitive,
+					possibly_sensitive: possiblySensitive ? true : undefined,
 					tweetid: tweetId,
 					author: authorUsername,
 				});

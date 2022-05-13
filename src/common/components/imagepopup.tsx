@@ -9,7 +9,7 @@ interface Props {
 	onClick: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function ImageModal({ galleryItem, visible, onClick }: Props) {
+export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [modalVisible, setModalVisible] = useState(false);
@@ -44,11 +44,12 @@ export default function ImageModal({ galleryItem, visible, onClick }: Props) {
 					{(!loaded || !imgVisible) && <LoadingSpinner className='absolute w-10 h-10 text-white' />}
 					<Image
 						id='modalImg'
-						src={galleryItem.srcimg}
+						src={galleryItem.srcimg + '?name=orig'} //pull full size
 						width={galleryItem.width}
 						height={galleryItem.height}
 						quality={100}
-						//unoptimized={true} //uses actual src rather than next/image
+						//unoptimized={true} //uses actual src rather than next/image (this may cause issues with adblockers)
+						priority={true} //give priority to the modal image
 						placeholder='empty'
 						onLoadStart={() => setLoaded(false)}
 						onLoadingComplete={() => setLoaded(true)}
