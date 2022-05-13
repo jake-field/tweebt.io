@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
 	const [darkTheme, setDarkTheme] = useState(false);
-	const iconStyle = 'w-6 absolute shadow-lg transition-opacity ease-in-out duration-300';
+	const iconStyle = 'w-6 absolute transition-opacity ease-in-out duration-300';
 
 	useEffect(() => {
 		if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -22,7 +22,7 @@ export default function ThemeToggle() {
 
 	return (
 		<>
-			<span className='flex flex-row items-center justify-center ml-1 w-8 h-8 p-1 bg-slate-300 dark:bg-slate-700 rounded-lg hover:ring-1 cursor-pointer' onClick={() => setTheme(!darkTheme)}>
+			<span className='select-none flex flex-row items-center justify-center ml-1 w-8 h-8 p-1 bg-slate-300 dark:bg-slate-700 rounded-lg hover:ring-1 cursor-pointer' onClick={() => setTheme(!darkTheme)}>
 				<SunIcon className={iconStyle + ' text-white'} style={{ opacity: darkTheme ? 100 : 0 }} />
 				<MoonIcon className={iconStyle + ' text-slate-900'} style={{ opacity: darkTheme ? 0 : 100 }} />
 			</span>
