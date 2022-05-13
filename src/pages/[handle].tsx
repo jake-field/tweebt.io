@@ -1,11 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Title from '../common/components/title';
 import ProfileCard from '../common/components/profilecard';
-import Footer from '../common/components/footer';
 import GalleryComponent from '../modules/gallery/components/gallery';
 import NavBar from '../common/components/navbar';
 import Profile from '../common/types/profile';
 import { getProfile } from '../modules/twitter/twitterapi';
+import ScrollTop from '../common/components/scrolltop';
 
 interface Props {
 	profile?: Profile;
@@ -21,6 +21,7 @@ export default function AtHandle({ profile, error }: Props) {
 				image={profile && profile.image}
 			/>
 			<NavBar />
+			<ScrollTop />
 			<div className="flex flex-col items-center w-full flex-1 px-3 text-center pt-10 sm:pt-0 md:px-20">
 				{profile ? (
 					<>
@@ -33,7 +34,6 @@ export default function AtHandle({ profile, error }: Props) {
 					</>
 				)}
 			</div>
-			<Footer />
 		</div>
 	)
 }

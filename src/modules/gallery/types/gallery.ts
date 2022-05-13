@@ -1,4 +1,4 @@
-import { Meta, Timeline } from "../../twitter/types/timeline";
+import Timeline, { Meta } from "../../twitter/types/timeline";
 
 export interface GalleryItem {
 	media_key: string;
@@ -9,6 +9,7 @@ export interface GalleryItem {
 	type: string;
 	width: number;
 	height: number;
+	possibly_sensitive?: boolean;
 }
 
 export interface Gallery {
@@ -23,8 +24,10 @@ export class Gallery implements Gallery {
 		this.pagination = meta;
 		if (includes && data) {
 			includes.media?.map(mediaItem => {
-				const tweetId = data.find(t => t.attachments?.media_keys?.find(key => key === mediaItem.media_key))?.id || 'cannot resolve tweet id';
+				const tweet = data.find(t => t.attachments?.media_keys?.find(key => key === mediaItem.media_key));
+				const tweetId = tweet?.id || 'cannot resolve tweet id';
 				const authorUsername = includes.users?.find(u => u.id === data.find(t => t.id === tweetId)?.author_id)?.username || 'cannot resolve author username';
+				const possiblySensitive = tweet?.possibly_sensitive;
 				this.tweetMedia.push({
 					media_key: mediaItem.media_key,
 					srcimg: mediaItem.url || mediaItem.preview_image_url || 'error',
@@ -32,6 +35,7 @@ export class Gallery implements Gallery {
 					type: mediaItem.type,
 					width: mediaItem.width,
 					height: mediaItem.height,
+					possibly_sensitive: possiblySensitive,
 					tweetid: tweetId,
 					author: authorUsername,
 				});

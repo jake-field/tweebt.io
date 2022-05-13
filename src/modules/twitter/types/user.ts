@@ -33,7 +33,7 @@ interface Entities {
 	};
 }
 
-export interface User {
+export default interface User {
 	data?: {
 		id: string;
 		name: string;

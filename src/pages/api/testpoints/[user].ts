@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiError } from '../../../modules/twitter/types/errors';
-import { Timeline } from '../../../modules/twitter/types/timeline';
-import { User } from '../../../modules/twitter/types/user';
+import Timeline from '../../../modules/twitter/types/timeline';
+import User from '../../../modules/twitter/types/user';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { query: { user }, method } = req;

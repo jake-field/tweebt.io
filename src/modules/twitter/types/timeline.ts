@@ -6,6 +6,7 @@ interface Media {
 	type: string;
 	url: string;
 	preview_image_url?: string;
+	possibly_sensitive?: boolean;
 	width: number;
 	height: number;
 }
@@ -26,7 +27,7 @@ export interface Meta {
 	previous_token?: string;
 }
 
-export interface Timeline {
+export default interface Timeline {
 	data?: Tweet[];
 	includes?: {
 		media: Media[];

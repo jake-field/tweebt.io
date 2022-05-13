@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import InfiniteScroll from "react-infinite-scroller"
 import Masonry from "react-masonry-css"
-import ImageModal from "../../../common/components/imageModal"
+import ImageModal from "../../../common/components/imagepopup"
 import LoadingSpinner from "../../../common/components/loadingspinner"
 import Profile from "../../../common/types/profile"
 import { Gallery, GalleryItem } from "../types/gallery"
@@ -61,12 +61,14 @@ export default function GalleryComponent({ profile }: Props) {
 
 	function openImageModal(item: GalleryItem) {
 		document.body.style.overflowY = 'hidden';
+		document.body.style.backgroundColor = 'black'; //TODO: maybe remove htis if it doesn't work
 		setSelectedGalleryItem(item);
 		setModalVisible(true);
 	}
 
 	function closeImageModal() {
 		document.body.style.overflowY = '';
+		document.body.style.backgroundColor = ''; //TODO: maybe remove htis if it doesn't work
 		setModalVisible(false);
 	}
 
@@ -84,7 +86,7 @@ export default function GalleryComponent({ profile }: Props) {
 				<>
 					{selectedGalleryItem !== null && <ImageModal galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => closeImageModal()} />}
 					<InfiniteScroll
-						className='w-fit max-w-[2500px]'
+						className='w-fit max-w-[2500px] select-none'
 						pageStart={0}
 						initialLoad={false}
 						loadMore={fetchData}

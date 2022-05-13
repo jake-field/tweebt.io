@@ -2,8 +2,8 @@ import Profile from "../../common/types/profile";
 import { Response } from "../../common/types/response";
 import { validateHandle } from "../../common/utils/validation";
 import { Gallery } from "../gallery/types/gallery";
-import { Timeline } from "./types/timeline";
-import { User } from "./types/user";
+import Timeline from "./types/timeline";
+import User from "./types/user";
 
 //API bearer token header
 const authHeader: RequestInit = {
@@ -116,7 +116,7 @@ export async function getProfile(handle: string): Promise<Response> {
 
 export async function getTimeline(userid: string | undefined, next?: string) {
 	if (userid) {
-		let query = '?expansions=attachments.media_keys,author_id&tweet.fields=possibly_sensitive&user.fields=username&media.fields=media_key,preview_image_url,type,url,width,height&exclude=replies,retweets&max_results=50';
+		let query = '?expansions=attachments.media_keys,author_id&tweet.fields=possibly_sensitive,public_metrics&user.fields=username&media.fields=media_key,preview_image_url,type,url,width,height&exclude=replies,retweets&max_results=50';
 
 		if (next) query += `&pagination_token=${next}`;
 
