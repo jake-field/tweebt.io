@@ -28,6 +28,8 @@ preload 5-10 media for SSG alongside profile
 
 
 
+navigating forward/back with browser controls does not close modal
+
 pagination breaks on some accounts, replicated by navigating backwards and then scrolling down.
 pagination token is undefined, but when checked for, it will load the first results a second time
 this will be fixed when the gallery is tidied up for types etc.
