@@ -1,7 +1,6 @@
-import Profile from "../../common/types/profile";
+import Profile, { ProfileMedia, ProfileMediaItem, ProfileMediaPagination } from "../../common/types/profile";
 import { Response } from "../../common/types/response";
 import { validateHandle } from "../../common/utils/validation";
-import { Gallery } from "../gallery/types/gallery";
 import Timeline from "./types/timeline";
 import User from "./types/user";
 
@@ -52,7 +51,7 @@ export async function getProfile(handle: string): Promise<Response> {
 		//optional flags/info
 		if (user.data.protected) profile.protected = true;
 		if (user.data.verified) profile.verified = true;
-		if (user.data.entities?.url) profile.url = user.data.entities?.url?.urls[0].display_url;
+		if (user.data.entities?.url) profile.url = user.data.entities?.url?.urls[0].expanded_url.replace(/^(https?:\/\/)?(www.)?/, '');
 		if (user.data.public_metrics) {
 			const metrics = user.data.public_metrics;
 			profile.follower_count = metrics.followers_count;
@@ -114,30 +113,80 @@ export async function getProfile(handle: string): Promise<Response> {
 	return { error: user.errors![0].detail };
 }
 
-export async function getTimeline(userid: string | undefined, next?: string) {
-	if (userid) {
-		let query = '?expansions=attachments.media_keys,author_id&tweet.fields=possibly_sensitive,public_metrics&user.fields=username&media.fields=media_key,preview_image_url,type,url,width,height&exclude=replies,retweets&max_results=100';
+export async function getProfileMedia(profile_id: string, params?: ProfileMediaPagination, max_results: number = 100): Promise<Response> {
+	//check for required environment variables
+	if (!process.env.TWITTER_API_TOKEN || !process.env.TWITTER_API) return { error: 'missing environment variables' };
 
-		if (next) query += `&pagination_token=${next}`;
+	//twitter api request
+	const apiEndpoint = `${process.env.TWITTER_API}/2/users/${profile_id}/tweets`;
 
-		console.log(query);
+	//selected query params
+	const query =
+		'?expansions=attachments.media_keys,author_id' +
+		'&user.fields=username' +
+		'&tweet.fields=possibly_sensitive,public_metrics' +
+		'&media.fields=media_key,preview_image_url,url,width,height' + //media_key required for tweet matching
+		'&exclude=replies,retweets' +
+		`&max_results=${max_results}` +
+		(params?.token ? `&pagination_token=${params?.token}` : '') +
+		(params?.newest_id ? `&since_id=${params?.newest_id}` : '') +
+		(params?.oldest_id ? `&until_id=${params?.oldest_id}` : '');
 
-		const res = await fetch(`${process.env.TWITTER_API}/2/users/${userid}/tweets` + query, authHeader);
+	const response = await fetch(apiEndpoint + query, authHeader);
 
-		if (res.status != 200) {
-			//error check
-			console.log(`getTimeline failed with status ${res.status}; "${res.statusText}"`);
-			return null;
-		}
+	//request failed
+	if (response.status != 200) return { error: `failed with status code ${response.status} - ${response.statusText}` };
 
-		const timeline: Timeline = await res.json();
-		return new Gallery(timeline);
+	//try parse timeline
+	const timeline: Timeline = await response.json();
 
-	} else if (userid) {
-		console.log('user lookup error');
-		return null;
+	//log errors, these may exist even if timeline.data is a valid object
+	if (timeline.errors) {
+		timeline.errors.forEach(error => console.log(error));
 	}
 
-	console.log('user not found');
-	return null;
+	if (timeline.data) {
+		if (timeline.includes?.media) {
+			let profileMedia: ProfileMedia = { items: [] };
+
+			//pagination info, done this way due to SSR serialization not liking undefined params here
+			if (timeline.meta) {
+				profileMedia.pagination = {}; //empty object
+				if (timeline.meta.newest_id) profileMedia.pagination.newest_id = timeline.meta.newest_id;
+				if (timeline.meta.oldest_id) profileMedia.pagination.oldest_id = timeline.meta.oldest_id;
+				if (timeline.meta.next_token) profileMedia.pagination.token = timeline.meta.next_token;
+			}
+
+			//pull information from the timeline and add each media item to profileMedia
+			timeline.includes.media.forEach(mediaItem => {
+				const tweet = timeline.data!.find(t => t.attachments?.media_keys?.find(key => key === mediaItem.media_key));
+				const tweetAuthor = timeline.includes!.users?.find(u => u.id === timeline.data!.find(t => t.id === tweet!.id)?.author_id)?.username;
+
+				let newItem: ProfileMediaItem = {
+					image: mediaItem.url || mediaItem.preview_image_url || 'error',
+					width: mediaItem.width,
+					height: mediaItem.height,
+					tweetid: tweet?.id || 'unknown tweet id',
+					author: tweetAuthor || 'unknown tweet author'
+				};
+
+				const metrics = tweet?.public_metrics;
+				if (metrics) {
+					newItem.replies = metrics.reply_count;
+					newItem.retweets = (metrics.retweet_count || 0) + (metrics.quote_count || 0);
+					newItem.likes = metrics.like_count;
+				}
+
+				if (tweet?.possibly_sensitive) newItem.flagged = true;
+				profileMedia.items.push(newItem);
+			});
+
+			return { media: profileMedia };
+		}
+		else {
+			return { error: 'user has no media' };
+		}
+	}
+
+	return { error: timeline.errors && timeline.errors[0].detail || 'user has no media' };
 }

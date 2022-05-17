@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getTimeline } from "../../modules/twitter/twitterapi";
+import { getProfileMedia } from "../../modules/twitter/twitterapi";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { query: { username, next }, method } = req;
+	const { query: { username, next, until }, method } = req;
 
 	//method check here
 	//then check query count, should be just a string not string[]
@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	let handle = username as string;
 	handle = handle.replaceAll(/@/g, '');
 
-	const result = await getTimeline(handle, next as string);
+	const result = await getProfileMedia(handle, { token: next as string, oldest_id: until as string });
 
 	if (result)
 		return res.status(200).json(result);

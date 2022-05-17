@@ -53,7 +53,7 @@ export default function ProfileCard({ profile }: Props) {
                 {profile.url &&
                     <p>
                         <a href={(!profile.url.startsWith('http') ? 'https://' : '') + profile.url} target='_blank' className='inline-flex gap-1'>
-                            <LinkIcon className='w-4' />{profile.url}
+                            <LinkIcon className='w-4' /><span className="text-ellipsis whitespace-nowrap overflow-hidden max-w-xs">{profile.url}</span>
                         </a>
                     </p>
                 }

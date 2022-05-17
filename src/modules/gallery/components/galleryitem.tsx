@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { MouseEventHandler, useState } from "react";
 import LoadingSpinner from "../../../common/components/loadingspinner";
-import { GalleryItem } from "../types/gallery";
+import { ProfileMediaItem } from "../../../common/types/profile";
 import GalleryItemOverlay from "./galleryitemoverlay";
 
 interface Props {
-	item: GalleryItem;
-	onClick?: MouseEventHandler<HTMLDivElement>;
+	item: ProfileMediaItem;
+	onClick: MouseEventHandler<HTMLDivElement>;
 }
 
 export default function GalleryMediaItem({ item, onClick }: Props) {
@@ -24,7 +24,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 				<LoadingSpinner className={`absolute w-5 h-5 transition-opacity ease-in-out duration-300 ${loaded ? 'opacity-0' : 'opacity-100'}`} />
 			}
 			<Image
-				src={item.srcimg + '?name=small'} //pull smaller pre-compressed image from twitter
+				src={item.image + '?name=small'} //pull smaller pre-compressed image from twitter
 				width={item.width}
 				height={item.height}
 				placeholder='empty'
@@ -34,7 +34,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 				onClick={onClick}
 				className={`transition-all hover:shadow-inner ease-in duration-300 ${loaded ? 'opacity-100' : 'opacity-0'} ${/*item.possibly_sensitive*/ false ? 'blur hover:blur-none' : ''}`}
 			/>
-			<GalleryItemOverlay item={item} visible={hover} />
+			<GalleryItemOverlay item={item} visible={hover} showMetrics />
 		</div>
 	);
 }
