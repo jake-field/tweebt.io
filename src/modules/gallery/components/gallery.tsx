@@ -35,6 +35,13 @@ export default function GalleryComponent({ profile }: Props) {
 		fetchData(0);
 	}, [profile]);
 
+	useEffect(() => {
+		if(gallery?.items&& gallery?.items.length < 10 && gallery?.items.length > 0 && hasMore()) {
+			console.log('early fetch to fill space')
+			fetchData(1)
+		}
+	}, [gallery]);
+
 	//back button hijacking for allowing the modal to register as a separate history item
 	useEffect(() => {
 		if (modalVisible) {
@@ -103,7 +110,7 @@ export default function GalleryComponent({ profile }: Props) {
 		document.body.style.backgroundColor = 'black';
 		setSelectedGalleryItem(item);
 		setModalVisible(true);
-		router.push('/' + profile?.handle + `?t=${item.tweetid}`, undefined, { scroll: false, shallow: true });
+		//router.push('/@' + profile?.handle + `?t=${item.tweetid}`, undefined, { scroll: false, shallow: true });
 	}
 
 	function closeImageModal() {
@@ -113,18 +120,31 @@ export default function GalleryComponent({ profile }: Props) {
 		setModalVisible(false);
 
 		//TODO: consider using a shallow movement here, using router.back()
-		router.push('/@' + profile?.handle, undefined, { scroll: false, shallow: true });
+		//router.push('/@' + profile?.handle, undefined, { scroll: false, shallow: true });
 	}
 
 	return (
 		<>
-			{selectedGalleryItem !== null && <ImagePopup galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => closeImageModal()} />}
+			{selectedGalleryItem !== null &&
+				<ImagePopup
+					galleryItem={selectedGalleryItem}
+					visible={modalVisible}
+					onClick={() => closeImageModal()}
+				/>
+			}
+
+			{gallery?.items &&
+				<div className='w-full flex justify-end pr-1'>
+					<small>{gallery?.items.length}{hasMore() ? '+' : ''} Result{gallery?.items.length > 1 ? 's' : ''}</small>
+				</div>
+			}
+
 			<InfiniteScroll
 				className='w-fit max-w-[2500px] select-none mb-40'
 				initialLoad={false}
 				loadMore={fetchData}
 				hasMore={hasMore()}
-				threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns
+				threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
 			>
 				{gallery?.items ? (
 					<>
