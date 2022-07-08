@@ -1,14 +1,14 @@
 import '../common/styles/globals.css'
+import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import Layout from '../common/components/layout';
-import Script from 'next/script';
 
 export default function App({ Component, pageProps }: AppProps) {
 	return (
-		<>
+		<SessionProvider session={pageProps.session} refetchInterval={3600}>
 			<Layout>
 				<Component {...pageProps} />
 			</Layout>
-		</>
+		</SessionProvider>
 	)
 }

@@ -45,7 +45,9 @@ export async function getProfile(handle: string): Promise<Response> {
 			id: user.data.id,
 			handle: user.data.username,
 			name: user.data.name,
-			image: user.data.profile_image_url.replace(/normal/gi, "400x400"), //enforce large profile image
+
+			//route through proxy and use full 400x400 image here
+			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, "/img/").replace(/normal/gi, "400x400"), //enforce large profile image
 		}
 
 		//optional flags/info
@@ -169,6 +171,9 @@ export async function getProfileMedia(profile_id: string, params?: ProfileMediaP
 					tweetid: tweet?.id || 'unknown tweet id',
 					author: tweetAuthor || 'unknown tweet author'
 				};
+
+				//route through proxy
+				newItem.image = newItem.image.replace(/https:\/\/pbs.twimg.com\//, "/img/");
 
 				const metrics = tweet?.public_metrics;
 				if (metrics) {

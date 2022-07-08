@@ -2,7 +2,9 @@
 
 const nextConfig = {
 	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
+	poweredByHeader: false,
 	images: {
+		//TODO: remove this since proxy is in effect
 		domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
 	},
 }
@@ -46,6 +48,8 @@ const securityHeaders = [
 
 module.exports = {
 	...nextConfig,
+
+	//set up security headers
 	async headers() {
 		return [
 			{
@@ -53,6 +57,20 @@ module.exports = {
 				source: '/:path*',
 				headers: securityHeaders,
 			}
+		]
+	},
+
+	//proxy for twitter content, helps with tracking and adblocker issues
+	async rewrites() {
+		return [
+			{
+				source: '/img/:path*',
+				destination: 'https://pbs.twimg.com/:path*',
+			},
+			{
+				source: '/staticimg/:path*',
+				destination: 'https://abs.twimg.com/:path*',
+			},
 		]
 	},
 }

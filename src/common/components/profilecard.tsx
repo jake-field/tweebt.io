@@ -39,7 +39,7 @@ export default function ProfileCard({ profile }: Props) {
                                 }
                                 else if (value.link) {
                                     if (value.link.startsWith('@')) return <Link key={index} href={value.link}>{value.link}</Link>;
-                                    else if (value.link.startsWith('#')) return <a key={index} href={`https://twitter.com/search?q=%23${value.link.substring(1)}`} target='_blank'>{value.link}</a>;
+                                    else if (value.link.startsWith('#')) return <Link key={index} href={`/tags/${value.link.substring(1)}`}>{value.link}</Link>;
                                     else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} target='_blank'>{value.link}</a>
                                 }
                                 return 'error';

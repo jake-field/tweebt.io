@@ -1,31 +1,36 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ApiError } from '../../../modules/twitter/types/errors';
-import Timeline from '../../../modules/twitter/types/timeline';
-import User from '../../../modules/twitter/types/user';
+import { getToken } from 'next-auth/jwt';
+import { getSession } from 'next-auth/react';
+import { ApiError } from '../../../modules/twitterapi/types/errors';
+import Timeline from '../../../modules/twitterapi/types/timeline';
+import User from '../../../modules/twitterapi/types/user';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { query: { user }, method } = req;
+	const secret = process.env.NEXTAUTH_SECRET;
+	const token = await getToken({ req, secret });
+	const session = await getSession();
 
 	if (method !== 'GET') {
 		res.setHeader('Allow', ['GET']);
 		return res.status(405).end(`Method ${method} Not Allowed`);
 	}
 
-	if (!process.env.TWITTER_API_TOKEN) {
+	if (!token) {
 		return res.status(401).json({
 			errors: [
-				{ message: 'A Twitter API token is required to execute this request' },
+				{ message: 'no valid session' },
 			],
 		})
 	}
 
 	//get userID
 	let userRes = await fetch(
-		`https://api.twitter.com/2/users/by/username/${user}`,
+		`https://api.twitter.com/2/users/1370142081851662337/timelines/reverse_chronological`,
 		{
 			headers: {
-				authorization: `Bearer ${process.env.TWITTER_API_TOKEN}`,
+				authorization: `Bearer ${token.accessToken}`,
 			},
 		}
 	)
@@ -35,31 +40,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		return res.status(userRes.status).json(apiError);
 	}
 
-	console.log('rateLimitLeft (users/by/username/:username) = ' + userRes.headers.get('x-rate-limit-remaining'));
-
-	let userJson: User = await userRes.json();
-	if (userJson.data) {
-		//get timeline
-		let timelineRes = await fetch(
-			`https://api.twitter.com/2/users/${userJson.data.id}/tweets`,
-			{
-				headers: {
-					authorization: `Bearer ${process.env.TWITTER_API_TOKEN}`,
-				},
-			}
-		)
-
-		if (timelineRes.status != 200) {
-			let apiError: ApiError = await timelineRes.json();
-			return res.status(timelineRes.status).json(apiError);
-		}
-
-		console.log('rateLimitLeft (users/:id/tweets) = ' + timelineRes.headers.get('x-rate-limit-remaining'));
-
-		let timelineJson: Timeline = await timelineRes.json();
-		if (timelineJson.errors) return res.status(timelineRes.status).json(timelineJson);
-		else return res.status(200).json(timelineJson);
-	} else {
-		return res.status(userRes.status).json(userJson);
-	}
+	res.status(userRes.status).json(await userRes.json());
 }

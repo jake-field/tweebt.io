@@ -4,7 +4,7 @@ import ProfileCard from '../common/components/profilecard';
 import GalleryComponent from '../modules/gallery/components/gallery';
 import NavBar from '../common/components/navbar';
 import Profile from '../common/types/profile';
-import { getProfile } from '../modules/twitter/twitterapi';
+import { getProfile } from '../modules/twitterapi';
 import ScrollTop from '../common/components/scrolltop';
 
 interface Props {
@@ -16,7 +16,7 @@ export default function AtHandle({ profile, error }: Props) {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gradient-to-b from-slate-300 to-slate-200 dark:from-slate-900 dark:to-slate-800">
 			<Title
-				title={profile && `@${profile.handle}'s Twitter Gallery`}
+				title={profile && `@${profile.handle}`}
 				desc={profile && `Check out ${profile.name}'s (@${profile.handle}) gallery compiled from their most recent tweets!`}
 				image={profile && profile.image}
 			/>

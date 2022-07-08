@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getProfileMedia } from "../../modules/twitter/twitterapi";
+import { getProfileMedia } from "../../modules/twitterapi";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { query: { username, next, until }, method } = req;

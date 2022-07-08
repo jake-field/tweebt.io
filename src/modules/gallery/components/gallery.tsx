@@ -20,7 +20,7 @@ const breakpointColumnsObj = {
 
 export default function GalleryComponent({ profile }: Props) {
 	const router = useRouter();
-	let [gallery, setGallery] = useState<ProfileMedia | undefined>(undefined);
+	let [gallery, setGallery] = useState<ProfileMedia | null>(null);
 	const [selectedGalleryItem, setSelectedGalleryItem] = useState<ProfileMediaItem | null>(null);
 	const [modalVisible, setModalVisible] = useState(true);
 	const [loading, setLoading] = useState(false);
@@ -30,7 +30,8 @@ export default function GalleryComponent({ profile }: Props) {
 	useEffect(() => {
 		setLoading(true);
 		closeImageModal(); //close modal on profile change
-		gallery = undefined;
+		gallery = null;
+		setGallery(null);
 		fetchData(0);
 	}, [profile]);
 
@@ -48,7 +49,20 @@ export default function GalleryComponent({ profile }: Props) {
 		}
 	}, [router, modalVisible]);
 
-	async function fetchData(page: number) {
+	useEffect(() => {
+		if (gallery) {
+			if (router.query['t']) {
+				console.log(router.query['t']);
+				const item = gallery?.items.find(t => t.tweetid === router.query['t']);
+				if (item && (item !== selectedGalleryItem || !modalVisible)) {
+					console.log(item);
+					openImageModal(item);
+				}
+			}
+		}
+	}, [gallery, router]);
+
+	function fetchData(page: number) {
 		setLoading(true);
 
 		//if there is a profile, as well as either a pagination token or no items were pre-fetched
@@ -66,7 +80,7 @@ export default function GalleryComponent({ profile }: Props) {
 				}
 			}
 
-			await fetch(`api/${profile.id}${pagination}`)
+			fetch(`api/${profile.id}${pagination}`)
 				.then((res) => res.json())
 				.then((data) => {
 					if (gallery?.items && data?.media?.items) {
@@ -86,16 +100,20 @@ export default function GalleryComponent({ profile }: Props) {
 
 	function openImageModal(item: ProfileMediaItem) {
 		document.body.style.overflowY = 'hidden';
-		document.body.style.backgroundColor = 'black'; //TODO: maybe remove htis if it doesn't work
+		document.body.style.backgroundColor = 'black';
 		setSelectedGalleryItem(item);
 		setModalVisible(true);
-		router.push('/' + profile?.handle + '#img', undefined, { scroll: false, shallow: true });
+		router.push('/' + profile?.handle + `?t=${item.tweetid}`, undefined, { scroll: false, shallow: true });
 	}
 
 	function closeImageModal() {
 		document.body.style.overflowY = '';
-		document.body.style.backgroundColor = ''; //TODO: maybe remove htis if it doesn't work
+		document.body.style.backgroundColor = '';
+		//setSelectedGalleryItem(null); //we do not do this here as it removes the fade-out effect
 		setModalVisible(false);
+
+		//TODO: consider using a shallow movement here, using router.back()
+		router.push('/@' + profile?.handle, undefined, { scroll: false, shallow: true });
 	}
 
 	return (
