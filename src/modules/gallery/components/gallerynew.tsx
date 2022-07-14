@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Masonry from "react-masonry-css"
 import ImagePopup from "../../../common/components/imagepopup";
+import { SettingsContext } from "../../../common/contexts/settingscontext";
 import Gallery, { Media } from "../../shared/types/gallery";
 import GalleryMediaItem from "./galleryitem"
 
@@ -17,6 +18,7 @@ const breakpointColumnsObj = {
 };
 
 export default function GalleryNewComponent({ gallery }: Props) {
+	const settingsContext = useContext(SettingsContext);
 	const router = useRouter();
 	const [selectedGalleryItem, setSelectedGalleryItem] = useState<Media>();
 	const [modalVisible, setModalVisible] = useState(false);
@@ -58,22 +60,27 @@ export default function GalleryNewComponent({ gallery }: Props) {
 	}
 
 	return (
-		<>
-			{selectedGalleryItem &&
-				<ImagePopup
-					galleryItem={selectedGalleryItem}
-					visible={modalVisible}
-					onClick={() => closeImageModal()}
-				/>
-			}
+		<SettingsContext.Consumer>
+			{settings => (
+				<>
+					{selectedGalleryItem &&
+						<ImagePopup
+							galleryItem={selectedGalleryItem}
+							visible={modalVisible}
+							onClick={() => closeImageModal()}
+						/>
+					}
 
-			<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
-				{gallery.map(listing => {
-					return listing.items.map((item, index) => {
-						return <GalleryMediaItem key={index} item={item} onClick={() => openImageModal(item)} />
-					})
-				})}
-			</Masonry>
-		</>
+					<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
+						{gallery.map(listing => {
+							return listing.items.map((item, index) => {
+								return <GalleryMediaItem key={index} item={item} onClick={() => openImageModal(item)} blurNSFW={settings.blursensitive} />
+							})
+						})}
+					</Masonry>
+				</>
+
+			)}
+		</SettingsContext.Consumer>
 	)
 }
