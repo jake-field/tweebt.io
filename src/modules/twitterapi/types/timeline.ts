@@ -32,6 +32,7 @@ export default interface Timeline {
 	includes?: {
 		media: Media[];
 		users?: User[];
+		tweets?: Tweet[]; //shell tweets for replies/quotes/retweets
 	}
 	meta?: Meta;
 	errors?: Error[];

@@ -21,11 +21,9 @@ export default function ThemeToggle() {
 	}
 
 	return (
-		<>
-			<span className='select-none flex shadow-inner flex-row items-center justify-center ml-1 w-8 h-8 p-1 bg-slate-300 dark:bg-slate-700 rounded-lg hover:ring-1 cursor-pointer' onClick={() => setTheme(!darkTheme)}>
-				<SunIcon className={iconStyle + ' text-white'} style={{ opacity: darkTheme ? 100 : 0 }} />
-				<MoonIcon className={iconStyle + ' text-slate-900'} style={{ opacity: darkTheme ? 0 : 100 }} />
-			</span>
-		</>
+		<a title='Toggle Dark Mode' className='items-center justify-center w-6 h-6 cursor-pointer' onClick={() => setTheme(!darkTheme)}>
+			<SunIcon className={iconStyle} style={{ opacity: darkTheme ? 100 : 0 }} />
+			<MoonIcon className={iconStyle} style={{ opacity: darkTheme ? 0 : 100 }} />
+		</a>
 	)
 }

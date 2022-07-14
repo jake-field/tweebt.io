@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { MouseEventHandler, useEffect, useState } from "react";
-import { ProfileMediaItem } from "../types/profile";
+import { Media } from "../../modules/shared/types/gallery";
 import LoadingSpinner from "./loadingspinner";
 
 interface Props {
-	galleryItem: ProfileMediaItem;
+	galleryItem: Media;
 	visible: boolean;
 	onClick: MouseEventHandler<HTMLDivElement>;
 }
@@ -44,7 +44,7 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 					{(!loaded || !imgVisible) && <LoadingSpinner className='absolute w-10 h-10 text-white' />}
 					<Image
 						id='modalImg'
-						src={galleryItem.image + '?name=orig'} //pull full size
+						src={galleryItem.url + '?name=orig'} //pull full size
 						width={galleryItem.width}
 						height={galleryItem.height}
 						quality={100}

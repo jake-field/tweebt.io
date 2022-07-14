@@ -1,49 +1,42 @@
-import { NextPageContext } from "next";
-import { Session } from "next-auth";
-import { getSession, signOut } from "next-auth/react";
-import { useRouter } from "next/router"
+import { Session } from "next-auth"
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import LoadingSpinner from "../../common/components/loadingspinner";
+import NavBar from "../../common/components/navbar";
 import ScrollTop from "../../common/components/scrolltop";
 import Title from "../../common/components/title";
-import GalleryNewComponent from "../../modules/gallery/components/gallerynew";
-import Gallery from "../../modules/shared/types/gallery";
+import Gallery from "../shared/types/gallery";
+import GalleryNewComponent from "./components/gallerynew";
 
 interface Props {
-	session: Session | null;
+	session?: Session;
 }
 
-//grab the session on the server and pass it via component props
-export async function getServerSideProps(context: NextPageContext): Promise<{ props: Props }> {
-	return {
-		props: {
-			session: await getSession(context),
-		},
-	}
-}
-
-export default ({ session }: Props) => {
+export default function UserFeed({ session }: Props) {
 	const router = useRouter();
-	const { query: { query, q, tags } } = router;
-
-	console.log('slug: ', query);
-
 	const [gallery, setGallery] = useState<Gallery[]>([]);
 	const [loading, setLoading] = useState(false);
 
+	//If not logged in, don't bother
+	if (!session) {
+		return <p>Unauthorized</p>
+	}
+
 	useEffect(() => {
-		if (!loading) fetchData();
+		if (gallery.length === 0 && !loading) fetchData();
 		return () => {
 			setGallery([]);
 			console.log('cleared gallery');
 		}
-	}, [query]);
+	}, [router]);
 
 	function fetchData() {
+		console.log('fetch request')
 		if (loading) return;
 		setLoading(true);
-		console.log('fetch');
+		console.log('fetch request in action');
 
 		let pagination = '';
 		if (gallery.length > 0) {
@@ -51,7 +44,7 @@ export default ({ session }: Props) => {
 			pagination = token ? '&next=' + token : '';
 		}
 
-		fetch(`/api/gallery/search?q=${q}&max_results=100${pagination}`)
+		fetch(`/api/gallery/me?&max_results=100${pagination}`) //exclude=replies,retweets
 			.then((res) => {
 				//intercept response status to catch errors
 				if (res.status != 200) {
@@ -64,9 +57,7 @@ export default ({ session }: Props) => {
 			})
 			.then((res) => res.json())
 			.then((data: Gallery) => {
-				console.log('data: ', data)
 				if (data.items && data.items.length > 0) {
-					console.log('hello there uwu')
 					setGallery([...gallery, data]);
 				}
 			}).finally(() => {
@@ -81,20 +72,19 @@ export default ({ session }: Props) => {
 			return gallery[gallery.length - 1].meta?.next_token ? true : false;
 		}
 
-		return false;
+		return (gallery.length === 0);
 	}
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gradient-to-b from-slate-300 to-slate-200 dark:from-slate-900 dark:to-slate-800">
+		<div className="flex flex-col items-center justify-center min-h-screen bg-slate-300 dark:bg-slate-800" style={{ paddingTop: '5em' }}>
 			<Title
-				title={query && `${query}`}
+				title='My feed'
 				desc=''
 			/>
 
-			<ScrollTop />
-			<div className="flex flex-col items-center w-full flex-1 px-3 text-center pt-10 sm:pt-0 md:px-20">
+			<div className="flex flex-col items-center w-full px-3 text-center md:px-20">
 				<InfiniteScroll
-					className='w-fit max-w-[2500px] select-none mb-40'
+					className='w-fit max-w-[2500px] select-none mb-40 mt-20'
 					initialLoad={false}
 					loadMore={fetchData}
 					hasMore={hasMore()}
@@ -102,6 +92,7 @@ export default ({ session }: Props) => {
 				>
 					<GalleryNewComponent gallery={gallery} />
 				</InfiniteScroll>
+
 				{(loading || hasMore()) &&
 					<div className='flex flex-row items-center justify-center'>
 						<LoadingSpinner className='w-10 h-10' />
