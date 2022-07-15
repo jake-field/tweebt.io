@@ -22,7 +22,7 @@ export async function getServerSideProps(context: NextPageContext): Promise<{ pr
 	}
 }
 
-export default ({ session }: Props) => {
+export default function Search({ session }: Props) {
 	const router = useRouter();
 	const { query: { query, q, tags } } = router;
 
