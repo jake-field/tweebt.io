@@ -8,7 +8,7 @@ import NavBar from "../../common/components/navbar";
 import ScrollTop from "../../common/components/scrolltop";
 import Title from "../../common/components/title";
 import Gallery from "../shared/types/gallery";
-import GalleryNewComponent from "./components/gallerynew";
+import GalleryComponent from "./components/gallery";
 
 interface Props {
 	session?: Session;
@@ -82,16 +82,8 @@ export default function UserFeed({ session }: Props) {
 				desc=''
 			/>
 
-			<div className="flex flex-col items-center w-full px-3 text-center md:px-20">
-				<InfiniteScroll
-					className='w-fit max-w-[2500px] select-none mb-40 mt-20'
-					initialLoad={false}
-					loadMore={fetchData}
-					hasMore={hasMore()}
-					threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
-				>
-					<GalleryNewComponent gallery={gallery} />
-				</InfiniteScroll>
+			<div className="flex flex-col items-center w-full text-center">
+				<GalleryComponent gallery={gallery} loadNext={fetchData} canLoadMore={hasMore} />
 
 				{(loading || hasMore()) &&
 					<div className='flex flex-row items-center justify-center'>

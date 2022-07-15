@@ -5,8 +5,6 @@ import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import HandleFeed from '../modules/gallery/handlefeed';
 import ProfileCard from '../common/components/profilecard';
-import NavBar from '../common/components/navbar';
-import ScrollTop from '../common/components/scrolltop';
 import Title from '../common/components/title';
 
 interface Props {
@@ -22,8 +20,8 @@ export async function getServerSideProps(context: NextPageContext) {
 	return {
 		props: {
 			session: await getSession(context),
-			profile: res.profile,
-			//error: res.error,
+			profile: res.profile || null,
+			error: res.error || null,
 		},
 	}
 }

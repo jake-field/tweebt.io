@@ -15,13 +15,13 @@ interface Props {
 export default function NavBar({ searchValue, session }: Props) {
 	return (
 		<div className='fixed z-40 select-none p-3 flex flex-row items-center justify-center gap-2 w-full bg-slate-200 dark:bg-slate-900 border-b border-slate-400 dark:border-slate-800' >
-			<span className='text-xl text-slate-700 dark:text-slate-300 border-l border-r px-3 border-slate-500'>tweetbox</span>
+			<a className='text-xl text-slate-700 dark:text-slate-300 border-l border-r px-3 border-slate-500' href="/">tweebt</a>
 
 			<nav className='flex flex-row items-center px-3 py-1 gap-3 grow'>
 				<a title='Home' className='flex items-center gap-1' href='/'>
 					<HomeIcon className='w-6' />
 				</a>
-				<a title='Profile' className='flex items-center gap-1' href={`/@${session?.user?.name}`}>
+				<a title='Profile' className='flex items-center gap-1' href={`/${session?.user?.id}`}>
 					<UserIcon className='w-6' />
 				</a>
 				<a title='Search' className='flex items-center gap-1'>

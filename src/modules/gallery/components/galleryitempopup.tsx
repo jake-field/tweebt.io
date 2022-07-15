@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { MouseEventHandler, useEffect, useState } from "react";
-import { Media } from "../../modules/shared/types/gallery";
-import LoadingSpinner from "./loadingspinner";
+import { Media } from "../../shared/types/gallery";
+import LoadingSpinner from "../../../common/components/loadingspinner";
 
 interface Props {
-	galleryItem: Media;
+	galleryItem?: Media;
 	visible: boolean;
 	onClick: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
+export default function GalleryItemPopup({ galleryItem, visible, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [modalVisible, setModalVisible] = useState(false);
@@ -32,6 +32,9 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 		}
 	}, [visible]);
 
+	//don't render if no item
+	if (!galleryItem) return null;
+
 	return (
 		<div style={{ display: modalVisible ? 'flex' : 'none' }}>
 			<div
@@ -44,11 +47,12 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 					{(!loaded || !imgVisible) && <LoadingSpinner className='absolute w-10 h-10 text-white' />}
 					<Image
 						id='modalImg'
-						src={galleryItem.url + '?name=orig'} //pull full size
+						//src={galleryItem.url + '?name=orig'} //pull full size
+						src={galleryItem.url + '?name=medium'}
 						width={galleryItem.width}
 						height={galleryItem.height}
-						quality={100}
-						//unoptimized={true} //uses actual src rather than next/image (this may cause issues with adblockers)
+						//quality={100}
+						unoptimized={true} //uses actual src rather than next/image (needs proxy to bypass adblockers)
 						priority={true} //give priority to the modal image
 						placeholder='empty'
 						onLoadStart={() => setLoaded(false)}
@@ -59,6 +63,5 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 				</div>
 			</div>
 		</div>
-
 	)
 }

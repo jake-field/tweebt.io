@@ -1,6 +1,7 @@
 import Profile, { ProfileMedia, ProfileMediaItem, ProfileMediaPagination } from "../../common/types/profile";
 import { Response } from "../../common/types/response";
 import { validateHandle } from "../../common/utils/validation";
+import { TwitterEndpoints } from "./endpoints";
 import Timeline from "./types/timeline";
 import User from "./types/user";
 
@@ -17,16 +18,16 @@ export async function getProfile(handle: string): Promise<Response> {
 	//check for required environment variables
 	if (!process.env.TWITTER_API_TOKEN || !process.env.TWITTER_API) return { error: 'missing environment variables' };
 
-	//check for valid handle
-	if (!validateHandle(handle)) return { error: 'handle validation failed' };
-
 	//pre-strip @ as twitter only accepts usernames (handle without @)
 	handle = handle.replaceAll('@', '');
 
 	//twitter api request
-	const apiEndpoint = `${process.env.TWITTER_API}/2/users/by/username/${handle}`;
-	const query = '?user.fields=protected,verified,description,profile_image_url,entities,public_metrics';
-	const response = await fetch(apiEndpoint + query, authHeader);
+	let response;
+	const query = 'user.fields=protected,verified,description,profile_image_url,entities,public_metrics';
+
+	//TODO: replace token with usertoken if possible for protected accounts
+	if(!validateHandle(handle)) response = await TwitterEndpoints.getProfileById(handle, process.env.TWITTER_API_TOKEN, query);
+	else response = await TwitterEndpoints.getProfileByHandle(handle, process.env.TWITTER_API_TOKEN, query);
 
 	//request failed
 	if (response.status != 200) return { error: `failed with status code ${response.status} - ${response.statusText}` };

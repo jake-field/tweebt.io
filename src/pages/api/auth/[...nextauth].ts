@@ -10,9 +10,15 @@ export default NextAuth({
 		})
 	],
 	callbacks: {
-		async jwt({ token, account }) {
+		async session({ session, user, token }) {
+			if (session.user) session.user.id = token.sub;
+			return session;
+		},
+
+		async jwt({ token, account, user, profile }) {
 			if (account) token.accessToken = account.access_token;
-			return token
+			console.log(account);
+			return token;
 		},
 	},
 })

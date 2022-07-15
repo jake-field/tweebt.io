@@ -9,22 +9,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const { query: { query, tags, q, max_results, exclude, next }, method } = req;
 	const secret = process.env.NEXTAUTH_SECRET;
 	const token = await getToken({ req, secret });
+	const apitoken = process.env.TWITTER_API_TOKEN;
 
+	//only allow GET requests at this endpoint
 	if (method !== 'GET') {
 		res.setHeader('Allow', ['GET']);
 		return res.status(405).end(`Method ${method} Not Allowed`);
 	}
 
-	//TODO: this blocks non-logged in requests, need to change the code in this file
-	//		to use the API token instead of user token if accessing a public endpoint
-	if (!token) {
-		return res.status(401).json({
-			errors: [
-				{ message: 'no valid session' },
-			],
-		})
-	}
-
+	//build standard query for the app
 	const galleryQuery =
 		'expansions=attachments.media_keys,author_id,referenced_tweets.id,referenced_tweets.id.author_id' +
 		//'&user.fields=id,name,username' + //this is included with author_id expansion by default
@@ -50,10 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	console.log('user: ', user);
 
 	if (me) {
+		if (!token) {
+			return res.status(401).json({
+				errors: [
+					{ message: 'no valid session' },
+				],
+			})
+		}
+
 		apiRes = await TwitterEndpoints.getMyFeed(token.sub!, token.accessToken!, galleryQuery);
 	}
 	else if (user) {
-		apiRes = await TwitterEndpoints.getUsersTweets(query[1], token.accessToken!, galleryQuery);
+		apiRes = await TwitterEndpoints.getUsersTweets(query[1], token?.accessToken || apitoken, galleryQuery);
 	}
 	else if (tags || search) {
 		let searchTerm = '-is:retweet -is:quote -is:reply has:media '; //filter by original post only, only tweets with media
@@ -62,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		searchTerm = searchTerm.trim();
 		console.log(searchTerm);
 		console.log(encodeURIComponent(searchTerm));
-		apiRes = await TwitterEndpoints.getRecentTweets(encodeURIComponent(searchTerm), token.accessToken!, galleryQuery);
+		apiRes = await TwitterEndpoints.getRecentTweets(encodeURIComponent(searchTerm), token?.accessToken || apitoken, galleryQuery);
 	}
 
 	if (apiRes) {
@@ -126,7 +127,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 						referencing: referencing,
 						text: tweetText,
 						type: item.type,
-						url: item.preview_image_url || item.url,
+						url: (item.preview_image_url || item.url).replace(/https:\/\/pbs.twimg.com\//, "/img/"), //proxy for unoptimized images
 						width: item.width,
 						height: item.height,
 						nsfw: tweet.possibly_sensitive ? true : undefined,

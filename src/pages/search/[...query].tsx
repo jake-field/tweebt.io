@@ -3,11 +3,10 @@ import { Session } from "next-auth";
 import { getSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
 import LoadingSpinner from "../../common/components/loadingspinner";
 import ScrollTop from "../../common/components/scrolltop";
 import Title from "../../common/components/title";
-import GalleryNewComponent from "../../modules/gallery/components/gallerynew";
+import GalleryComponent from "../../modules/gallery/components/gallery";
 import Gallery from "../../modules/shared/types/gallery";
 
 interface Props {
@@ -92,16 +91,9 @@ export default ({ session }: Props) => {
 			/>
 
 			<ScrollTop />
-			<div className="flex flex-col items-center w-full flex-1 px-3 text-center pt-10 sm:pt-0 md:px-20">
-				<InfiniteScroll
-					className='w-fit max-w-[2500px] select-none mb-40'
-					initialLoad={false}
-					loadMore={fetchData}
-					hasMore={hasMore()}
-					threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
-				>
-					<GalleryNewComponent gallery={gallery} />
-				</InfiniteScroll>
+			<div className="flex flex-col items-center w-full px-3 text-center md:px-20">
+				<GalleryComponent gallery={gallery} loadNext={fetchData} canLoadMore={hasMore} />
+
 				{(loading || hasMore()) &&
 					<div className='flex flex-row items-center justify-center'>
 						<LoadingSpinner className='w-10 h-10' />
