@@ -96,15 +96,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 						const user = refTweet ? timeline.includes?.users?.find(u => u.id === refTweet?.author_id) : undefined;
 						return {
 							type: ref.type,
-							id: ref.id,
-							username: user?.username || ''
+							id: user?.id || '',
+							username: user?.username || '',
+							tweet_id: refTweet?.id || '',
+							text: refTweet?.text || '',
 						}
 					}) : undefined;
 
 					//get the correct metrics, if we're dealing with an original tweet, metrics are accurate
 					//	if we are dealing with a retweet, only the retweets are stored in the tweet variable
 					//	however, the accurate metrics are held under includes.tweets
-					let metricsTweet = referencing ? timeline.includes?.tweets?.find(t => t.id === referencing[0].id) || tweet : tweet;
+					let metricsTweet = referencing ? timeline.includes?.tweets?.find(t => t.id === referencing[0].tweet_id) || tweet : tweet;
 					let correctMetrics = {
 						replies: metricsTweet.public_metrics?.reply_count || 0,
 						likes: metricsTweet.public_metrics?.like_count || 0,

@@ -78,8 +78,7 @@ export default function UserFeed({ session }: Props) {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen bg-slate-300 dark:bg-slate-800" style={{ paddingTop: '5em' }}>
 			<Title
-				title='My feed'
-				desc=''
+				title={`Latest Tweets`}
 			/>
 
 			<div className="flex flex-col items-center w-full text-center">

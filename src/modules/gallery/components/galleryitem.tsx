@@ -1,4 +1,5 @@
 import { EyeOffIcon } from "@heroicons/react/outline";
+import { PlayIcon } from "@heroicons/react/solid";
 import Image from "next/image";
 import { MouseEventHandler, useState } from "react";
 import LoadingSpinner from "../../../common/components/loadingspinner";
@@ -22,19 +23,13 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 
 	return (
 		<div
-			className='flex flex-col rounded-lg overflow-hidden items-center bg-slate-500 my-2 mx-1 shadow-lg cursor-pointer hover:ring-2 ring-blue-600 dark:ring-blue-400 border border-gray-500'
+			className='flex flex-col rounded-lg overflow-hidden items-center my-2 mx-1 transition-all shadow-lg cursor-pointer hover:ring-2 ring-blue-600 dark:ring-blue-400'
 			onMouseOver={() => setHover(true)}
 			onMouseOut={() => setHover(false)}
-			style={{ contain: 'content' }}
+			style={{ contain: 'content'}}
 		>
-			{(!loaded || !imgVisible) &&
-				<div className='absolute w-full h-full flex items-center justify-center'>
-					<LoadingSpinner className={`w-5 h-5 transition-opacity ease-in-out duration-300 ${loaded ? 'opacity-0' : 'opacity-100'}`} />
-				</div>
-			}
-
 			<GalleryItemOverlay item={item} visible={hover} showMetrics showTweetText>
-				<span className='w-full'>
+				<span className='w-full min-h-[200px] inline-grid' style={{ contain: 'content' }}>
 					{item.nsfw &&
 						<SettingsContext.Consumer>
 							{settings => (
@@ -55,6 +50,24 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 						</SettingsContext.Consumer>
 					}
 
+					{(!loaded || !imgVisible) &&
+						<span className='absolute w-full h-full flex items-center justify-center'>
+							<LoadingSpinner className={`w-7 h-7 transition-opacity ease-in-out duration-300 ${loaded ? 'opacity-0' : 'opacity-100'}`} />
+						</span>
+					}
+
+					{item.url.includes("video_thumb") && imgVisible &&
+						<a
+							href={`https://twitter.com/${item.referencing ? item.referencing[0].username : item.author.username}/status/${item.referencing ? item.referencing[0].tweet_id : item.tweet_id}`}
+							className='flex items-center justify-center w-full h-full absolute'
+							target='_blank'
+						>
+							<span className='cursor-pointer z-10' title='Play video on Twitter'>
+								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
+							</span>
+						</a>
+					}
+
 					<Image
 						src={item.url + '?name=small'} //pull smaller pre-compressed image from twitter
 						width={item.width}
@@ -65,7 +78,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 						onLoadingComplete={() => setLoaded(true)}
 						onTransitionEnd={() => setImgVisible(true)}
 						onClick={onClick}
-						className={`transition-all hover:shadow-inner ease-in duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+						className={`transition-all object-cover hover:shadow-inner ease-in duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
 						layout='responsive'
 					/>
 				</span>

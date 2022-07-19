@@ -13,7 +13,9 @@ export interface Media {
 	referencing?: {
 		type: 'retweeted' | 'replied_to' | 'quoted';
 		id: string;
-		username:string;
+		username: string;
+		tweet_id: string;
+		text: string;
 	}[]
 
 	type: string;

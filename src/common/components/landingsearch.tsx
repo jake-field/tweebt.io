@@ -1,6 +1,4 @@
 import { signIn } from "next-auth/react";
-import Searchbar from "./searchbar";
-import ThemeToggle from "./themetoggle";
 import Title from "./title";
 
 export default function LandingSearch() {
