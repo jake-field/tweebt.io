@@ -12,7 +12,8 @@ export default function Searchbar({ route, placeholder, value }: Props) {
 
     function handleSubmit(e: any) {
         e.preventDefault();
-        router.push(`${route}${e.target[0].value.startsWith('@') ? '' : 'search/search?q='}${e.target[0].value}`);
+        const val = e.target[0].value;
+        router.push(`${route}${val.startsWith('@') ? '' : 'search?q='}${val.startsWith('@') ? val : encodeURIComponent(val)}`);
     }
 
     return (

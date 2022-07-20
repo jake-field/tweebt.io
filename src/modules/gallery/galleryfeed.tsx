@@ -1,38 +1,41 @@
-import { Session } from "next-auth"
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../../common/components/loadingspinner";
 import Gallery from "../shared/types/gallery";
-import Profile from "../shared/types/profile";
 import GalleryComponent from "./components/gallery";
 
 interface Props {
-	session?: Session;
-	profile: Profile;
+	apiEndpoint: string;
 }
 
-export default function HandleFeed({ session, profile }: Props) {
+export default function GalleryFeed({ apiEndpoint }: Props) {
 	const router = useRouter();
 	const [gallery, setGallery] = useState<Gallery[]>([]);
 	const [loading, setLoading] = useState(false);
 
+	//Clear gallery on route exit to ensure clear page when changing usernames/searchterms
 	useEffect(() => {
 		return () => {
 			setGallery([]);
-			console.log('cleared gallery');
+			console.log('GalleryFeed(): ', 'useEffect[router]@exit: ', 'cleared gallery');
 		}
 	}, [router]);
 
+	//Double check for empty gallery, fetch data if empty
 	useEffect(() => {
 		if (gallery.length === 0 && !loading) fetchData();
 	})
 
+	//function for fetching data
 	function fetchData() {
-		console.log('fetch request')
+		console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch requested');
+
+		//ignore request if already fetching, prevents double ups/unwanted requests
 		if (loading) return;
 		setLoading(true);
-		console.log('fetch request in action');
+
+		console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch started');
 
 		let pagination = '';
 		if (gallery.length > 0) {
@@ -40,16 +43,18 @@ export default function HandleFeed({ session, profile }: Props) {
 			pagination = token ? '&next=' + token : '';
 
 			if (pagination === '') {
-				console.log('tried to double request empty pagination')
+				console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch denied due to empty pagination');
 				return;
 			}
 		}
 
-		fetch(`/api/gallery/user/${profile.id}?&max_results=100${pagination}`) //exclude=replies,retweets
+		//TODO: make a pagination object or even an api object for specific values
+		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}`) //exclude=replies,retweets
 			.then((res) => {
 				//intercept response status to catch errors
 				if (res.status != 200) {
 					//TODO: this should be refreshed using refresh tokens, please implement this ASAP
+					console.log('GalleryFeed(): ', 'fetchData(): ', `fetch denied by api, status code: ${res.status} [${res.statusText}]`);
 					signOut();
 					router.push('/');
 					throw res.statusText
@@ -58,21 +63,28 @@ export default function HandleFeed({ session, profile }: Props) {
 			})
 			.then((res) => res.json())
 			.then((data: Gallery) => {
-				if (data.items && data.items.length > 0) {
+				//store for items or if the meta was fully recieved
+				//storing for meta helps prevent re-requesting empty results
+				if ((data.items && data.items.length > 0) || data.meta) {
+					console.log('GalleryFeed(): ', 'fetchData(): ', `fetch successful [${data.meta?.result_count || 0} result(s)]`);
 					setGallery([...gallery, data]);
+				} else {
+					console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch failed, api did not return either items or metadata');
 				}
 			}).finally(() => {
 				setLoading(false);
 			}).catch(err => {
-				console.log(err)
+				console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch failed with error: ', err);
 			});
 	}
 
+	//Check if there are more that can be fetched based on the next token
 	function hasMore() {
 		if (gallery.length > 0) {
 			return gallery[gallery.length - 1].meta?.next_token ? true : false;
 		}
 
+		//if gallery is empty, return true. THIS MAY BE WRONG HERE
 		return (gallery.length === 0);
 	}
 

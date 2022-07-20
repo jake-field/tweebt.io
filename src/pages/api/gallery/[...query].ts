@@ -76,11 +76,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		}
 
 		const timeline = (await apiRes.json()) as Timeline;
-		let response: Gallery | undefined = undefined;
+
+		//TODO: meta sometimes comes back as undefined
+		let response: Gallery = { meta: timeline.meta || { result_count: 0, newest_id: '', oldest_id: '' }, items: [] };
 
 		if (timeline.data && timeline.includes?.media) {
-			response = { meta: timeline.meta, items: [] };
-
 			timeline.includes.media.forEach(item => {
 				//look up tweet by matching media key (deep search as tweets can have up to 4 images)
 				const tweet = timeline.data?.find(tweet => tweet.attachments?.media_keys?.find(k => k === item.media_key));
@@ -138,9 +138,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				}
 			})
 		}
-
-		res.status(apiRes.status).json(response);
+		
+		return res.status(apiRes.status).json(response);
 	} else {
-		res.status(400).end('no appropriate endpoint');
+		return res.status(400).end('no appropriate endpoint');
 	}
 }
