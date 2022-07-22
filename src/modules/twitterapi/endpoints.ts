@@ -1,5 +1,4 @@
 const baseUrl = 'https://api.twitter.com';
-const apiVers = '2';
 
 async function callApi(url: string, token: string, params?: string) {
 	const header: RequestInit = {
@@ -10,16 +9,14 @@ async function callApi(url: string, token: string, params?: string) {
 		method: 'GET',
 	};
 
-	const target = `${baseUrl}/${apiVers}${url}` + (params ? `?${params}` : '');
-
-	console.log(target);
+	const target = `${baseUrl}${url}` + (params ? `?${params}` : '');
 	return fetch(target, header);
 }
 
 export const TwitterEndpoints = {
-	getProfileById: (id: string, token: string, params?: string) => { return callApi(`/users/${id}`, token, params); },
-	getProfileByHandle: (handle: string, token: string, params?: string) => { return callApi(`/users/by/username/${handle}`, token, params); },
-	getMyFeed: (userId: string, token: string, params?: string) => { return callApi(`/users/${userId}/timelines/reverse_chronological`, token, params); },
-	getUsersTweets: (profileId: string, token: string, params?: string) => { return callApi(`/users/${profileId}/tweets`, token, params); },
-	getRecentTweets: (searchTerm: string, token: string, params?: string) => { return callApi('/tweets/search/recent', token, `query=${searchTerm}` + (params ? '&' : '') + params); },
+	getProfileById: (id: string, token: string, params?: string) => { return callApi(`/2/users/${id}`, token, params); },
+	getProfileByHandle: (handle: string, token: string, params?: string) => { return callApi(`/2/users/by/username/${handle}`, token, params); },
+	getMyFeed: (userId: string, token: string, params?: string) => { return callApi(`/2/users/${userId}/timelines/reverse_chronological`, token, params); },
+	getUsersTweets: (profileId: string, token: string, params?: string) => { return callApi(`/2/users/${profileId}/tweets`, token, params); },
+	getRecentTweets: (searchTerm: string, token: string, params?: string) => { return callApi('/2/tweets/search/recent', token, `query=${searchTerm}` + (params ? '&' : '') + params); },
 }

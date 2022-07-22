@@ -1,5 +1,5 @@
-import { SearchIcon } from "@heroicons/react/solid";
-import { useRouter } from "next/router";
+import { SearchIcon } from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
 
 interface Props {
     route: string;
@@ -27,7 +27,7 @@ export default function Searchbar({ route, placeholder, value }: Props) {
                 placeholder={placeholder}
                 spellCheck='false'
             />
-            <button className="text-slate-500 p-1 w-7" title="Search" type='submit'><SearchIcon /></button>
+            <button className='text-slate-500 p-1 w-7' title='Search' type='submit'><SearchIcon /></button>
         </form>
     )
 }

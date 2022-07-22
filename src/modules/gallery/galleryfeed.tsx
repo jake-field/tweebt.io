@@ -1,9 +1,9 @@
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import LoadingSpinner from "../../common/components/loadingspinner";
-import Gallery from "../shared/types/gallery";
-import GalleryComponent from "./components/gallery";
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { LoadingSpinner } from '../../common/icons/loadingspinner';
+import Gallery from './types/gallery';
+import GalleryComponent from './components/gallery';
 
 interface Props {
 	apiEndpoint: string;
@@ -89,11 +89,11 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 	}
 
 	return (
-		<div className="flex flex-col items-center w-full flex-1 text-center pt-10">
+		<div className='flex flex-col items-center w-full text-center' style={{ marginBottom: '100px' }}>
 			<GalleryComponent gallery={gallery} loadNext={fetchData} canLoadMore={hasMore} />
 
 			{(loading || hasMore()) &&
-				<div className='flex flex-row items-center justify-center pb-10'>
+				<div className='flex flex-row items-center justify-center h-48'>
 					<LoadingSpinner className='w-10 h-10' />
 				</div>
 			}

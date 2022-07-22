@@ -5,7 +5,7 @@ const nextConfig = {
 	poweredByHeader: false,
 	images: {
 		//TODO: remove this since proxy is in effect
-		domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
+		//domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
 	},
 }
 

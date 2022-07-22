@@ -1,12 +1,12 @@
-import { Session, unstable_getServerSession } from "next-auth";
-import LandingSearch from "../common/components/landingsearch";
-import ProfileCard from "../common/components/profilecard";
-import Title from "../common/components/title";
-import { validateHandle } from "../common/utils/validation";
-import { getProfile } from "../modules/twitterapi";
-import { authOptions } from "./api/auth/[...nextauth]";
-import Profile from '../common/types/profile';
-import GalleryFeed from "../modules/gallery/galleryfeed";
+import { Session, unstable_getServerSession } from 'next-auth';
+import ProfileCard from '../modules/profile/profilecard';
+import Title from '../common/components/title';
+import { validateHandle } from '../modules/profile/utils/validation';
+import { getProfile } from '../modules/twitterapi';
+import { authOptions } from './api/auth/[...nextauth]';
+import Profile from '../modules/profile/types/profile';
+import GalleryFeed from '../modules/gallery/galleryfeed';
+import Landing from '../common/components/landing';
 
 interface Props {
 	session: Session | null;
@@ -88,17 +88,20 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 
 	if (error) {
 		return (
-			<div className='flex justify-center items-center w-screen h-screen'>
+			<div className='flex flex-col items-center w-screen min-h-screen pt-20'>
 				<Title
 					title={`Error`}
 				/>
-				<p>{error}</p>
+				<span className='flex flex-col gap-2 h-fit items-center justify-center p-2 rounded-lg dark:bg-slate-800 border border-slate-400 dark:border-slate-700'>
+					<h1 className='w-full text-center border-b border-slate-300 dark:border-slate-700'>Error</h1>
+					{error}
+				</span>
 			</div>
 		)
 	}
 
 	return (
-		<div className='pt-20 flex flex-col justify-center items-center'>
+		<div className='flex flex-col items-center min-h-screen pt-20'>
 			{profile && (
 				<>
 					<Title
@@ -117,7 +120,10 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 					<GalleryFeed apiEndpoint={apiEndpoint} />
 				</>
 			) || (
-					<LandingSearch />
+					<>
+						<Title />
+						<Landing />
+					</>
 				)}
 		</div>
 	)

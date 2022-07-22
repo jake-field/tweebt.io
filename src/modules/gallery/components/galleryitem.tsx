@@ -1,11 +1,11 @@
-import { EyeOffIcon } from "@heroicons/react/outline";
-import { PlayIcon } from "@heroicons/react/solid";
-import Image from "next/image";
-import { MouseEventHandler, useState } from "react";
-import LoadingSpinner from "../../../common/components/loadingspinner";
-import { SettingsContext } from "../../../common/contexts/settingscontext";
-import { Media } from "../../shared/types/gallery";
-import GalleryItemOverlay from "./galleryitemoverlay";
+import { EyeOffIcon } from '@heroicons/react/outline';
+import { PlayIcon } from '@heroicons/react/solid';
+import Image from 'next/image';
+import { MouseEventHandler, useState } from 'react';
+import { LoadingSpinner } from '../../../common/icons/loadingspinner';
+import { SettingsContext } from '../../../common/contexts/settingscontext';
+import { Media } from '../types/gallery';
+import GalleryItemOverlay from './galleryitemoverlay';
 
 interface Props {
 	item: Media;
@@ -26,7 +26,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 			className='flex flex-col rounded-lg overflow-hidden items-center my-2 mx-1 transition-all shadow-lg cursor-pointer hover:ring-2 ring-blue-600 dark:ring-blue-400'
 			onMouseOver={() => setHover(true)}
 			onMouseOut={() => setHover(false)}
-			style={{ contain: 'content'}}
+			style={{ contain: 'content' }}
 		>
 			<GalleryItemOverlay item={item} visible={hover} showMetrics showTweetText>
 				<span className='w-full min-h-[200px] inline-grid' style={{ contain: 'content' }}>
@@ -56,7 +56,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 						</span>
 					}
 
-					{item.url.includes("video_thumb") && imgVisible &&
+					{item.url.includes('video_thumb') && imgVisible &&
 						<a
 							href={`https://twitter.com/${item.referencing ? item.referencing[0].username : item.author.username}/status/${item.referencing ? item.referencing[0].tweet_id : item.tweet_id}`}
 							className='flex items-center justify-center w-full h-full absolute'

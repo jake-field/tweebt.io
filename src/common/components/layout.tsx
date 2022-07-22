@@ -1,5 +1,5 @@
-import NavBar from "./navbar";
-import ScrollTop from "./scrolltop";
+import NavBar from './navbar';
+import ScrollTop from './scrolltop';
 
 export default function Layout({ session, children }: any) {
 	return (

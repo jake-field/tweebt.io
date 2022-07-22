@@ -1,7 +1,7 @@
-import Image from "next/image";
-import { MouseEventHandler, useEffect, useState } from "react";
-import { Media } from "../../shared/types/gallery";
-import LoadingSpinner from "../../../common/components/loadingspinner";
+import Image from 'next/image';
+import { MouseEventHandler, useEffect, useState } from 'react';
+import { Media } from '../types/gallery';
+import { LoadingSpinner } from '../../../common/icons/loadingspinner';
 
 interface Props {
 	galleryItem?: Media;

@@ -1,0 +1,116 @@
+import Timeline, { Meta } from '../../twitterapi/types/timeline';
+
+export interface Author {
+	id: string;
+	username: string;
+	name: string;
+}
+
+export interface Media {
+	key: string;
+	tweet_id: string;
+	author: Author;
+	referencing?: {
+		type: 'retweeted' | 'replied_to' | 'quoted';
+		id: string;
+		username: string;
+		tweet_id: string;
+		text: string;
+	}[];
+
+	type: string;
+	url: string;
+	width: number;
+	height: number;
+	nsfw?: boolean;
+
+	//tweet text
+	text?: string;
+
+	metrics: {
+		retweets: number;
+		replies: number;
+		likes: number;
+		quotes: number;
+	}
+}
+
+export interface Error {
+	title: string;
+	detail: string;
+}
+
+export default class Gallery {
+	meta: Meta;
+	items: Media[];
+	error?: Error;
+
+	//Constructor from Timeline
+	constructor(timeline: Timeline) {
+		//TODO: meta sometimes comes back as undefined, usually an error is in tow
+		this.meta = timeline.meta || { result_count: 0 };
+		this.items = [];
+
+		if (timeline.data && timeline.includes?.media) {
+			timeline.includes.media.forEach(item => {
+				//look up tweet by matching media key (deep search as tweets can have up to 4 images)
+				const tweet = timeline.data?.find(tweet => tweet.attachments?.media_keys?.find(k => k === item.media_key));
+
+				if (tweet) {
+					//find tweet author
+					const author = timeline.includes?.users?.find(user => user.id === tweet?.author_id);
+
+					//TODO: Some reference tweets are locked by either deleted tweets or protected tweets
+					//		in this instance, the reference will be null, so this will need to be handled.
+
+					//build the referencing object, taking the reference tweet and username (not id) of the tweet author
+					//this is mainly done to fix public-metrics as only retweets and tweetID are passed, not user or likes/replies
+					const referencing = tweet?.referenced_tweets ? tweet?.referenced_tweets.map(ref => {
+						const refTweet = timeline.includes?.tweets?.find(t => t.id === ref.id);
+						const user = refTweet ? timeline.includes?.users?.find(u => u.id === refTweet?.author_id) : undefined;
+						return {
+							type: ref.type,
+							id: user?.id || '',
+							username: user?.username || '',
+							tweet_id: refTweet?.id || '',
+							text: refTweet?.text || '',
+						}
+					}) : undefined;
+
+					//get the correct metrics, if we're dealing with an original tweet, metrics are accurate
+					//	if we are dealing with a retweet, only the retweets are stored in the tweet variable
+					//	however, the accurate metrics are held under includes.tweets
+					let metricsTweet = referencing ? timeline.includes?.tweets?.find(t => t.id === referencing[0].tweet_id) || tweet : tweet;
+					let correctMetrics = {
+						replies: metricsTweet.public_metrics?.reply_count || 0,
+						likes: metricsTweet.public_metrics?.like_count || 0,
+						retweets: metricsTweet.public_metrics?.retweet_count || 0,
+						quotes: metricsTweet.public_metrics?.quote_count || 0,
+					};
+
+					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
+					const tweetText = tweet.text.replaceAll(/(^RT @[a-z0-9_]*: )|(https:\/\/t.co\/\w*$)/gim, '');
+
+					//push to the response items array
+					this.items.push({
+						key: item.media_key,
+						tweet_id: tweet.id,
+						author: {
+							id: author?.id || '',
+							username: author?.username || 'unknown',
+							name: author?.name || 'unknown',
+						},
+						referencing: referencing,
+						text: tweetText,
+						type: item.type,
+						url: (item.preview_image_url || item.url).replace(/https:\/\/pbs.twimg.com\//, '/img/'), //proxy for unoptimized images
+						width: item.width,
+						height: item.height,
+						nsfw: tweet.possibly_sensitive ? true : undefined,
+						metrics: correctMetrics
+					})
+				}
+			})
+		}
+	}
+}

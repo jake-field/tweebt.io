@@ -1,5 +1,5 @@
-import { MoonIcon, SunIcon } from "@heroicons/react/solid";
-import { useEffect, useState } from "react";
+import { MoonIcon, SunIcon } from '@heroicons/react/solid';
+import { useEffect, useState } from 'react';
 
 export default function ThemeToggle() {
 	const [darkTheme, setDarkTheme] = useState(false);

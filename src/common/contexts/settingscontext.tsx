@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 //TODO: this needs to be stripped out into it's own file for reference such that
 //		children components can use UseContext(SettingsContext)

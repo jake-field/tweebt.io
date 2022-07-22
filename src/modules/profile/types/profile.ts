@@ -17,3 +17,12 @@ export default interface Profile {
 	protected?: boolean;
 	verified?: boolean;
 }
+
+export class ProfileResult {
+	profile?: Profile;
+	error?: string;
+
+	constructor() {
+
+	}
+}

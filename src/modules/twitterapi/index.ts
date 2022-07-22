@@ -1,14 +1,13 @@
-import Profile, {  } from "../../common/types/profile";
-import { Response } from "../../common/types/response";
-import { validateHandle } from "../../common/utils/validation";
-import { TwitterEndpoints } from "./endpoints";
-import User from "./types/user";
+import Profile, { ProfileResult } from '../profile/types/profile';
+import { validateHandle } from '../profile/utils/validation';
+import { TwitterEndpoints } from './endpoints';
+import User from './types/user';
 
 //Function to get the profile of a twitter user by their username (@handle)
 //TODO: more error checking and edge cases, and consider performance impact of bio parsing
-export async function getProfile(handle: string): Promise<Response> {
+export async function getProfile(handle: string): Promise<ProfileResult> {
 	//check for required environment variables
-	if (!process.env.TWITTER_API_TOKEN || !process.env.TWITTER_API) return { error: 'missing environment variables' };
+	if (!process.env.TWITTER_API_TOKEN) return { error: 'missing environment variables' };
 
 	//pre-strip @ as twitter only accepts usernames (handle without @)
 	handle = handle.replaceAll('@', '');
@@ -40,7 +39,7 @@ export async function getProfile(handle: string): Promise<Response> {
 			name: user.data.name,
 
 			//route through proxy and use full 400x400 image here
-			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, "/img/").replace(/normal/gi, "400x400"), //enforce large profile image
+			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, '/img/').replace(/normal/gi, '400x400'), //enforce large profile image
 		}
 
 		//optional flags/info

@@ -1,5 +1,5 @@
-import { Error } from "./errors";
-import { Tweet } from "./tweet";
+import { Error } from './errors';
+import { Tweet } from './tweet';
 
 interface Media {
 	media_key: string;
@@ -21,8 +21,8 @@ interface User {
 
 export interface Meta {
 	result_count: number;
-	newest_id: string;
-	oldest_id: string;
+	newest_id?: string;
+	oldest_id?: string;
 	next_token?: string;
 	previous_token?: string;
 }

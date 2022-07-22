@@ -1,4 +1,4 @@
-import { PublicTweetMetrics } from "./metrics";
+import { PublicTweetMetrics } from './metrics';
 
 export interface Tweet {
 	id: string;

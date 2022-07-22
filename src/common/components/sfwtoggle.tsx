@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from "react";
-import { SettingsContext } from "../contexts/settingscontext";
+import { useContext, useEffect, useState } from 'react';
+import { SettingsContext } from '../contexts/settingscontext';
 
 export default function SfwToggle() {
 	const settingsContext = useContext(SettingsContext);

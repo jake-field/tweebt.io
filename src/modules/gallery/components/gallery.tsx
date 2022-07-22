@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import Masonry from "react-masonry-css"
-import GalleryItemPopup from "./galleryitempopup";
-import Gallery, { Media } from "../../shared/types/gallery";
-import GalleryMediaItem from "./galleryitem"
-import InfiniteScroll from "react-infinite-scroller";
-import { useRouter } from "next/router";
+import { useEffect, useState } from 'react';
+import Masonry from 'react-masonry-css'
+import GalleryItemPopup from './galleryitempopup';
+import Gallery, { Media } from '../types/gallery';
+import GalleryMediaItem from './galleryitem'
+import InfiniteScroll from 'react-infinite-scroller';
+import { useRouter } from 'next/router';
 
 interface Props {
 	gallery: Gallery[];
@@ -55,7 +55,7 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 	if (gallery.length === 0 || gallery[0].items.length === 0) return null;
 
 	return (
-		<div className="flex flex-col items-center w-full sm:px-3 text-center md:px-20 select-none">
+		<div className='flex flex-col items-center w-full sm:px-3 text-center md:px-20 select-none'>
 			<GalleryItemPopup
 				galleryItem={selectedGalleryItem}
 				visible={modalVisible}

@@ -1,5 +1,5 @@
-import { Error } from "./errors";
-import { PublicUserMetrics } from "./metrics";
+import { Error } from './errors';
+import { PublicUserMetrics } from './metrics';
 
 interface Entities {
 	url?: {
