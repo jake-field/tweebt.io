@@ -2,8 +2,8 @@ import { EyeOffIcon } from '@heroicons/react/outline';
 import { PlayIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import { MouseEventHandler, useState } from 'react';
-import { LoadingSpinner } from '../../../common/icons/loadingspinner';
 import { SettingsContext } from '../../../common/contexts/settingscontext';
+import { SpinnerIcon } from '../../../common/icons/spinnericon';
 import { Media } from '../types/gallery';
 import GalleryItemOverlay from './galleryitemoverlay';
 
@@ -52,13 +52,13 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 
 					{(!loaded || !imgVisible) &&
 						<span className='absolute w-full h-full flex items-center justify-center'>
-							<LoadingSpinner className={`w-7 h-7 transition-opacity ease-in-out duration-300 ${loaded ? 'opacity-0' : 'opacity-100'}`} />
+							<SpinnerIcon className={`w-7 h-7 transition-opacity ease-in-out duration-300 ${loaded ? 'opacity-0' : 'opacity-100'}`} />
 						</span>
 					}
 
-					{item.url.includes('video_thumb') && imgVisible &&
+					{item.url.includes('video_thumb') && imgVisible && (item.referencing && item.referencing[0].type === 'retweeted' ? (
 						<a
-							href={`https://twitter.com/${item.referencing ? item.referencing[0].username : item.author.username}/status/${item.referencing ? item.referencing[0].tweet_id : item.tweet_id}`}
+							href={`https://twitter.com/${item.referencing[0].username}/status/${item.referencing[0].tweet_id}`}
 							className='flex items-center justify-center w-full h-full absolute'
 							target='_blank'
 						>
@@ -66,7 +66,17 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
 							</span>
 						</a>
-					}
+					) : (
+						<a
+							href={`https://twitter.com/${item.author.username}/status/${item.tweet_id}`}
+							className='flex items-center justify-center w-full h-full absolute'
+							target='_blank'
+						>
+							<span className='cursor-pointer z-10' title='Play video on Twitter'>
+								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
+							</span>
+						</a>
+					))}
 
 					<Image
 						src={item.url + '?name=small'} //pull smaller pre-compressed image from twitter

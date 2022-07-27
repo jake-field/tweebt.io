@@ -1,9 +1,9 @@
-import { signOut } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { LoadingSpinner } from '../../common/icons/loadingspinner';
 import Gallery from './types/gallery';
 import GalleryComponent from './components/gallery';
+import { SpinnerIcon } from '../../common/icons/spinnericon';
 
 interface Props {
 	apiEndpoint: string;
@@ -16,10 +16,7 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 
 	//Clear gallery on route exit to ensure clear page when changing usernames/searchterms
 	useEffect(() => {
-		return () => {
-			setGallery([]);
-			console.log('GalleryFeed(): ', 'useEffect[router]@exit: ', 'cleared gallery');
-		}
+		return () => setGallery([]);
 	}, [router]);
 
 	//Double check for empty gallery, fetch data if empty
@@ -29,23 +26,15 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 
 	//function for fetching data
 	function fetchData() {
-		console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch requested');
-
 		//ignore request if already fetching, prevents double ups/unwanted requests
 		if (loading) return;
 		setLoading(true);
-
-		console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch started');
 
 		let pagination = '';
 		if (gallery.length > 0) {
 			const token = gallery[gallery.length - 1].meta?.next_token;
 			pagination = token ? '&next=' + token : '';
-
-			if (pagination === '') {
-				console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch denied due to empty pagination');
-				return;
-			}
+			if (pagination === '') return; //error, ignore
 		}
 
 		//TODO: make a pagination object or even an api object for specific values
@@ -89,12 +78,31 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 	}
 
 	return (
-		<div className='flex flex-col items-center w-full text-center' style={{ marginBottom: '100px' }}>
+		<div className='flex flex-col items-center w-full text-center'>
+			{gallery.map((item, i) => {
+				if (item.error) {
+					return (
+						<span key={i}>
+							<p>{item.error.title}</p>
+							<p>{item.error.detail}</p>
+						</span>
+					)
+				} else if (item.items.length === 0) {
+					return <p key={i}>No items to show</p>
+				}
+			})}
+
 			<GalleryComponent gallery={gallery} loadNext={fetchData} canLoadMore={hasMore} />
 
 			{(loading || hasMore()) &&
 				<div className='flex flex-row items-center justify-center h-48'>
-					<LoadingSpinner className='w-10 h-10' />
+					<SpinnerIcon className='w-10 h-10' />
+				</div>
+			}
+
+			{!hasMore() &&
+				<div className='flex flex-row items-center justify-center h-48 text-gray-600 dark:text-gray-400'>
+					You've gone as far back as I can show!
 				</div>
 			}
 		</div>

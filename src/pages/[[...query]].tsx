@@ -1,5 +1,4 @@
 import { Session, unstable_getServerSession } from 'next-auth';
-import ProfileCard from '../modules/profile/profilecard';
 import Title from '../common/components/title';
 import { validateHandle } from '../modules/profile/utils/validation';
 import { getProfile } from '../modules/twitterapi';
@@ -7,6 +6,8 @@ import { authOptions } from './api/auth/[...nextauth]';
 import Profile from '../modules/profile/types/profile';
 import GalleryFeed from '../modules/gallery/galleryfeed';
 import Landing from '../common/components/landing';
+import ProfileCard from '../modules/profile/profilecard';
+import { useRouter } from 'next/router';
 
 interface Props {
 	session: Session | null;
@@ -17,7 +18,7 @@ interface Props {
 
 //fetch the session on the serverside
 export async function getServerSideProps(context: any /* NextPageContext */): Promise<{ props: Props }> {
-	console.log(context.query)
+	if(context.query.length) console.log(context.query)
 
 	//fetch session using NextAuth recommened server-side function (NextPageContext does not like this function)
 	const session = await unstable_getServerSession(context.req, context.res, authOptions);
@@ -63,7 +64,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 				session: session,
 				profile: null,
 				apiEndpoint: search ? `/api/gallery/search?q=${search}` : '/api/gallery/me',
-				error: search ? null : 'no search term provided'
+				error: null
 			},
 		}
 	}
@@ -85,6 +86,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 }
 
 export default function Home({ session, profile, apiEndpoint, error }: Props) {
+	const router = useRouter();
 
 	if (error) {
 		return (
@@ -92,7 +94,7 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 				<Title
 					title={`Error`}
 				/>
-				<span className='flex flex-col gap-2 h-fit items-center justify-center p-2 rounded-lg dark:bg-slate-800 border border-slate-400 dark:border-slate-700'>
+				<span className='flex flex-col gap-2 h-fit items-center justify-center p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-400 dark:border-slate-700'>
 					<h1 className='w-full text-center border-b border-slate-300 dark:border-slate-700'>Error</h1>
 					{error}
 				</span>
@@ -115,7 +117,7 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 			) || (session || apiEndpoint.includes('search')) && (
 				<>
 					<Title
-						title={apiEndpoint.includes('search') ? `Search Results` : `Latest Tweets`}
+						title={apiEndpoint.includes('search') ? `${router.query['q']}` : `Latest Tweets`}
 					/>
 					<GalleryFeed apiEndpoint={apiEndpoint} />
 				</>

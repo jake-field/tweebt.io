@@ -6,7 +6,7 @@ import { ApiError } from '../../../modules/twitterapi/types/errors';
 import Timeline from '../../../modules/twitterapi/types/timeline';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-	const { query: { query, tags, q, max_results, exclude, next }, method } = req;
+	const { query: { query, q, max_results, exclude, next }, method } = req;
 	const secret = process.env.NEXTAUTH_SECRET;
 	const token = await getToken({ req, secret });
 	const apitoken = process.env.TWITTER_API_TOKEN;
@@ -23,10 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		//'&user.fields=id,name,username' + //this is included with author_id expansion by default
 		'&tweet.fields=possibly_sensitive,public_metrics,referenced_tweets' + //includes [id, text]
 		'&media.fields=preview_image_url,url,width,height,alt_text' + //includes [media_key, type]
-		(exclude ? `&exclude=${exclude}` : '') + //should make this optional
-		(next ? `&pagination_token=${next}` : '') + //should make this optional
+		(exclude ? `&exclude=${exclude}` : '') +
+		(next ? `&pagination_token=${next}` : '') +
 		`&max_results=${max_results || 10}`;
-	// (params?.token ? `&pagination_token=${params?.token}` : '') +
 	// (params?.newest_id ? `&since_id=${params?.newest_id}` : '') +
 	// (params?.oldest_id ? `&until_id=${params?.oldest_id}` : '');
 
@@ -35,12 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const me = (query && query[0] === 'me');
 	const search = (query && query[0] === 'search');
 	const user = (query && query[0] === 'user');
-
-	console.log(query);
-	console.log('me: ', me);
-	console.log('tags: ', tags);
-	console.log('search: ', q);
-	console.log('user: ', user);
+	console.log(query, me ? 'me' : search ? 'search' : user ? 'user' : 'query error', me || search || user);
 
 	if (me) {
 		if (!token) {
@@ -56,13 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	else if (user) {
 		apiRes = await TwitterEndpoints.getUsersTweets(query[1], token?.accessToken || apitoken, galleryQuery);
 	}
-	else if (tags || search) {
-		let searchTerm = '-is:retweet -is:quote -is:reply has:media '; //filter by original post only, only tweets with media
-		if (search && q) searchTerm += (q as string).replaceAll(',', ' ') + ' ';
-		if (tags) searchTerm += '#' + (tags as string).replaceAll(',', ' #');
-		searchTerm = searchTerm.trim();
-		console.log(searchTerm);
-		console.log(encodeURIComponent(searchTerm));
+	else if (search && q) {
+		let searchTerm = `${(q as string).replaceAll(',', ' ')} ${exclude?.includes('retweet') ? '' : '-is:retweet -is:quote'} ${exclude?.includes('replies') ? '' : '-is:reply'} has:media`; //filter by original post only, only tweets with media
 		apiRes = await TwitterEndpoints.getRecentTweets(encodeURIComponent(searchTerm), token?.accessToken || apitoken, galleryQuery);
 	}
 
@@ -76,7 +65,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		}
 
 		const timeline = (await apiRes.json()) as Timeline;
-		console.log('timeline errors: ', timeline.errors);
+
+		//display error count. As far as I'm aware, these are mostly deleted tweets, with some being protected tweets
+		if (timeline.errors) console.log(timeline.errors?.length, `timeline error${timeline.errors.length > 1 ? 's' : ''}`);
+		//console.log('timeline errors: ', timeline.errors);
 
 		const response = new Gallery(timeline);
 		return res.status(apiRes.status).json(response);

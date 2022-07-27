@@ -1,6 +1,6 @@
 import { HomeIcon, UserIcon } from '@heroicons/react/solid';
 import { Session } from 'next-auth';
-import { signIn } from 'next-auth/react';
+import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Searchbar from './searchbar';
@@ -52,12 +52,20 @@ export default function NavBar({ searchValue, session }: Props) {
 
 			<div className='flex gap-3 items-center'>
 				{session?.user ? (
-					<span title={session.user.name!} className='cursor-pointer flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'>
+					<span
+						title={session.user.name!}
+						className='cursor-pointer flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
+						onClick={() => signOut()}
+					>
 						<Image className='rounded-full' src={session.user.image!} width='28' height='28' unoptimized={true} />
 						<span className='hidden sm:block'>@{session.user.email}</span>
 					</span>
 				) : (
-					<a title='Sign In' className='flex gap-2 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm' onClick={() => signIn('twitter')}>
+					<a
+						title='Sign In'
+						className='flex gap-2 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
+						onClick={() => signIn('twitter')}
+					>
 						<UserIcon className='w-7 bg-gray-300 fill-gray-500 dark:bg-gray-400 dark:fill-gray-700 rounded-full p-1' />
 						<span className='hidden sm:block'>Sign In</span>
 					</a>

@@ -13,22 +13,25 @@ export default function ProfileCard({ profile }: Props) {
     if (!profile) return null;
     return (
         <div className='flex flex-col items-center w-fit max-w-sm text-center relative -top-5'>
-            <div className='select-none rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-200 dark:border-slate-800 relative top-7 z-10 hover:scale-[1.5] transition ease-in-out delay-150 duration-300'>
+            <div className='select-none rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-50 dark:border-slate-700 relative top-7 z-10 hover:scale-[1.5] transition-transform ease-in-out delay-150 duration-300'>
                 <Image src={profile.image} priority={true} height={400} width={400} quality={100} placeholder='empty' unoptimized={true} />
             </div>
 
-            <div className='max-w-100 bg-slate-200 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2'>
-                <p className='text-xl font-bold inline-flex gap-1 justify-center'>
+            <div className='max-w-100 bg-slate-100 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center'>
+                <span className='text-xl font-bold inline-flex gap-1'>
                     {profile.name}
-                    {profile.protected && <LockClosedIcon className='w-5' />}
-                    {profile.verified && <BadgeCheckIcon className='w-5' />}
-                </p>
+                    {profile.protected && <p title='Protected' className='inline-flex'><LockClosedIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                    {profile.verified && <p title='Verified' className='inline-flex'><BadgeCheckIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                </span>
 
-                <p>
-                    <a href={`https://twitter.com/${profile.handle}`} target='_blank' className='bg-slate-50 dark:bg-slate-900 rounded-lg p-1 inline-flex'>
-                        @{profile.handle}<ExternalLinkIcon className='w-4' />
-                    </a>
-                </p>
+                <a 
+                href={`https://twitter.com/${profile.handle}`}
+                title={`Open ${profile.name}'s profile on Twitter`}
+                className='bg-slate-200 dark:bg-slate-900 rounded-lg p-1 gap-1 inline-flex w-fit'
+                target='_blank' 
+                >
+                    @{profile.handle}<ExternalLinkIcon className='w-4 pointer-events-none' />
+                </a>
 
                 {profile.bio &&
                     <p className='whitespace-pre-line'>

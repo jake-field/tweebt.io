@@ -1,12 +1,8 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: true, //when using dev, setting this to true causes double useEffect
+	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
 	poweredByHeader: false,
-	images: {
-		//TODO: remove this since proxy is in effect
-		//domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
-	},
 }
 
 const ContentSecurityPolicy = `

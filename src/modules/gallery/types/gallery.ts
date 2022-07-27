@@ -60,9 +60,6 @@ export default class Gallery {
 					//find tweet author
 					const author = timeline.includes?.users?.find(user => user.id === tweet?.author_id);
 
-					//TODO: Some reference tweets are locked by either deleted tweets or protected tweets
-					//		in this instance, the reference will be null, so this will need to be handled.
-
 					//build the referencing object, taking the reference tweet and username (not id) of the tweet author
 					//this is mainly done to fix public-metrics as only retweets and tweetID are passed, not user or likes/replies
 					const referencing = tweet?.referenced_tweets ? tweet?.referenced_tweets.map(ref => {
@@ -70,17 +67,34 @@ export default class Gallery {
 						const user = refTweet ? timeline.includes?.users?.find(u => u.id === refTweet?.author_id) : undefined;
 						return {
 							type: ref.type,
-							id: user?.id || '',
-							username: user?.username || '',
-							tweet_id: refTweet?.id || '',
-							text: refTweet?.text || '',
+							id: user?.id || author?.id || '',
+							text: refTweet?.text || 'Deleted/Protected Tweet',
+
+							//Sometimes user won't be valid due to a protected/deleted tweet
+							//In this case, try match the username from the tweet text
+							//	or use the author username as Twitter has a special redirect for threads
+							username: user?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
+
+							//Use this tweet id if the original is deleted/protected, this allows us to still show the reference in some form
+							tweet_id: refTweet?.id || tweet.id,
 						}
 					}) : undefined;
+
+					if(referencing && referencing?.length > 1) {
+						console.log('multiple references attached to tweet', tweet.id);
+						console.log(referencing);
+					}
+
+					if(referencing && referencing[0].tweet_id === tweet.id) {
+						console.log(`tweet reference has issues:`, referencing[0]);
+					}
 
 					//get the correct metrics, if we're dealing with an original tweet, metrics are accurate
 					//	if we are dealing with a retweet, only the retweets are stored in the tweet variable
 					//	however, the accurate metrics are held under includes.tweets
-					let metricsTweet = referencing ? timeline.includes?.tweets?.find(t => t.id === referencing[0].tweet_id) || tweet : tweet;
+					//
+					// USING RETWEETED CHECK AS WE NEED TO USE THE ORIGINAL METRICS FOR REPLIES, QUOTES AND ORIGINAL TWEETS
+					let metricsTweet = referencing && referencing[0].type === 'retweeted' ? timeline.includes?.tweets?.find(t => t.id === referencing[0].tweet_id) || tweet : tweet;
 					let correctMetrics = {
 						replies: metricsTweet.public_metrics?.reply_count || 0,
 						likes: metricsTweet.public_metrics?.like_count || 0,
@@ -89,7 +103,7 @@ export default class Gallery {
 					};
 
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
-					const tweetText = tweet.text.replaceAll(/(^RT @[a-z0-9_]*: )|(https:\/\/t.co\/\w*$)/gim, '');
+					const tweetText = tweet.text.replaceAll(/(^(RT )?@[a-z0-9_]*:? )| ?(https:\/\/t.co\/\w*$)/gim, '');
 
 					//push to the response items array
 					this.items.push({
@@ -108,9 +122,12 @@ export default class Gallery {
 						height: item.height,
 						nsfw: tweet.possibly_sensitive ? true : undefined,
 						metrics: correctMetrics
-					})
+					});
 				}
-			})
+			});
+
+			//Set the result count to items.length for an accurate result count.
+			this.meta.result_count = this.items.length;
 		}
 	}
 }

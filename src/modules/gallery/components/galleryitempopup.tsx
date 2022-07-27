@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { MouseEventHandler, useEffect, useState } from 'react';
+import { SpinnerIcon } from '../../../common/icons/spinnericon';
 import { Media } from '../types/gallery';
-import { LoadingSpinner } from '../../../common/icons/loadingspinner';
 
 interface Props {
 	galleryItem?: Media;
@@ -44,7 +44,7 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 				onTransitionEnd={() => { if (!visible) setModalVisible(false); }}
 			>
 				<div className='flex flex-col justify-center items-center h-[95vh] max-w-[95vw]'>
-					{(!loaded || !imgVisible) && <LoadingSpinner className='absolute w-10 h-10 text-white' />}
+					{(!loaded || !imgVisible) && <SpinnerIcon className='absolute w-10 h-10 text-white' />}
 					<Image
 						id='modalImg'
 						//src={galleryItem.url + '?name=orig'} //pull full size

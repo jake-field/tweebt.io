@@ -39,7 +39,7 @@ export async function getProfile(handle: string): Promise<ProfileResult> {
 			name: user.data.name,
 
 			//route through proxy and use full 400x400 image here
-			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, '/img/').replace(/normal/gi, '400x400'), //enforce large profile image
+			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, '/img/').replace(/https:\/\/abs.twimg.com\//, '/staticimg/').replace(/normal/gi, '400x400'), //enforce large profile image
 		}
 
 		//optional flags/info
