@@ -9,6 +9,7 @@ interface Media {
 	possibly_sensitive?: boolean;
 	width: number;
 	height: number;
+	alt_text?: string;
 }
 
 //TODO: figure this one out, we have two, but one is a userReponse

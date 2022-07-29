@@ -35,12 +35,12 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 							{settings => (
 								<>
 									{(settings.blursensitive && blurred) &&
-										<div className='absolute text-sm flex flex-col text-gray-200 gap-1 items-center justify-center w-full h-full z-10 bg-gray-800 backdrop-blur-lg bg-opacity-50 px-3'>
+										<div className='absolute text-sm flex flex-col text-gray-200 gap-1 items-center justify-center w-full h-full z-20 bg-gray-800 backdrop-blur-lg bg-opacity-50 px-3'>
 											<EyeOffIcon className='w-5' />
 											<div className='px-3'>
 												Marked as potentially sensitive content by author
 											</div>
-											<div className='bg-gray-600 text-white rounded-full px-3 py-1 shadow-lg cursor-pointer hover:bg-gray-700' onClick={() => setBlurred(false)}>
+											<div className='bg-gray-600 text-white rounded-full border border-gray-400 px-3 py-1 shadow-lg cursor-pointer hover:bg-gray-700' onClick={() => setBlurred(false)}>
 												Show
 											</div>
 										</div>
@@ -63,7 +63,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 							target='_blank'
 						>
 							<span className='cursor-pointer z-10' title='Play video on Twitter'>
-								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
+								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 hover:border-blue-600 hover:bg-blue-500 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
 							</span>
 						</a>
 					) : (
@@ -73,7 +73,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 							target='_blank'
 						>
 							<span className='cursor-pointer z-10' title='Play video on Twitter'>
-								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
+								<PlayIcon className='w-14 drop-shadow-md shadow-lg text-gray-100 hover:border-blue-600 hover:bg-blue-500 border-2 bg-gray-500 border-gray-600 rounded-full opacity-95' />
 							</span>
 						</a>
 					))}
@@ -82,6 +82,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 						src={item.url + '?name=small'} //pull smaller pre-compressed image from twitter
 						width={item.width}
 						height={item.height}
+						alt={item.alt_text}
 						placeholder='empty'
 						//quality={75} //consider changing this, but this is acceptable for mosaic formatting
 						unoptimized={true}

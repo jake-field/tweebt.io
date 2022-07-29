@@ -10,23 +10,33 @@ export interface Media {
 	key: string;
 	tweet_id: string;
 	author: Author;
+
+	//todo: consider single object rather than array
+	//todo: rename to referenced_tweet
+	//todo: consider using author here
 	referencing?: {
 		type: 'retweeted' | 'replied_to' | 'quoted';
 		id: string;
+		name: string;
 		username: string;
 		tweet_id: string;
-		text: string;
+		text: string; //original tweet text
 	}[];
 
 	type: string;
 	url: string;
 	width: number;
 	height: number;
+
+	//rename to flagged_sensitive to avoid potential legal issues
 	nsfw?: boolean;
 
 	//tweet text
 	text?: string;
+	alt_text?: string; //img alt-text
 
+	//will be replaced with referenced tweet metrics if it's a retweet
+	//todo: consider if this is wise
 	metrics: {
 		retweets: number;
 		replies: number;
@@ -73,6 +83,7 @@ export default class Gallery {
 							//Sometimes user won't be valid due to a protected/deleted tweet
 							//In this case, try match the username from the tweet text
 							//	or use the author username as Twitter has a special redirect for threads
+							name: user?.name || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.name || '',
 							username: user?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 							//Use this tweet id if the original is deleted/protected, this allows us to still show the reference in some form
@@ -80,12 +91,14 @@ export default class Gallery {
 						}
 					}) : undefined;
 
-					if(referencing && referencing?.length > 1) {
+					//TODO: if this doesn't fire, consider replacing the array with a single reference object
+					if (referencing && referencing?.length > 1) {
+						console.log('TODO: IF THIS MESSAGE APPEARS AND THE ARRAY IS WORTH KEEPING, DONT CONVERT TO SINGLE OBJECT');
 						console.log('multiple references attached to tweet', tweet.id);
 						console.log(referencing);
 					}
 
-					if(referencing && referencing[0].tweet_id === tweet.id) {
+					if (referencing && referencing[0].tweet_id === tweet.id) {
 						console.log(`tweet reference has issues:`, referencing[0]);
 					}
 
@@ -103,7 +116,10 @@ export default class Gallery {
 					};
 
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
-					const tweetText = tweet.text.replaceAll(/(^(RT )?@[a-z0-9_]*:? )| ?(https:\/\/t.co\/\w*$)/gim, '');
+					//don't strip the leading @ if we are referencing someone as there is no twitter prepended @
+					let tweetText = tweet.text;
+					if(referencing) tweetText = tweetText.replaceAll(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
+					else tweetText = tweetText.replaceAll(/( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 
 					//push to the response items array
 					this.items.push({
@@ -116,6 +132,7 @@ export default class Gallery {
 						},
 						referencing: referencing,
 						text: tweetText,
+						alt_text: item.alt_text,
 						type: item.type,
 						url: (item.preview_image_url || item.url).replace(/https:\/\/pbs.twimg.com\//, '/img/'), //proxy for unoptimized images
 						width: item.width,

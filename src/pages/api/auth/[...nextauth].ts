@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
 				console.log('----------------------');
 				console.log('Time now:', Date.now());
 				console.log('Expires:', token.accessTokenExpires);
-				console.log('Expires in:', timeleft.toFixed(2), `${map[i]}${timeleft === 1.00 ? '' : 's'}`);
+				console.log('Expires in:', timeleft.toFixed(2), `${map[i]}${timeleft.toFixed(2) === '1.00' ? '' : 's'}`);
 				console.log('----------------------');
 			}
 

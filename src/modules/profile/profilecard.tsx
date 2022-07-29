@@ -1,10 +1,10 @@
 import { BadgeCheckIcon, ExternalLinkIcon, LinkIcon, LockClosedIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import Link from 'next/link';
-import Profile from './types/profile';
+import { ProfileData } from './types/profile';
 
 interface Props {
-    profile: Profile;
+    profile: ProfileData;
 }
 
 //TODO: add a placeholder here and allow null user

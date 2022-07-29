@@ -87,7 +87,7 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 							<p>{item.error.detail}</p>
 						</span>
 					)
-				} else if (item.items.length === 0) {
+				} else if (item.items.length === 0 && i === 0) {
 					return <p key={i}>No items to show</p>
 				}
 			})}

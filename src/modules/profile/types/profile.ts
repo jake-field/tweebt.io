@@ -1,4 +1,6 @@
-export default interface Profile {
+import User from "../../twitterapi/types/user";
+
+export interface ProfileData {
 	id: string;
 	handle: string;
 	name: string;
@@ -18,11 +20,86 @@ export default interface Profile {
 	verified?: boolean;
 }
 
-export class ProfileResult {
-	profile?: Profile;
-	error?: string;
+export default class Profile {
+	data?: ProfileData;
+	error?: { title: string, details: string };
 
-	constructor() {
+	constructor(user?: User) {
+		//error on invalid user
+		if (!user || !user.data) {
+			this.error = {
+				title: user?.errors && user.errors[0].title || 'Error',
+				details: user?.errors && user.errors[0].detail || 'An error has occured fetching the profile',
+			};
 
+			return;
+		}
+
+		this.data = {
+			id: user.data.id,
+			handle: user.data.username,
+			name: user.data.name,
+
+			//route through proxy and use full 400x400 image here
+			image: user.data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//, '/img/').replace(/https:\/\/abs.twimg.com\//, '/staticimg/').replace(/normal/gi, '400x400'), //enforce large profile image
+		}
+
+		//optional flags/info
+		if (user.data.protected) this.data.protected = true;
+		if (user.data.verified) this.data.verified = true;
+		if (user.data.entities?.url) this.data.url = user.data.entities?.url?.urls[0].expanded_url.replace(/^(https?:\/\/)?(www.)?/, '');
+		if (user.data.public_metrics) {
+			const metrics = user.data.public_metrics;
+			this.data.follower_count = metrics.followers_count;
+			this.data.following_count = metrics.following_count;
+			this.data.tweet_count = metrics.tweet_count;
+		}
+
+		//check if user has a bio
+		if (user.data.description) {
+			const entities = user.data.entities?.description;
+
+			//strip stacked newline characters, only support single newlines for styling purposes
+			let bio = user.data.description.replace(/\n{2,}/g, '\n');
+
+			//does bio contain entities? (url/@/#)
+			//TODO: support cashtags?
+			if (entities) {
+				let pattern: string = '';
+
+				//precondition urls, replacing t.co with the normal urls
+				entities?.urls?.forEach((value) => bio = bio.replace(value.url, value.display_url));
+
+				//build pattern for split and push info to bio_data
+				entities?.urls?.forEach(url => pattern += `(${url.display_url})|`);
+				entities?.mentions?.forEach(mention => pattern += `(@${mention.username})|`);
+				entities?.hashtags?.forEach(hashtag => pattern += `(#${hashtag.tag})|`);
+
+				//error checking
+				if (pattern === '') {
+					console.log('missing pattern, something went wrong here, returning plain bio');
+					this.data.bio = bio;
+					return; //exit early
+				}
+
+				//remove extra |
+				pattern = pattern.substring(0, pattern.length - 1);
+
+				//split
+				const splitRegex = new RegExp(pattern, 'g');
+				const split = bio?.split(splitRegex);
+				let bioArray: { text?: string, link?: string }[] = [];
+
+				//determine link from text
+				split.forEach(value => {
+					if (value) bioArray.push(splitRegex.test(value) ? { link: value } : { text: value });
+				});
+
+				this.data.bio = bioArray;
+			} else {
+				//no entities, just pass down bio as is
+				this.data.bio = bio;
+			}
+		}
 	}
 }

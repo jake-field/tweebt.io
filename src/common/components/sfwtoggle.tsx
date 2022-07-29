@@ -19,7 +19,7 @@ export default function SfwToggle() {
 	}
 
 	return (
-		<a title='Toggle Dark Mode' className='flex items-center justify-end w-10 h-6 cursor-pointer' onClick={() => setSFWMode(!sfw)}>
+		<a title='Toggle NSFW/SFW Mode' className='flex items-center justify-end w-10 h-6 cursor-pointer' onClick={() => setSFWMode(!sfw)}>
 			<p className={iconStyle} style={{ opacity: sfw ? 0 : 100 }}>NSFW</p>
 			<p className={iconStyle} style={{ opacity: sfw ? 100 : 0 }}>SFW</p>
 		</a>

@@ -2,26 +2,17 @@ import { ArrowCircleUpIcon } from '@heroicons/react/solid';
 import { useEffect, useState } from 'react';
 
 export default function ScrollTop() {
-	//DO NOT DO THIS, IT LAGS SO BAD
-	// const [visible, setVisible] = useState(false);
-
-	// function toggleVisible() {
-	// 	setVisible(scrollY > 300);
-	// }
-
-	// //client side only code
-	// if (typeof window !== 'undefined') window.addEventListener('scroll', toggleVisible);
-
 	const [visible, setVisible] = useState(false);
 
 	//update event listener when visible is changed
 	useEffect(() => {
 		const scrollHandler = () => {
+			//todo: consider debounce/throttling
 			if (!visible && scrollY > 300) setVisible(true);
 			else if (visible && scrollY <= 300) setVisible(false);
 		};
 
-		window.addEventListener('scroll', scrollHandler);
+		window.addEventListener('scroll', scrollHandler, { capture: true, passive: true });
 		return () => window.removeEventListener('scroll', scrollHandler);
 	}, [visible]);
 
