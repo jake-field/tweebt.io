@@ -26,7 +26,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 	
 	//force actions if touchscreen for now
 	//consider putting this elsewhere or having a toggle
-	if (window.matchMedia('(pointer: coarse)').matches) {
+	if (window.matchMedia('(any-pointer: coarse)').matches) {
 		// touchscreen
 		mobilemode = true;
 		topAndBottomLayout = false;
