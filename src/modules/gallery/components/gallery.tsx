@@ -79,7 +79,12 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
 					{gallery.map(listing => (
 						listing.items.map((item, index) => (
-							<GalleryMediaItem key={index} item={item} onClick={() => updateImagePopup(item)} />
+							<GalleryMediaItem 
+								key={index}
+								item={item}
+								showAuthors={true} //TODO: if gallery is a specific handle, set this to false if item is from author
+								onClick={() => updateImagePopup(item)}
+							/>
 						))
 					))}
 				</Masonry>

@@ -53,12 +53,14 @@ export interface Error {
 export default class Gallery {
 	meta: Meta;
 	items: Media[];
+	profile?: Author;
 	error?: Error;
 
 	//Constructor from Timeline
-	constructor(timeline: Timeline) {
+	constructor(timeline: Timeline, profile?: Author) {
 		//TODO: meta sometimes comes back as undefined, usually an error is in tow
 		this.meta = timeline.meta || { result_count: 0 };
+		this.profile = profile;
 		this.items = [];
 
 		if (timeline.data && timeline.includes?.media) {
@@ -118,7 +120,7 @@ export default class Gallery {
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
 					//don't strip the leading @ if we are referencing someone as there is no twitter prepended @
 					let tweetText = tweet.text;
-					if(referencing) tweetText = tweetText.replaceAll(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
+					if (referencing) tweetText = tweetText.replaceAll(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 					else tweetText = tweetText.replaceAll(/( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 
 					//push to the response items array

@@ -103,7 +103,7 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 	}
 
 	return (
-		<div className='flex flex-col items-center min-h-screen pt-20'>
+		<div className='flex flex-col items-center min-h-screen pt-20 px-1'>
 			{profile && (
 				<>
 					<Title

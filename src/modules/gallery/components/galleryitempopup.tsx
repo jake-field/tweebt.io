@@ -49,6 +49,7 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 						id='modalImg'
 						//src={galleryItem.url + '?name=orig'} //pull full size
 						src={galleryItem.url + '?name=medium'}
+						alt={galleryItem.alt_text}
 						width={galleryItem.width}
 						height={galleryItem.height}
 						//quality={100}

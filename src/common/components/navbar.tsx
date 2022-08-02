@@ -59,7 +59,7 @@ export default function NavBar({ searchValue, session }: Props) {
 						className='cursor-pointer flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
 						onClick={() => signOut()}
 					>
-						<Image className='rounded-full' src={session.user.image!} width='28' height='28' unoptimized={true} />
+						<Image className='rounded-full' src={session.user.image!} alt={`@${session.user.email}`} width='28' height='28' unoptimized={true} />
 						<span className='hidden sm:block'>@{session.user.email}</span>
 					</span>
 				) : (
