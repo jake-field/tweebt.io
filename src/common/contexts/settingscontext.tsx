@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import BlurProvider from './appsettings/blur';
 
 //TODO: Settings becomes the main component which includes all the individual contexts for App
 //	Things like NSFW blur should have access to the localstorage for it's type
@@ -9,7 +10,7 @@ import React, { useState } from 'react';
 //Probably move these into another file, but these should be saved/loaded to localstorage
 export class ResultFilters {
 	showReplies = true;
-	showRetweets = true; 
+	showRetweets = true;
 	showFlagged = true; //should we have this, just outright hide nsfw items so they don't appear on your feed?
 	blacklistKeywords = ''; //hide tweets with these keywords?
 }
@@ -39,35 +40,8 @@ export class ImageSettings {
 	optimizeImages: number | undefined = 0;
 }
 
-export class BlurSetting {
-	//TODO: consider React.memo(); to move this back into tile settings
-	blurSensitive = true; //on it's own to prevent mass re-render on change
-}
-
-export class NewSettings {
-	reduceMotion = false; //disable animations
-}
-
-export class Settings {
-	blursensitive = false;
-	toggleblur = () => { };
-}
-
-export const SettingsContext = React.createContext(new Settings);
-
 export default function SettingsProvider({ children }: any) {
-	let [settings, setSettings] = useState<Settings>(new Settings);
-
-	settings.toggleblur = () => {
-		setSettings({
-			blursensitive: !settings.blursensitive,
-			toggleblur: settings.toggleblur
-		});
-	}
-
 	return (
-		<SettingsContext.Provider value={settings}>
-			{children}
-		</SettingsContext.Provider>
+		<BlurProvider children={children} />
 	)
 }

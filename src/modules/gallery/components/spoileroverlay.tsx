@@ -1,14 +1,11 @@
 import { EyeOffIcon } from "@heroicons/react/outline";
 import { useContext, useEffect, useState } from "react";
-import { SettingsContext } from "../../../common/contexts/settingscontext";
+import { BlurContext } from "../../../common/contexts/appsettings/blur";
 
 export default function SpoilerOverlay() {
-	const { blursensitive } = useContext(SettingsContext);
-	const [blurred, setBlurred] = useState(true);
-
-	useEffect(() => {
-		setBlurred(blursensitive);
-	}, [blursensitive]);
+	const { blur } = useContext(BlurContext);
+	const [blurred, setBlurred] = useState(blur);
+	useEffect(() => setBlurred(blur), [blur]);
 
 	return (
 		<div

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { SettingsContext } from '../contexts/settingscontext';
+import { BlurContext } from '../contexts/appsettings/blur';
 
 export default function SfwToggle() {
-	const settingsContext = useContext(SettingsContext);
+	const blurContext = useContext(BlurContext);
 	const [sfw, setSFW] = useState(false);
 	const iconStyle = 'absolute transition-opacity ease-in-out duration-300';
 
@@ -13,9 +13,7 @@ export default function SfwToggle() {
 	function setSFWMode(set: boolean) {
 		setSFW(set);
 		localStorage.sfw = set ? 'sfw' : 'nsfw';
-
-		//fix for toggle being wrong
-		if(settingsContext.blursensitive !== set) settingsContext.toggleblur();
+		blurContext.set(set);
 	}
 
 	return (
