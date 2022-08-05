@@ -38,7 +38,7 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 		}
 
 		//TODO: make a pagination object or even an api object for specific values
-		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}`) //exclude=replies,retweets
+		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}${router.query['exclude'] ? `&exclude=${router.query['exclude']}` : ''}`) //exclude=replies,retweets
 			.then((res) => {
 				//intercept response status to catch errors
 				if (res.status != 200) {

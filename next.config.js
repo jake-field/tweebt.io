@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
+	reactStrictMode: true, //when using dev, setting this to true causes double useEffect
 	poweredByHeader: false,
 }
 

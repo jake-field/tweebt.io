@@ -82,7 +82,6 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 							<GalleryMediaItem 
 								key={index}
 								item={item}
-								showAuthors={true} //TODO: if gallery is a specific handle, set this to false if item is from author
 								onClick={() => updateImagePopup(item)}
 							/>
 						))

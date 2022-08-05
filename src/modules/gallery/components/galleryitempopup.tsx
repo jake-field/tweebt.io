@@ -46,7 +46,6 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 				<div className='flex flex-col justify-center items-center h-[95vh] max-w-[95vw]'>
 					{(!loaded || !imgVisible) && <SpinnerIcon className='absolute w-10 h-10 text-white' />}
 					<Image
-						id='modalImg'
 						//src={galleryItem.url + '?name=orig'} //pull full size
 						src={galleryItem.url + '?name=medium'}
 						alt={galleryItem.alt_text}
