@@ -1,11 +1,20 @@
 # NextJS + React Tweet Gallery
 
 This project is a complete redesign of the Angular/.NET version I made in January.
-It serves as a project to learn React + NextJS (With tailwindCSS) to produce a usable website.
+It serves as a project to learn React + NextJS (With tailwindCSS) to produce a useable website.
 
-Again much like the previous version, Twitter still refuses to implement core features to the V2 api such as fetching homepage timelines (where you see tweets from people you follow) and resolving video urls from media tweets.
+Again much like the previous version, Twitter still refuses to implement resolving video urls from media tweets on the V2 api
 
 This readme will be replaced at some point with more information
+
+# TODO:
+- Offload remaining hardcoded values to context settings
+- Allow control over view options, possibly a modal for this
+- DOM element reduction (first load 2700, +~2500 per request @ 100 results)
+	- Consider reducing to 1 element per tile when scrolling too far like twitter to reduce DOM size but keep masonry layout stiff
+	- Reduce animations, potentially share 1 overlay between tiles (except mobile, that requires one per or offloaded to popup)
+- API finalization, full error handling
+- Image popup finalization
 
 # NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support

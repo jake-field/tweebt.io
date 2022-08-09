@@ -72,7 +72,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 							alt={item.alt_text}
 							placeholder='empty'
 							//quality={75} //consider changing this, but this is acceptable for mosaic formatting
-							unoptimized={true}
+							//unoptimized={true}
 							onLoadingComplete={() => setLoaded(true)}
 							onTransitionEnd={() => setImgVisible(true)}
 							onClick={onClick}

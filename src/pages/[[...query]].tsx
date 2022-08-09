@@ -40,7 +40,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 					props: {
 						session: session,
 						profile: res.data,
-						apiEndpoint: `/api/gallery/user/${res.data.id}`,
+						apiEndpoint: `/api/user/${res.data.id}`,
 						error: res.error || null
 					},
 				}
@@ -63,7 +63,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 			props: {
 				session: session,
 				profile: null,
-				apiEndpoint: search ? `/api/gallery/search?q=${search}` : '/api/gallery/me',
+				apiEndpoint: search ? `/api/search/${search}` : '/api/feed',
 				error: null
 			},
 		}
@@ -74,7 +74,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 			props: {
 				session: session,
 				profile: null,
-				apiEndpoint: '/api/gallery/me',
+				apiEndpoint: '/api/feed',
 				error: null
 			},
 		}

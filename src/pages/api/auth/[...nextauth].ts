@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
-import { JWT } from 'next-auth/jwt';
 import TwitterProvider from 'next-auth/providers/twitter'
+import { JWT } from 'next-auth/jwt';
 
 interface TwitterRefreshToken {
 	token_type: string;
@@ -12,8 +12,6 @@ interface TwitterRefreshToken {
 
 //Twitter refresh token function
 async function refreshAccessToken(token: JWT): Promise<JWT> {
-	console.log('REFRESHING TOKEN');
-	console.log('----------------------');
 	try {
 		const url = `https://api.twitter.com/2/oauth2/token?grant_type=refresh_token&client_id=${process.env.TWITTER_CLIENT_ID}&refresh_token=${token.refreshToken}`;
 
@@ -25,8 +23,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 		});
 
 		const refreshedTokens = await response.json() as TwitterRefreshToken;
-		console.log(refreshedTokens);
-		console.log('----------------------');
 
 		if (!response.ok) {
 			throw refreshedTokens;
@@ -39,15 +35,8 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 			refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
 		};
 
-		console.log('NEW TOKEN:');
-		console.log('----------------------');
-		console.log(res);
-		console.log('----------------------');
-
 		return res;
 	} catch (error) {
-		console.log(error);
-		console.log('----------------------');
 
 		return {
 			...token,
@@ -86,22 +75,6 @@ export const authOptions: NextAuthOptions = {
 				token.accessToken = account.access_token; //expose access token
 				token.accessTokenExpires = account.expires_at! * 1000; //Twitter gives us an absolute time on initial sign in (formatted in seconds)
 				token.refreshToken = account.refresh_token; //expose refresh token to persist login
-				console.log('account:', account);
-				console.log('token:', token);
-			}
-
-			//debug console logging
-			if (token.accessTokenExpires) {
-				const map = ['second', 'minute', 'hour'];
-				let i = 0;
-				let timeleft = (token.accessTokenExpires! - Date.now()) / 1000; //seconds
-				while (i < map.length && timeleft > 60) { timeleft /= 60; ++i; }
-				console.log('JWT Token Debug:');
-				console.log('----------------------');
-				console.log('Time now:', Date.now());
-				console.log('Expires:', token.accessTokenExpires);
-				console.log('Expires in:', timeleft.toFixed(2), `${map[i]}${timeleft.toFixed(2) === '1.00' ? '' : 's'}`);
-				console.log('----------------------');
 			}
 
 			// Return previous token if the access token has not expired yet

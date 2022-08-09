@@ -1,5 +1,6 @@
 import React from 'react';
 import BlurProvider from './appsettings/blur';
+import ThemeProvider from './appsettings/theme';
 
 //TODO: Settings becomes the main component which includes all the individual contexts for App
 //	Things like NSFW blur should have access to the localstorage for it's type
@@ -42,6 +43,10 @@ export class ImageSettings {
 
 export default function SettingsProvider({ children }: any) {
 	return (
-		<BlurProvider children={children} />
+		<ThemeProvider>
+			<BlurProvider>
+				{children}
+			</BlurProvider>
+		</ThemeProvider>
 	)
 }

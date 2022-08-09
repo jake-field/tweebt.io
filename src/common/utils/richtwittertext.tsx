@@ -5,10 +5,10 @@ export default function FormatTwitterText(s: string, prettifyLinks?: boolean, li
 	let t = s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
 	return (
-		<span className='whitespace-pre-wrap'>
-			{t.split(/([#@]\/?\w*)|(http(s)?:\/\/[\w.,-\/?&#=]*)/gi).map((str, i) => {
+		<>
+			{t.split(/(@\/?\w*)|(#[^.)( \n\t\r]+)|(https?:\/\/[\w.,-\/?&#=]*)/gi).map((str, i) => {
 				if (!str) return;
-				if (str.match(/^([#@]\/?\w*)|^(http(s)?:\/\/[\w.,-\/?&#=]*)/gi)) {
+				if (str.match(/^(@\/?\w*)|(^#.+)|^(https?:\/\/[\w.,-\/?&#=]*)/gi)) {
 					return (
 						<Link
 							key={i}
@@ -18,13 +18,13 @@ export default function FormatTwitterText(s: string, prettifyLinks?: boolean, li
 							referrerPolicy='no-referrer'
 							className='text-blue-500 hover:text-blue-400 dark:hover:text-blue-400'
 						>
-							{prettifyLinks ? str.replace(/^(http(s)?:\/\/)/, '').substring(0, linkLength) : str}
+							{prettifyLinks ? str.replace(/^(https?:\/\/)/, '').substring(0, linkLength) : str}
 						</Link>
 					)
 				} else {
 					return str;
 				}
 			})}
-		</span>
+		</>
 	);
 }
