@@ -24,7 +24,7 @@ export default function Options({ session }: Props) {
 
 			//fix for iOS?
 			//onPointerOut={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
-			onMouseOut={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
+			onMouseLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
 		>
 			<span className='flex justify-center items-center gap-1' onClick={() => setVisible(!visible)}>
 				{session?.user ? (
