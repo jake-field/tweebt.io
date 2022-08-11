@@ -23,7 +23,8 @@ export default function Options({ session }: Props) {
 			onBlur={() => setVisible(false)}
 
 			//fix for iOS?
-			onPointerLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
+			//onPointerOut={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
+			onMouseOut={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
 		>
 			<span className='flex justify-center items-center gap-1' onClick={() => setVisible(!visible)}>
 				{session?.user ? (
