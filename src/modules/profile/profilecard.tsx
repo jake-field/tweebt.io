@@ -12,9 +12,19 @@ interface Props {
 export default function ProfileCard({ profile }: Props) {
     if (!profile) return null;
     return (
-        <div className='flex flex-col items-center w-fit max-w-sm text-center relative -top-5'>
+        <div className='flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5'>
             <div className='select-none rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-50 dark:border-slate-700 relative top-7 z-10 hover:scale-[1.5] transition-transform ease-in-out delay-150 duration-300'>
-                <Image src={profile.image} alt={`@${profile.handle}`} priority={true} height={400} width={400} quality={100} placeholder='empty' unoptimized={true} />
+                <Image
+                    src={profile.image}
+                    alt={`@${profile.handle}`}
+                    height={400}
+                    width={400}
+                    //priority={true}
+                    //quality={75}
+                    //unoptimized={true}
+                    placeholder='empty'
+                    draggable={false}
+                />
             </div>
 
             <div className='max-w-100 bg-slate-100 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center'>

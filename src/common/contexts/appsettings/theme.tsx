@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 
 type theme = ('sys' | 'dark' | 'light');
 
+export function GetDeviceTheme(): theme {
+	return (typeof window !== "undefined") ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light' : 'light';
+}
+
 export class ThemeState {
 	theme: theme = 'sys';
 	toggle = () => { };
@@ -11,7 +15,7 @@ export class ThemeState {
 export const ThemeContext = React.createContext(new ThemeState);
 
 export default function ThemeProvider({ children }: any) {
-	const sysTheme: theme = (typeof window !== "undefined") ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light' : 'light';
+	const sysTheme: theme = GetDeviceTheme();
 	let [state, setState] = useState<ThemeState>(new ThemeState);
 
 	//helper function to make things easier

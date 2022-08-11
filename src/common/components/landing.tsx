@@ -2,14 +2,14 @@ import { signIn } from 'next-auth/react';
 
 export default function Landing() {
 	return (
-		<div className='text-center'>
-			<h1 className='text-6xl font-bold'>
+		<>
+			<span className='text-6xl font-thin border-l border-r px-5'>
 				tweebt
-			</h1>
+			</span>
 
-			<p className='mt-3 text-2xl'>
-				search for tweebt or <a title='log in with Twitter' onClick={() => signIn('twitter')}>log in with Twitter</a> to see your feed
-			</p>
-		</div>
+			<span className='mt-3 text-2xl'>
+				search above or <a title='Sign In' onClick={() => signIn('twitter')}>sign in with Twitter</a> to see your feed
+			</span>
+		</>
 	)
 }

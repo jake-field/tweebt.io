@@ -28,7 +28,7 @@ export default function NavBar({ searchValue, session }: Props) {
 						<a title={`Profile (@${session.user?.email})`}><UserIcon className='w-6' /></a>
 					</Link>
 				) : (
-					<a title='Sign In' className='items-center gap-1 hidden sm:flex' onClick={() => signIn('twitter')}>
+					<a title='Sign In' className='items-center gap-1 hidden sm:flex' onClick={() => signIn('twitter', { callbackUrl: '/me' })}>
 						<UserIcon className='w-6' />
 					</a>
 				)}

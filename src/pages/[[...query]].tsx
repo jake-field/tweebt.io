@@ -22,63 +22,33 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 	const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
 	//check for and attempt to grab user profile
-	const query = context.query['query'] as string[] || undefined;
+	const slug = context.query['query'] as string[] || undefined;
+	const query = slug ? slug.at(0)?.replace('me', `@${session?.user?.email}` || '') : undefined; //TODO: consider q here as per how the api works
+	const q = context.query['q'] as string || undefined;
 
-	console.log('query = ', query);
-	console.log('context.query = ', context.query);
+	console.log(query);
 
-	if (query) {
-		const isHandle = (query[0] !== 'search') && validateHandle(query[0]);
+	const isHandle = query ? (query !== 'search') && validateHandle(query) : false;
+	const search = query && (query === 'search') && q ? encodeURIComponent(q) : undefined;
 
-		//if it's a valid handle, attempt to fetch the profile for it
-		if (isHandle) {
-			//query is a valid handle, attempt to fetch profile
-			const res = await getProfile(query[0]);
+	//Fetch profile if a handle is passed in (query is valid here if isHandle is valid)
+	const profileRes = isHandle ? await getProfile(query!) : null;
 
-			//if we get a valid profile, return that
-			if (res.data) {
-				return {
-					props: {
-						session: session,
-						profile: res.data,
-						apiEndpoint: `/api/user/${res.data.id}`,
-						error: res.error || null
-					},
-				}
-			} else {
-				return {
-					props: {
-						session: session,
-						profile: null,
-						apiEndpoint: ``,
-						error: res.error || null
-					},
-				}
-			}
-		}
+	//getServerSideProps does not support type of `undefined`, use `null` instead
+	return {
+		props: {
+			//session
+			session: session,
 
-		const search = context.query['q'] ? encodeURIComponent(context.query['q']) : undefined;
+			//If we queried for the profile, attempt to return that, or null
+			profile: profileRes ? profileRes.data || null : null,
 
-		//at this point we need to commit to searching
-		return {
-			props: {
-				session: session,
-				profile: null,
-				apiEndpoint: search ? `/api/search/${search}` : '/api/feed',
-				error: null
-			},
-		}
-	}
-	else {
-		//no query passed, endpoint will be timeline feed
-		return {
-			props: {
-				session: session,
-				profile: null,
-				apiEndpoint: '/api/feed',
-				error: null
-			},
-		}
+			//Select endpoint based on query slug data, defaulting to your feed on error
+			apiEndpoint: profileRes?.data ? `/api/user/${profileRes.data.id}` : search ? `/api/search/${search}` : '/api/feed',
+
+			//Return potential profile error if requested
+			error: profileRes?.error || null
+		},
 	}
 
 	//search: `/api/gallery/search?q=${q}&max_results=100${pagination}`

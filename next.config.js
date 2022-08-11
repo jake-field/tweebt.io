@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: true, //when using dev, setting this to true causes double useEffect
+	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
 	poweredByHeader: false,
 }
 
@@ -9,10 +9,7 @@ const ContentSecurityPolicy = `
 	default-src 'self';
 	img-src 'self' data:;
 	script-src 'self' 'unsafe-eval';
-	child-src 'self';
 	style-src 'self' 'unsafe-inline';
-	font-src 'self';
-	connect-src 'self' vitals.vercel-insights.com
 `
 
 const securityHeaders = [

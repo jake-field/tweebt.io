@@ -5,7 +5,7 @@ import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { BlurContext } from "../contexts/appsettings/blur";
-import { ThemeContext } from "../contexts/appsettings/theme";
+import { GetDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
 import ToggleSwitch from "./toggleswitch";
 
 interface Props {
@@ -21,6 +21,9 @@ export default function Options({ session }: Props) {
 			title={session?.user?.name || 'Not Signed In'}
 			className='cursor-pointer flex flex-col gap-1 z-10 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
 			onBlur={() => setVisible(false)}
+
+			//fix for iOS?
+			onPointerLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
 		>
 			<span className='flex justify-center items-center gap-1' onClick={() => setVisible(!visible)}>
 				{session?.user ? (
@@ -41,12 +44,12 @@ export default function Options({ session }: Props) {
 				style={{ contain: 'content', display: visible ? 'block' : 'none' }}
 			>
 				<ThemeContext.Consumer>
-					{opt =>
+					{settings =>
 						<ToggleSwitch
 							label='Dark Mode'
-							checked={opt.theme === 'dark'}
+							checked={settings.theme === 'dark' || settings.theme === 'sys' && GetDeviceTheme() === 'dark'}
 							className={liClassName}
-							onClick={(e) => opt.set(e.currentTarget.checked ? 'dark' : 'light')}
+							onClick={(e) => settings.set(e.currentTarget.checked ? 'dark' : 'light')}
 						>
 							<span className='flex gap-1'><MoonIcon className='w-4' />Dark Mode</span>
 						</ToggleSwitch>
@@ -66,7 +69,13 @@ export default function Options({ session }: Props) {
 					}
 				</BlurContext.Consumer>
 
-				<div className={liClassName} title={`Sign ${session ? 'Out' : 'In'}`} onClick={() => session ? signOut() : signIn('twitter')}>
+				<div
+					className={liClassName}
+					title={`Sign ${session ? 'Out' : 'In'}`}
+
+					//TODO: disable redirect (currently not because there is no re-render on session logout)
+					onClick={() => session ? signOut(/*{ redirect: false }*/) : signIn('twitter')}
+				>
 					<span className='flex gap-1'>
 						{session ? <LogoutIcon className='w-4' /> : <LoginIcon className='w-4' />}
 						Sign {session ? 'Out' : 'In'}
