@@ -9,16 +9,13 @@ export async function getProfile(handle: string): Promise<ProfileClass> {
 	//check for required environment variables
 	if (!process.env.TWITTER_API_TOKEN) return { error: { title: 'Server Error', details: 'missing environment variables' } };
 
-	//pre-strip @ as twitter only accepts usernames (handle without @)
-	handle = handle.replaceAll('@', '');
-
 	//twitter api request
 	let response;
 	const query = 'user.fields=protected,verified,description,profile_image_url,entities,public_metrics';
 
 	//TODO: replace token with usertoken if possible for protected accounts
 	if (!validateHandle(handle)) response = await TwitterEndpoints.getProfileById(handle, process.env.TWITTER_API_TOKEN, query);
-	else response = await TwitterEndpoints.getProfileByHandle(handle, process.env.TWITTER_API_TOKEN, query);
+	else response = await TwitterEndpoints.getProfileByHandle(handle.replaceAll('@', ''), process.env.TWITTER_API_TOKEN, query);
 
 	//request failed
 	if (response.status != 200) return { error: { title: 'Server Error', details: `failed with status code ${response.status} - ${response.statusText}` } };

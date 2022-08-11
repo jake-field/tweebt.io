@@ -18,13 +18,14 @@ interface Props {
 
 //fetch the session on the serverside
 export async function getServerSideProps(context: any /* NextPageContext */): Promise<{ props: Props }> {
-	if (context.query.length) console.log(context.query)
-
 	//fetch session using NextAuth recommened server-side function (NextPageContext does not like this function)
 	const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
 	//check for and attempt to grab user profile
 	const query = context.query['query'] as string[] || undefined;
+
+	console.log('query = ', query);
+	console.log('context.query = ', context.query);
 
 	if (query) {
 		const isHandle = (query[0] !== 'search') && validateHandle(query[0]);

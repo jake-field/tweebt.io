@@ -11,7 +11,8 @@ const ContentSecurityPolicy = `
 	script-src 'self' 'unsafe-eval';
 	child-src 'self';
 	style-src 'self' 'unsafe-inline';
-	font-src 'self';  
+	font-src 'self';
+	connect-src 'self' vitals.vercel-insights.com
 `
 
 const securityHeaders = [
