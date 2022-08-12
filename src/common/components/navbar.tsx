@@ -6,11 +6,10 @@ import Options from './options';
 import Searchbar from './searchbar';
 
 interface Props {
-	searchValue?: string;
 	session?: Session;
 }
 
-export default function NavBar({ searchValue, session }: Props) {
+export default function NavBar({ session }: Props) {
 	return (
 		<div className='fixed z-40 select-none p-3 flex flex-row flex-wrap items-center justify-center gap-2 w-full bg-slate-200 dark:bg-slate-900 border-b border-slate-400 dark:border-slate-800' >
 			<span className='text-xl text-slate-700 dark:text-slate-300 border-l border-r px-3 border-slate-500 hidden sm:block'>
@@ -38,7 +37,7 @@ export default function NavBar({ searchValue, session }: Props) {
 			</nav>
 
 			<span className='sm:absolute'>
-				<Searchbar route='/' placeholder='Search by @, # or topic' value={searchValue} />
+				<Searchbar route='/' placeholder='Search by @, # or topic' />
 			</span>
 
 			<Options session={session} />

@@ -62,7 +62,7 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 	if (gallery.length === 0 || gallery[0].items.length === 0) return null;
 
 	return (
-		<div className='flex flex-col items-center w-full sm:px-3 text-center md:px-20 select-none'>
+		<div className='flex flex-col items-center w-full select-none'>
 			<GalleryItemPopup
 				galleryItem={selectedGalleryItem}
 				visible={modalVisible}

@@ -1,9 +1,10 @@
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Gallery from './types/gallery';
 import GalleryComponent from './components/gallery';
 import { SpinnerIcon } from '../../common/icons/spinnericon';
+import { ResultsContext } from '../../common/contexts/appsettings/results';
 
 interface Props {
 	apiEndpoint: string;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function GalleryFeed({ apiEndpoint }: Props) {
 	const router = useRouter();
+	const resultsContext = useContext(ResultsContext);
 	const [gallery, setGallery] = useState<Gallery[]>([]);
 	const [loading, setLoading] = useState(false);
 
@@ -37,8 +39,18 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 			if (pagination === '') return; //error, ignore
 		}
 
+		let exclude = '';
+		if (!apiEndpoint.startsWith('/api/search')) {
+			let target = apiEndpoint.startsWith('/api/user') ? resultsContext.profileOptions : resultsContext.feedOptions;
+			let merge: string[] = [];
+			if (target.replies === false) merge.push('replies');
+			if (target.retweets === false) merge.push('retweets');
+			if (merge.length > 0) exclude = '&exclude=' + merge.join(',');
+			console.log('exclude attachement:', exclude);
+		} else console.log('cannot use excludes here')
+
 		//TODO: make a pagination object or even an api object for specific values
-		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}${router.query['exclude'] ? `&exclude=${router.query['exclude']}` : ''}`) //exclude=replies,retweets
+		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}${exclude}`)
 			.then((res) => {
 				//intercept response status to catch errors
 				if (res.status != 200) {
@@ -78,7 +90,7 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 	}
 
 	return (
-		<div className='flex flex-col items-center w-full text-center'>
+		<div className='flex flex-col items-center w-full text-center sm:px-3 md:px-3'>
 			{gallery.map((item, i) => {
 				if (item.error) {
 					return (

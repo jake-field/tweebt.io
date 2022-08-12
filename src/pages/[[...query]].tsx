@@ -26,8 +26,6 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 	const query = slug ? slug.at(0)?.replace('me', `@${session?.user?.email}` || '') : undefined; //TODO: consider q here as per how the api works
 	const q = context.query['q'] as string || undefined;
 
-	console.log(query);
-
 	const isHandle = query ? (query !== 'search') && validateHandle(query) : false;
 	const search = query && (query === 'search') && q ? encodeURIComponent(q) : undefined;
 
@@ -51,9 +49,9 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 		},
 	}
 
-	//search: `/api/gallery/search?q=${q}&max_results=100${pagination}`
-	//handle: `/api/gallery/user/${profile.id}?&max_results=100${pagination}`) //exclude=replies,retweets
-	//timeline: `/api/gallery/me?&max_results=100${pagination}`) //exclude=replies,retweets
+	//search: `/api/search/${q}&max_results=100${pagination}`
+	//handle: `/api/user/${profile.id}?&max_results=100${pagination}`) //exclude=replies,retweets
+	//timeline: `/api/feed?&max_results=100${pagination}`) //exclude=replies,retweets
 }
 
 export default function Home({ session, profile, apiEndpoint, error }: Props) {
