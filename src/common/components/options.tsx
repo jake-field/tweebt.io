@@ -51,7 +51,7 @@ export default function Options({ session }: Props) {
 							label='Dark Mode'
 							checked={theme === 'dark' || theme === 'sys' && GetDeviceTheme() === 'dark'}
 							className={liClassName}
-							onClick={(e) => set(e.currentTarget.checked ? 'dark' : 'light')}
+							onClick={(e) => set({ theme: e.currentTarget.checked ? 'dark' : 'light' })}
 						>
 							<span className='flex gap-2'><MoonIcon className='w-4' />Dark Mode</span>
 						</ToggleSwitch>
@@ -64,7 +64,7 @@ export default function Options({ session }: Props) {
 							label='Blur Flagged'
 							checked={blur}
 							className={liClassName}
-							onClick={(e) => set(e.currentTarget.checked)}
+							onClick={(e) => set({ blur: e.currentTarget.checked })}
 						>
 							<span className='flex gap-2'><EyeOffIcon className='w-4' />Blur Flagged</span>
 						</ToggleSwitch>

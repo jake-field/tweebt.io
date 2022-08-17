@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
+import useStorageState, { StorageState } from "../utils/storage";
 
 export class ResultOptions {
 	retweets = true; //[retweets, quotes]
@@ -7,28 +8,11 @@ export class ResultOptions {
 }
 
 //State
-export class ResultsState {
+export class ResultsState extends StorageState<ResultsState> {
 	feedOptions: ResultOptions = new ResultOptions;
 	profileOptions: ResultOptions = new ResultOptions;
 	searchOptions: ResultOptions = new ResultOptions; //mostly ignored?
 	blacklist: (string | undefined) = undefined; //don't show results containing these keyworks or handles [@user, #test, hate] (@user will also automatically filter @/user as well)
-
-	set = (params: Partial<ResultsState>) => { };
-}
-
-//Initialize state function to make sure the state is correct before the page attempts to render with this information
-function intializeState() {
-	if (typeof localStorage !== 'undefined') {
-		const tileview = localStorage['results'];
-		if (tileview) {
-			console.log('intializeState:', 'results', '[STORED STATE]');
-			const newState = JSON.parse(tileview) as Partial<ResultsState>;
-			return { ...new ResultsState, ...newState };
-		}
-	}
-
-	console.log('initalizeState:', 'results', '[EMPTY STATE]');
-	return new ResultsState;
 }
 
 //Context
@@ -36,16 +20,7 @@ export const ResultsContext = React.createContext(new ResultsState); //an empty 
 
 //Provider
 export default function ResultsProvider({ children }: any) {
-	let [state, setState] = useState<ResultsState>(intializeState()); //initializing here due to useEffect not being activated in time
-
-	//Context functions
-	state.set = (params: Partial<ResultsState>) => setState({ ...state, ...params });
-
-	useEffect(() => {
-		if (localStorage['results'] === JSON.stringify(state)) return;
-		console.log('updateStorage:', 'results', state);
-		localStorage['results'] = JSON.stringify(state);
-	}, [state]);
+	const [state] = useStorageState('results', new ResultsState);
 
 	return (
 		<ResultsContext.Provider value={state}>

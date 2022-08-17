@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import useStorageState, { StorageState } from "../utils/storage";
 
 export class ImageQuality {
 	/**
@@ -21,7 +21,7 @@ export class ImageQuality {
 	twitterQuality: 'thumb' | 'small' | 'medium' | 'large' | 'orig' = 'medium';
 }
 
-export class ModalViewState {
+class GenericView<T> extends StorageState<T> {
 	imageSettings: ImageQuality = { optimize: undefined, twitterQuality: 'large' };
 	hoverOverlay = true; //overlay details on hover instead of above/below image (pc only)
 	layoutPosition: ('top' | 'bottom' | 'around') = 'around'; //place author & actions top/bottom/around of image
@@ -34,88 +34,29 @@ export class ModalViewState {
 	showTextButton = true; //show button if tweet text is available
 	textHoverDelay: number | undefined = undefined; //show alt/tweet text on hover after [n]ms (pc only)
 	richText = true; //enable links in tweet/alt text
-
-	//functions
-	set = (params: Partial<ModalViewState>) => { };
 }
 
-export class TileViewState extends ModalViewState {
+export class ModalViewState extends GenericView<ModalViewState> { }
+
+export class TileViewState extends GenericView<TileViewState> {
 	imageSettings: ImageQuality = { optimize: undefined, twitterQuality: 'small' };
 	showAuthorIfOwnProfile = false; //show author if it's their own post on their profile [@handle = item.author on profile page] (doesn't apply to replies/retweets)
-
-	//functions
-	set = (params: Partial<TileViewState>) => { };
 }
 
-export class BlurState {
+export class BlurState extends StorageState<BlurState> {
 	blur = true; //blur by default to prevent mishaps
-	toggle = () => { };
-	set = (blur: boolean) => { };
 }
 
-//Contexts
+//Contexts (default constructors are fine here)
 export const TileBlurContext = React.createContext(new BlurState);
 export const TileViewContext = React.createContext(new TileViewState);
 export const ModalViewContext = React.createContext(new ModalViewState);
 
 //Provider
 export default function ViewProvider({ children }: any) {
-	const router = useRouter(); //used for checking for state updates on router update
-	let [tileBlurState, setTileBlurState] = useState<BlurState>(new BlurState);
-	let [tileViewState, setTileViewState] = useState<TileViewState>(new TileViewState);
-	let [modalViewState, setModalViewState] = useState<ModalViewState>(new ModalViewState);
-
-	//context functions
-	tileBlurState.toggle = () => setTileBlurState({ ...tileBlurState, blur: !tileBlurState.blur });
-	tileBlurState.set = (blur: boolean) => setTileBlurState({ ...tileBlurState, blur });
-	tileViewState.set = (params: Partial<TileViewState>) => setTileViewState({ ...tileViewState, ...params });
-	modalViewState.set = (params: Partial<ModalViewState>) => setModalViewState({ ...modalViewState, ...params });
-
-	//TODO: tidy up repetitive code here
-	//Update states when they differ from local storage
-	useEffect(() => {
-		const blurflagged = localStorage['blurflagged'];
-		if (blurflagged && blurflagged !== String(tileBlurState.blur)) {
-			console.log('pullStorage:', 'blurflagged');
-			tileBlurState.set(blurflagged === 'true');
-		}
-
-		const tileview = localStorage['tileview'];
-		if (tileview && tileview !== JSON.stringify(tileViewState)) {
-			console.log('pullStorage:', 'tileview');
-			const state = JSON.parse(tileview) as Partial<TileViewState>;
-			tileViewState.set({ ...tileViewState, ...state });
-		}
-
-		const modalview = localStorage['modalview'];
-		if (modalview && modalview !== JSON.stringify(modalViewState)) {
-			console.log('pullStorage:', 'modalview');
-			const state = JSON.parse(modalview) as Partial<ModalViewState>;
-			modalViewState.set({ ...modalViewState, ...state });
-		}
-
-		//TODO: disabling eslint here until I fix this, but this is the effect we want right now
-		// eslint-disable-next-line
-	}, [router]);
-
-	//Update local storage values when states change
-	useEffect(() => {
-		if (localStorage['blurflagged'] === String(tileBlurState.blur)) return;
-		console.log('updateStorage:', 'blurflagged', tileBlurState.blur);
-		localStorage['blurflagged'] = tileBlurState.blur;
-	}, [tileBlurState]);
-
-	useEffect(() => {
-		if (localStorage['tileview'] === JSON.stringify(tileViewState)) return;
-		console.log('updateStorage:', 'tileview', tileViewState);
-		localStorage['tileview'] = JSON.stringify(tileViewState);
-	}, [tileViewState]);
-
-	useEffect(() => {
-		if (localStorage['modalview'] === JSON.stringify(modalViewState)) return;
-		console.log('updateStorage:', 'modalview', modalViewState);
-		localStorage['modalview'] = JSON.stringify(modalViewState);
-	}, [modalViewState]);
+	const [tileBlurState] = useStorageState('blurflagged', new BlurState);
+	const [tileViewState] = useStorageState('tileview', new TileViewState);
+	const [modalViewState] = useStorageState('modalview', new ModalViewState);
 
 	//Provider consolidation in order of re-render significance/priority
 	return (
