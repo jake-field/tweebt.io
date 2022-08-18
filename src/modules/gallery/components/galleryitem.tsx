@@ -56,7 +56,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 					}
 
 					<div className='absolute z-30 pointer-events-none flex flex-col w-full h-full justify-end items-end text-white text-xs text-left'>
-						<TextOverlay item={item} showAltButton showTextButton={mobilemode} />
+						<TextOverlay item={item} showAltButton showTextButton parentVisibility={mobilemode} />
 					</div>
 
 					<a

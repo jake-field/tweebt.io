@@ -4,6 +4,7 @@ export interface Author {
 	id: string;
 	username: string;
 	name: string;
+	profile_image_url: string;
 }
 
 export interface Media {
@@ -19,6 +20,7 @@ export interface Media {
 		id: string;
 		name: string;
 		username: string;
+		profile_image_url: string;
 		tweet_id: string;
 		text: string; //original tweet text
 	}[];
@@ -87,6 +89,8 @@ export default class Gallery {
 							//	or use the author username as Twitter has a special redirect for threads
 							name: user?.name || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.name || '',
 							username: user?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
+							profile_image_url: user?.profile_image_url?.replace(/https:\/\/pbs.twimg.com\//, '/img/') || '',
+							
 
 							//Use this tweet id if the original is deleted/protected, this allows us to still show the reference in some form
 							tweet_id: refTweet?.id || tweet.id,
@@ -131,6 +135,7 @@ export default class Gallery {
 							id: author?.id || '',
 							username: author?.username || 'unknown',
 							name: author?.name || 'unknown',
+							profile_image_url: author?.profile_image_url?.replace(/https:\/\/pbs.twimg.com\//, '/img/') || ''
 						},
 						referencing: referencing,
 						text: tweetText,

@@ -1,19 +1,22 @@
 import { MouseEventHandler } from "react";
 
 interface Props {
-	label: string;
+	id?: string;
+	label?: string;
 	className?: string;
 	checked?: boolean;
 	disabled?: boolean;
+	hideLabel?: boolean;
 	onClick?: MouseEventHandler<HTMLInputElement>;
 	children?: any;
 }
 
-export default function ToggleSwitch({ label, className, checked, disabled, onClick, children }: Props) {
-	const inputId = `toggle-${label.toLowerCase().replaceAll(' ', '-')}`;
+export default function ToggleSwitch({ id, label, className, checked, disabled, hideLabel, onClick, children }: Props) {
+	if (id === undefined && label === undefined) console.log('toggle switch is missing both id and label, please include at least one to ensure functionality!');
+	const inputId = id || `toggle-${label?.toLowerCase().replaceAll(' ', '-')}`;
 
 	return (
-		<div title={label} className={`flex gap-2 justify-between items-center ${className}`}>
+		<div title={label} className={`flex gap-2 items-center ${className}`}>
 			<input
 				alt={label}
 				id={inputId}
@@ -27,6 +30,7 @@ export default function ToggleSwitch({ label, className, checked, disabled, onCl
 				title={label}
 				htmlFor={inputId}
 				className='peer-enabled:cursor-pointer'
+				style={{ display: hideLabel ? 'none' : 'block' }}
 			>
 				{children || label}
 			</label>

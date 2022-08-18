@@ -1,7 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { RetweetIcon } from '../../../common/icons/twittericons';
-import FormatTwitterText from '../../../common/utils/richtwittertext';
 import { Media } from '../types/gallery';
 import MetricsList from './metricslist';
 import TextOverlay from './textoverlay';
@@ -18,15 +17,8 @@ interface Props {
 }
 
 export default function GalleryItemOverlay({ item, visible, showMetrics, showTweetText, children, topAndBottomLayout, mobilemode }: Props) {
-	//const [formattedText, setFormattedText] = useState<JSX.Element>(<></>);
 	const bannerClass = 'pointer-events-auto transition-all bg-black bg-opacity-70 backdrop-blur-sm items-center py-2 px-1 flex cursor-default relative ease-in-out duration-150';
 	const linkClass = 'text-white visited:text-white dark:text-white dark:visited:text-white hover:text-blue-300 dark:hover:text-blue-300 hover:underline underline-offset-4';
-
-	// useEffect(() => {
-	// 	//Don't format this text in mobile mode as it's processed outside
-	// 	if (item.text && !mobilemode) setFormattedText(FormatTwitterText(item.text, true));
-	// 	else setFormattedText(<></>);
-	// }, [item, mobilemode]);
 
 	return (
 		<>
@@ -39,6 +31,13 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 							title={`View ${item.author.name}'s (@${item.author.username}) Profile`}
 							className={linkClass + ' flex flex-wrap items-center justify-center gap-1'}
 						>
+							<Image
+								src={item.author.profile_image_url}
+								alt={item.author.name + '\'s profile image'}
+								width={24}
+								height={24}
+								className='rounded-full'
+							/>
 							{item.author.name}{!item.referencing ? <span className='text-gray-300 font-light'>@{item.author.username}</span> : ''}
 						</a>
 					</Link>
@@ -46,21 +45,39 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 					{item.referencing &&
 						<>
 							{item.referencing[0].type === 'retweeted' ? (
-								<span title='retweeted'>
-									<RetweetIcon className={'w-4 text-green-400'} />
+								<span
+									title={`${item.author.name} retweeted ${item.referencing[0].username === item.author.username ? 'themself' : item.referencing[0].name}`}
+									className='flex gap-2 items-center justify-center text-green-400'
+								>
+									<RetweetIcon className={'w-4'} />{item.referencing[0].username === item.author.username ? ' themself' : ''}
 								</span>
 							) : (
-								<span title={item.referencing[0].type.replace('_', ' ')} className='text-blue-400'>{item.referencing[0].type.replace('_', ' ')}</span>
+								<span
+									title={`${item.author.name} ${item.referencing[0].type.replace('_', ' ')} ${item.referencing[0].username === item.author.username ? 'themselves' : item.referencing[0].name}`}
+									className='text-blue-400'
+								>
+									{item.referencing[0].type.replace('_', ' ')}{item.referencing[0].username === item.author.username ? ' themselves' : ''}
+								</span>
 							)}
 
-							<Link href={`/@${item.referencing[0].username}`}>
-								<a
-									title={`View ${item.referencing[0].name}'s (@${item.referencing[0].username}) Profile`}
-									className={linkClass}
-								>
-									{item.referencing[0].username !== item.author.username ? '@' + item.referencing[0].username : 'themself'}
-								</a>
-							</Link>
+							{item.referencing[0].username !== item.author.username &&
+								<Link href={`/@${item.referencing[0].username}`}>
+									<a
+										title={`View ${item.referencing[0].name}'s (@${item.referencing[0].username}) Profile`}
+										className={linkClass + ' flex flex-wrap items-center justify-center gap-1'}
+									>
+										<Image
+											src={item.referencing[0].profile_image_url}
+											alt={item.referencing[0].name + '\'s profile image'}
+											width={24}
+											height={24}
+											className='rounded-full'
+										/>
+										@{item.referencing[0].username}
+									</a>
+								</Link>
+							}
+
 						</>
 					}
 
@@ -73,9 +90,9 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 
 				{topAndBottomLayout && mobilemode && children}
 				{topAndBottomLayout && !mobilemode &&
-					<div className='grow pointer-events-none text-left' style={{contain:'content'}}>
+					<div className='grow pointer-events-none text-left' style={{ contain: 'content' }}>
 						{/* TODO: showOnHover needs a delay bound to it so that it doesn't open instantly when moving the mouse around */}
-						<TextOverlay item={item} showTextButton showAltButton showOnHover parentVisibility={visible} />
+						<TextOverlay item={item} showTextButton showAltButton parentVisibility={visible} />
 					</div>
 				}
 

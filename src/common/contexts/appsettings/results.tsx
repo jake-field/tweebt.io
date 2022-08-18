@@ -1,4 +1,4 @@
-import React, {  } from "react";
+import React from "react";
 import useStorageState, { StorageState } from "../utils/storage";
 
 export class ResultOptions {

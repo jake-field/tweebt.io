@@ -37,12 +37,12 @@ export default function useStorageState<T>(key: string, defaultValue: T): [T, Di
 
 	//Dirty force of set function
 	//TODO: use a wrapper class maybe
-	if (!(defaultValue instanceof StorageState<T>)) console.log(`WARNING: ${(defaultValue as any).constructor.name} does not extend from StorageState<${(defaultValue as any).constructor.name}>. This may result in unexpected results when calling the useStorateState() hook`);
 	(state as unknown as StorageState<T>).set = (params: Partial<T>) => setState({ ...state, ...params });
 
 	//Update storage on state update, this helps if there are custom functions
 	useEffect(() => {
 		localStorage[key] = JSON.stringify(state); //TODO: sanitize
+		console.log(state);
 	}, [state, key]);
 
 	return [state, setState];

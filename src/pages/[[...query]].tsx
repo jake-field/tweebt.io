@@ -23,7 +23,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 
 	//check for and attempt to grab user profile
 	const slug = context.query['query'] as string[] || undefined;
-	const query = slug ? slug.at(0)?.replace('me', `@${session?.user?.email}` || '') : undefined; //TODO: consider q here as per how the api works
+	const query = slug ? slug.at(0)?.replace(/^me$/, `@${session?.user?.email}` || '') : undefined; //TODO: consider q here as per how the api works
 	const q = context.query['q'] as string || undefined;
 
 	const isHandle = query ? (query !== 'search') && validateHandle(query) : false;

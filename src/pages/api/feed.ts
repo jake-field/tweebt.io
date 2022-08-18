@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	//build standard query for the app
 	const galleryQuery =
 		'expansions=attachments.media_keys,author_id,referenced_tweets.id,referenced_tweets.id.author_id' +
-		//'&user.fields=id,name,username' + //this is included with author_id expansion by default
+		'&user.fields=profile_image_url' +
 		'&tweet.fields=possibly_sensitive,public_metrics,referenced_tweets' + //includes [id, text]
 		'&media.fields=preview_image_url,url,width,height,alt_text' + //includes [media_key, type]
 		(exclude ? `&exclude=${exclude}` : '') +

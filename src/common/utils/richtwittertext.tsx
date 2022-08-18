@@ -6,9 +6,9 @@ export default function FormatTwitterText(s: string, prettifyLinks?: boolean, li
 
 	return (
 		<>
-			{t.split(/(@\/?\w*)|(#[^.)( \n\t\r]+)|(https?:\/\/[\w.,-\/?&#=]*)/gi).map((str, i) => {
+			{t.split(/(@\/?\w+)|(#[^.)( \n\t\r]+)|(https?:\/\/[\w.,-\/?&#=]*)/gi).map((str, i) => {
 				if (!str) return;
-				if (str.match(/^(@\/?\w*)|(^#.+)|^(https?:\/\/[\w.,-\/?&#=]*)/gi)) {
+				if (str.match(/^(@\/?\w+)|(^#.+)|^(https?:\/\/[\w.,-\/?&#=]*)/gi)) {
 					return (
 						<Link
 							key={i}

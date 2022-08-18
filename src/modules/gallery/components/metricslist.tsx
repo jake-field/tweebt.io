@@ -1,5 +1,6 @@
 import { AnchorHTMLAttributes } from "react";
 import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "../../../common/icons/twittericons";
+import { formatNumber, pluralize } from "../../../common/utils/formatnumber";
 import { Media } from "../types/gallery";
 
 interface Props {
@@ -13,16 +14,6 @@ export default function MetricsList({ item, hideNumbers }: Props) {
 	const tweetHandle = isRetweet ? item.referencing![0].username : item.author.username;
 	const tweetID = isRetweet ? item.referencing![0].tweet_id : item.tweet_id;
 	const sharedAttrb: AnchorHTMLAttributes<HTMLAnchorElement> = { target: '_blank', rel: 'noreferrer' };
-
-	//Format a number such that 10,500 becomes 10.5k
-	function formatNumber(n: number, precision: number = 1) {
-		return n > 999 ? (n / 1000).toFixed(precision) + 'k' : n;
-	}
-
-	//small helper for numbers
-	function pluralize(n: number, str: string, singular = '', plural = 's') {
-		return `${n} ${str}${n === 1 ? singular : plural}`;
-	}
 
 	return (
 		<>

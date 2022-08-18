@@ -1,6 +1,8 @@
-import { BadgeCheckIcon, ExternalLinkIcon, LinkIcon, LockClosedIcon } from '@heroicons/react/solid';
+import { BadgeCheckIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import Link from 'next/link';
+import { TwitterIcon } from '../../common/icons/twittericons';
+import { formatNumber, pluralize } from '../../common/utils/formatnumber';
 import { ProfileData } from './types/profile';
 
 interface Props {
@@ -10,6 +12,7 @@ interface Props {
 //TODO: add a placeholder here and allow null user
 //      then if no data, display an error here for cleanliness
 export default function ProfileCard({ profile }: Props) {
+    const metricsClassName = 'inline-flex items-center justify-center gap-1 rounded-lg bg-slate-900 px-2';
     if (!profile) return null;
     return (
         <div className='flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5'>
@@ -41,7 +44,7 @@ export default function ProfileCard({ profile }: Props) {
                     target='_blank'
                     rel='noreferrer'
                 >
-                    @{profile.handle}<ExternalLinkIcon className='w-4 pointer-events-none' />
+                    @{profile.handle}<TwitterIcon className='w-4' />
                 </a>
 
                 {profile.bio &&
@@ -77,7 +80,21 @@ export default function ProfileCard({ profile }: Props) {
                         </a>
                     </p>
                 }
+
+                {profile.follower_count && profile.following_count && profile.tweet_count &&
+                    <span className='flex gap-1 text-slate-300 select-none'>
+                        <p className={metricsClassName} title={`${pluralize(profile.tweet_count, 'Tweet')}`}>
+                            <TwitterIcon className='w-4' />{formatNumber(profile.tweet_count)}
+                        </p>
+                        <p className={metricsClassName} title={`Following ${pluralize(profile.following_count, 'Pe', 'rson', 'ople')}`}>
+                            <UsersIcon className='w-4' />{formatNumber(profile.following_count)}
+                        </p>
+                        <p className={metricsClassName} title={`${pluralize(profile.follower_count, 'Follower')}`}>
+                            <UserGroupIcon className='w-4' />{formatNumber(profile.follower_count)}
+                        </p>
+                    </span>
+                }
             </div>
-        </div>
+        </div >
     )
 }

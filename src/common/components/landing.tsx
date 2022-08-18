@@ -7,8 +7,8 @@ export default function Landing() {
 				tweebt
 			</span>
 
-			<span className='mt-3 text-2xl'>
-				search above or <a title='Sign In' onClick={() => signIn('twitter')}>sign in with Twitter</a> to see your feed
+			<span className='mt-3 text-2xl px-5 text-center'>
+				Search above or <a title='Sign In' onClick={() => signIn('twitter')}>sign in with Twitter</a> to see your feed
 			</span>
 		</>
 	)
