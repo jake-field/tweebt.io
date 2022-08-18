@@ -11,7 +11,6 @@ interface Props {
 	showMetrics?: boolean;
 	showTweetText?: boolean;
 	children?: any;
-
 	topAndBottomLayout: boolean;
 	mobilemode: boolean;
 }
@@ -24,7 +23,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 		<>
 			{!(topAndBottomLayout && mobilemode) && children}
 
-			<div className={`${(topAndBottomLayout && !mobilemode) ? 'absolute' : ''} w-full h-full flex flex-col text-xs pointer-events-none text-white`}>
+			<div className={`${(topAndBottomLayout && !mobilemode) ? 'absolute' : ''} w-full h-full flex flex-col text-xs md:text-sm pointer-events-none text-white`}>
 				<div className={`${bannerClass} z-10 gap-2 justify-center select-text flex-wrap ${visible ? 'top-0' : '-top-20'}`}>
 					<Link href={`/@${item.author.username}`}>
 						<a
@@ -80,18 +79,11 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 
 						</>
 					}
-
-					{/* {!mobilemode && item.text && item.text.length > 0 && showTweetText &&
-						<p className={`p-1 overflow-hidden cursor-text pb-0 w-full border-t border-gray-900 border-opacity-70 transition-all ease-in-out duration-300 ${visible ? 'h-max' : 'h-0'}`}>
-							{formattedText}
-						</p>
-					} */}
 				</div>
 
 				{topAndBottomLayout && mobilemode && children}
-				{topAndBottomLayout && !mobilemode &&
-					<div className='grow pointer-events-none text-left' style={{ contain: 'content' }}>
-						{/* TODO: showOnHover needs a delay bound to it so that it doesn't open instantly when moving the mouse around */}
+				{topAndBottomLayout && showTweetText &&
+					<div className='grow pointer-events-none text-left h-0' style={{ contain: 'content' }}>
 						<TextOverlay item={item} showTextButton showAltButton parentVisibility={visible} />
 					</div>
 				}

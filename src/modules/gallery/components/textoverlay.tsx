@@ -38,7 +38,7 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 	return (
 		<>
 			<div
-				className='top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-black bg-opacity-90 pointer-events-auto'
+				className='top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-black bg-opacity-90 pointer-events-auto overflow-y-auto'
 				style={{ display: showText ? 'flex' : 'none' }}
 				onClick={() => setShowText(null)}
 			>
@@ -51,7 +51,7 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 			{item.alt_text &&
 				<button
 					title='Show Image Alt Text'
-					className={`${buttonClass} bottom-1 px-2 ${showAltButton && parentVisibility ? 'block' : 'hidden'}`}
+					className={`${buttonClass} bottom-1 text-xs px-2 ${showAltButton && parentVisibility ? 'block' : 'hidden'}`}
 
 					onClick={() => toggleText(true)}
 					onMouseEnter={() => { if (showOnHover) setShowText('alt') }}

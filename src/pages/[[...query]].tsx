@@ -78,7 +78,8 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 					<Title
 						title={`${profile.name} (@${profile.handle})`}
 						image={profile.image.replace('400x400', '200x200')}
-						desc={`Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`}
+						desc={(profile.bio instanceof Array) ? profile.bio.map(value => { return (value.link || value.text) }).join('') : profile.bio || `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`}
+						//desc={`Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`}
 					/>
 					<ProfileCard profile={profile} />
 					<GalleryFeed apiEndpoint={apiEndpoint} />
