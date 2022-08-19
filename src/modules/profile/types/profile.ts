@@ -68,10 +68,10 @@ export default class Profile {
 				let pattern: string = '';
 
 				//precondition urls, replacing t.co with the normal urls
-				entities?.urls?.forEach((value) => bio = bio.replace(value.url, value.display_url));
+				entities?.urls?.forEach((value) => bio = bio.replace(value.url, value.expanded_url));
 
 				//build pattern for split and push info to bio_data
-				entities?.urls?.forEach(url => pattern += `(${url.display_url})|`);
+				entities?.urls?.forEach(url => pattern += `(${url.expanded_url})|`);
 				entities?.mentions?.forEach(mention => pattern += `(@${mention.username})|`);
 				entities?.hashtags?.forEach(hashtag => pattern += `(#${hashtag.tag})|`);
 
@@ -92,7 +92,7 @@ export default class Profile {
 
 				//determine link from text
 				split.forEach(value => {
-					if (value) bioArray.push(splitRegex.test(value) ? { link: value } : { text: value });
+					if (value) bioArray.push(splitRegex.test(value) ? { link: value.replace(/^https?:\/\//, '') } : { text: value });
 				});
 
 				this.data.bio = bioArray;

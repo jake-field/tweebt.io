@@ -55,9 +55,9 @@ export default function ProfileCard({ profile }: Props) {
                                     return value.text;
                                 }
                                 else if (value.link) {
-                                    if (value.link.startsWith('@')) return <Link key={index} href={value.link}>{value.link}</Link>;
-                                    else if (value.link.startsWith('#')) return <Link key={index} href={`/search?q=${encodeURIComponent(value.link)}`}>{value.link}</Link>;
-                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} target='_blank' rel='noreferrer'>{value.link}</a>
+                                    if (value.link.startsWith('@')) return <Link key={index} href={value.link} title={value.link}>{value.link}</Link>;
+                                    else if (value.link.startsWith('#')) return <Link key={index} title={value.link} href={`/search?q=${encodeURIComponent(value.link)}`}>{value.link}</Link>;
+                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} title={value.link} target='_blank' rel='noreferrer'>{value.link.length > 24 ? value.link.substring(0,22) + '...' : value.link}</a>
                                 }
                                 return 'error';
                             })
