@@ -1,133 +1,93 @@
-import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
-import InfiniteScroll from "react-infinite-scroller"
-import Masonry from "react-masonry-css"
-import ImagePopup from "../../../common/components/imagepopup"
-import LoadingSpinner from "../../../common/components/loadingspinner"
-import Profile, { ProfileMedia, ProfileMediaItem } from "../../../common/types/profile"
-import GalleryMediaItem from "./galleryitem"
+import { useState } from 'react';
+import Masonry from 'react-masonry-css'
+import GalleryItemPopup from './galleryitempopup';
+import Gallery, { Media } from '../types/gallery';
+import GalleryMediaItem from './galleryitem'
+import InfiniteScroll from 'react-infinite-scroller';
 
 interface Props {
-	profile?: Profile;
+	gallery: Gallery[];
+
+	loadNext: () => void;
+	canLoadMore: () => boolean;
 }
 
+//Mosaic settings, how columns are created/measured
 const breakpointColumnsObj = {
-	default: 5,
+	default: 5, //5 columns
 	1700: 4,
 	1100: 3,
-	700: 2,
+	700: 2, //2 columns @ <700px width
 };
 
-export default function GalleryComponent({ profile }: Props) {
-	const router = useRouter();
-	let [gallery, setGallery] = useState<ProfileMedia | undefined>(undefined);
-	const [selectedGalleryItem, setSelectedGalleryItem] = useState<ProfileMediaItem | null>(null);
-	const [modalVisible, setModalVisible] = useState(true);
-	const [loading, setLoading] = useState(false);
-	const [forceFetch, setForceFetch] = useState(false);
+export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Props) {
+	const [selectedGalleryItem, setSelectedGalleryItem] = useState<Media>();
+	const [modalVisible, setModalVisible] = useState(false);
 
-	//profile change
-	useEffect(() => {
-		setLoading(true);
-		closeImageModal(); //close modal on profile change
-		gallery = undefined;
-		fetchData(0);
-	}, [profile]);
+	function updateImagePopup(item?: Media) {
+		//hide scrollbars on open, force fixed for the sake of mobile, then restore scroll on close
+		const scroll = document.body.style.top;
+		const s = -(scrollY).toString();
+		document.body.style.overflowY = item ? 'hidden' : '';
+		document.body.style.position = item ? 'fixed' : '';
+		document.body.style.top = item ? `${s}px` : '';
+		document.body.style.width = item ? '100%' : '';
+
+		if (!item) {
+			const num = Number(scroll.substring(0,scroll.indexOf('px')));
+			scrollTo({ top: -num });
+		}
+
+		//if on mobile, make the background black so that the device browser has consistent banner colors
+		if (window.matchMedia('(pointer: coarse)').matches) document.body.style.backgroundColor = item ? 'black' : '';
+
+		//don't update state if null as it removes the fade-out effect on modal close
+		if (item) setSelectedGalleryItem(item);
+		setModalVisible(!!item);
+	}
 
 	//back button hijacking for allowing the modal to register as a separate history item
-	useEffect(() => {
-		if (modalVisible) {
-			router.beforePopState(() => {
-				console.log('modalpop')
-				router.beforePopState(() => true); //reset
-				closeImageModal();
-				return false;
-			});
-		} else {
-			router.beforePopState(() => true);
-		}
-	}, [router, modalVisible]);
+	// useEffect(() => {
+	// 	if (modalVisible) {
+	// 		router.beforePopState(() => {
+	// 			router.beforePopState(() => true); //reset
+	// 			updateImagePopup();
+	// 			return true;
+	// 		});
+	// 	} else {
+	// 		router.beforePopState(() => true);
+	// 	}
+	// }, [router, modalVisible]);
 
-	async function fetchData(page: number) {
-		setLoading(true);
-
-		//if there is a profile, as well as either a pagination token or no items were pre-fetched
-		if (profile && ((gallery?.pagination?.token || !forceFetch) || !gallery?.items)) {
-			//use normal pagination but if we don't get good results, force fetch based on oldest tweet ID
-			//this usually fixes large gaps in timeline history as well, producing more results, but we should only do it once
-			let pagination = '';
-			if (page > 0) {
-				if (gallery?.pagination?.token) {
-					pagination = '?next=' + gallery.pagination.token;
-					setForceFetch(false); //allow ourselves to force fetch again if we've been fetching normally
-				} else if (!forceFetch && gallery?.pagination?.oldest_id) {
-					pagination = '?until=' + gallery.pagination.oldest_id;
-					setForceFetch(true); //disallow future force fetching unless cleared by a pagination token
-				}
-			}
-
-			await fetch(`api/${profile.id}${pagination}`)
-				.then((res) => res.json())
-				.then((data) => {
-					if (gallery?.items && data?.media?.items) {
-						setGallery({ items: [...gallery.items, ...data.media.items], pagination: data.media.pagination });
-					} else if (data?.media?.items) {
-						setGallery(data.media);
-					}
-				}).finally(() => {
-					setLoading(false);
-				});
-		}
-	}
-
-	function hasMore() {
-		return !loading && (gallery?.pagination?.token !== undefined || !forceFetch);
-	}
-
-	function openImageModal(item: ProfileMediaItem) {
-		document.body.style.overflowY = 'hidden';
-		document.body.style.backgroundColor = 'black'; //TODO: maybe remove htis if it doesn't work
-		setSelectedGalleryItem(item);
-		setModalVisible(true);
-		router.push('/' + profile?.handle + '#img', undefined, { scroll: false, shallow: true });
-	}
-
-	function closeImageModal() {
-		document.body.style.overflowY = '';
-		document.body.style.backgroundColor = ''; //TODO: maybe remove htis if it doesn't work
-		setModalVisible(false);
-	}
+	if (gallery.length === 0 || gallery[0].items.length === 0) return null;
 
 	return (
-		<>
-			{selectedGalleryItem !== null && <ImagePopup galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => closeImageModal()} />}
-			<InfiniteScroll
-				className='w-fit max-w-[2500px] select-none mb-40'
-				initialLoad={false}
-				loadMore={fetchData}
-				hasMore={hasMore()}
-				threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns
-			>
-				{gallery?.items ? (
-					<>
-						<Masonry
-							breakpointCols={breakpointColumnsObj}
-							className='flex w-auto'
-							columnClassName=''
-						>
-							{
-								gallery.items.map((item, index) => {
-									return <GalleryMediaItem key={index} item={item} onClick={() => openImageModal(item)} />
-								})
-							}
-						</Masonry>
-						{loading && <div key={0} className='flex flex-row items-center justify-center my-28'><LoadingSpinner className='w-10 h-10' /></div>}
-					</>
-				) : (
-					<div key={0} className='flex flex-row items-center justify-center'><LoadingSpinner className='w-10 h-10' /></div>
-				)}
+		<div className='flex flex-col items-center w-full select-none'>
+			<GalleryItemPopup
+				galleryItem={selectedGalleryItem}
+				visible={modalVisible}
+				onClick={() => updateImagePopup()}
+			/>
 
+			<InfiniteScroll
+				className='w-full max-w-[2500px]'
+				initialLoad={false}
+				loadMore={loadNext}
+				hasMore={canLoadMore()}
+				threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
+			>
+				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
+					{gallery.map(listing => (
+						listing.items.map((item, index) => (
+							<GalleryMediaItem 
+								key={index}
+								item={item}
+								onClick={() => updateImagePopup(item)}
+							/>
+						))
+					))}
+				</Masonry>
 			</InfiniteScroll>
-		</>
+		</div>
 	)
 }

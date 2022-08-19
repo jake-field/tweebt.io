@@ -2,18 +2,14 @@
 
 const nextConfig = {
 	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
-	images: {
-		domains: ['pbs.twimg.com', 'abs.twimg.com'], //for next/image security
-	},
+	poweredByHeader: false,
 }
 
 const ContentSecurityPolicy = `
 	default-src 'self';
 	img-src 'self' data:;
 	script-src 'self' 'unsafe-eval';
-	child-src 'self';
 	style-src 'self' 'unsafe-inline';
-	font-src 'self';  
 `
 
 const securityHeaders = [
@@ -46,6 +42,8 @@ const securityHeaders = [
 
 module.exports = {
 	...nextConfig,
+
+	//set up security headers
 	async headers() {
 		return [
 			{
@@ -53,6 +51,20 @@ module.exports = {
 				source: '/:path*',
 				headers: securityHeaders,
 			}
+		]
+	},
+
+	//proxy for twitter content, helps with tracking and adblocker issues
+	async rewrites() {
+		return [
+			{
+				source: '/img/:path*',
+				destination: 'https://pbs.twimg.com/:path*',
+			},
+			{
+				source: '/staticimg/:path*',
+				destination: 'https://abs.twimg.com/:path*',
+			},
 		]
 	},
 }

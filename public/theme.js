@@ -1,9 +1,10 @@
 ; (function initTheme() {
-	//var theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+	//detect device/system theme, and attempt to grab theme from local storage
+	var sysTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	var theme = localStorage.getItem('theme') || 'sys';
 
-	//shortening it for now until it can be figured out why the page is flashing on reload.
-	//consider setting bg to black until load for least amount of visual strain
-	if (localStorage.getItem('theme') === 'dark') {
-		document.querySelector('html').classList.add('dark')
+	//if theme is dark mode, or theme is auto and system/device is in dark mode
+	if (theme === 'dark' || (theme === 'sys' && sysTheme === 'dark')) {
+		document.querySelector('html').classList.add('dark');
 	}
 })()
