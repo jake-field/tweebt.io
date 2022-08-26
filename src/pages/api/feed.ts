@@ -46,13 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		}
 
 		const timeline = (await apiRes.json()) as Timeline;
-
-		//display error count. As far as I'm aware, these are mostly deleted tweets, with some being protected tweets
-		if (timeline.errors) {
-			console.log(timeline.errors?.length, `timeline error${timeline.errors.length > 1 ? 's' : ''}`);
-			//console.log('timeline errors: ', timeline.errors);
-		}
-
 		const response = new Gallery(timeline);
 		return res.status(apiRes.status).json(response);
 	} else {

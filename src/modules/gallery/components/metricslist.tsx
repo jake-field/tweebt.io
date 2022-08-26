@@ -10,39 +10,39 @@ interface Props {
 
 export default function MetricsList({ item, hideNumbers }: Props) {
 	const className = 'flex gap-1 transition-all ease-in-out duration-200 cursor-pointer text-white visited:text-white dark:text-white dark:visited:text-white';
-	const isRetweet = (item.referencing && item.referencing[0].type === 'retweeted') || false;
-	const tweetHandle = isRetweet ? item.referencing![0].username : item.author.username;
-	const tweetID = isRetweet ? item.referencing![0].tweet_id : item.tweet_id;
+	const isRetweet = (item.ref_tweet?.type === 'retweeted') || false;
+	const tweetHandle = isRetweet ? item.ref_tweet?.author.handle : item.tweet.author.handle;
+	const tweetID = isRetweet ? item.ref_tweet?.id : item.tweet.id;
 	const sharedAttrb: AnchorHTMLAttributes<HTMLAnchorElement> = { target: '_blank', rel: 'noreferrer' };
-
+	
 	return (
 		<>
 			<a
-				title={`Reply (${pluralize(item.metrics.replies, 'repl', 'y', 'ies')})`}
+				title={`Reply (${pluralize(item.tweet.metrics!.replies, 'repl', 'y', 'ies')})`}
 				className={`${className} hover:text-blue-400 dark:hover:text-blue-400`}
 				href={`https://twitter.com/intent/tweet?in_reply_to=${tweetID}`}
 				{...sharedAttrb}
 			>
 				<ReplyIcon className='w-4' />
-				{!hideNumbers && formatNumber(item.metrics.replies)}
+				<span className='hidden sm:block'>{!hideNumbers && formatNumber(item.tweet.metrics!.replies)}</span>
 			</a>
 			<a
-				title={`Retweet (${pluralize(item.metrics.retweets + item.metrics.quotes, 'retweet')})`}
+				title={`Retweet (${pluralize(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes, 'retweet')})`}
 				className={`${className} hover:text-green-400 dark:hover:text-green-400`}
 				href={`https://twitter.com/intent/retweet?tweet_id=${tweetID}`}
 				{...sharedAttrb}
 			>
 				<RetweetIcon className='w-4' />
-				{!hideNumbers && formatNumber(item.metrics.retweets + item.metrics.quotes)}
+				<span className='hidden sm:block'>{!hideNumbers && formatNumber(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes)}</span>
 			</a>
 			<a
-				title={`Like (${pluralize(item.metrics.likes, 'like')})`}
+				title={`Like (${pluralize(item.tweet.metrics!.likes, 'like')})`}
 				className={`${className} hover:text-red-400 dark:hover:text-red-400`}
 				href={`https://twitter.com/intent/like?tweet_id=${tweetID}`}
 				{...sharedAttrb}
 			>
 				<LikeIcon className='w-4' />
-				{!hideNumbers && formatNumber(item.metrics.likes)}
+				<span className='hidden sm:block'>{!hideNumbers && formatNumber(item.tweet.metrics!.likes)}</span>
 			</a>
 			<a
 				title='View on Twitter'

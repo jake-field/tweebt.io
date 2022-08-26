@@ -13,7 +13,9 @@ interface Props {
 //      then if no data, display an error here for cleanliness
 export default function ProfileCard({ profile }: Props) {
     const metricsClassName = 'inline-flex items-center justify-center gap-1 rounded-lg bg-slate-900 px-2';
+    
     if (!profile) return null;
+    
     return (
         <div className='flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5'>
             <div className='select-none rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-50 dark:border-slate-700 relative top-7 z-10 hover:scale-[1.5] transition-transform ease-in-out delay-150 duration-300'>
@@ -57,7 +59,7 @@ export default function ProfileCard({ profile }: Props) {
                                 else if (value.link) {
                                     if (value.link.startsWith('@')) return <Link key={index} href={value.link} title={value.link}>{value.link}</Link>;
                                     else if (value.link.startsWith('#')) return <Link key={index} title={value.link} href={`/search?q=${encodeURIComponent(value.link)}`}>{value.link}</Link>;
-                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} title={value.link} target='_blank' rel='noreferrer'>{value.link.length > 24 ? value.link.substring(0,22) + '...' : value.link}</a>
+                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} title={value.link} target='_blank' rel='noreferrer'>{value.link.length > 24 ? value.link.substring(0, 22) + '...' : value.link}</a>
                                 }
                                 return 'error';
                             })
@@ -81,7 +83,7 @@ export default function ProfileCard({ profile }: Props) {
                     </p>
                 }
 
-                {profile.follower_count && profile.following_count && profile.tweet_count &&
+                {profile.follower_count !== undefined && profile.following_count !== undefined && profile.tweet_count !== undefined &&
                     <span className='flex gap-1 text-slate-300 select-none'>
                         <p className={metricsClassName} title={`${pluralize(profile.tweet_count, 'Tweet')}`}>
                             <TwitterIcon className='w-4' />{formatNumber(profile.tweet_count)}

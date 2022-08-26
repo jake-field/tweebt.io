@@ -25,54 +25,54 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 
 			<div className={`${(topAndBottomLayout && !mobilemode) ? 'absolute' : ''} w-full h-full flex flex-col text-xs md:text-sm pointer-events-none text-white`}>
 				<div className={`${bannerClass} z-10 gap-2 justify-center select-text flex-wrap ${visible ? 'top-0' : '-top-20'}`}>
-					<Link href={`/@${item.author.username}`}>
+					<Link href={`/@${item.tweet.author.handle}`}>
 						<a
-							title={`View ${item.author.name}'s (@${item.author.username}) Profile`}
+							title={`View ${item.tweet.author.name}'s (@${item.tweet.author.handle}) Profile`}
 							className={linkClass + ' flex flex-wrap items-center justify-center gap-1'}
 						>
 							<Image
-								src={item.author.profile_image_url}
-								alt={item.author.name + '\'s profile image'}
+								src={item.tweet.author.image}
+								alt={item.tweet.author.name + '\'s profile image'}
 								width={24}
 								height={24}
 								className='rounded-full'
 							/>
-							{item.author.name}{!item.referencing ? <span className='text-gray-300 font-light'>@{item.author.username}</span> : ''}
+							{item.tweet.author.name}{!item.ref_tweet ? <span className='text-gray-300 font-light'>@{item.tweet.author.handle}</span> : ''}
 						</a>
 					</Link>
 
-					{item.referencing &&
+					{item.ref_tweet &&
 						<>
-							{item.referencing[0].type === 'retweeted' ? (
+							{item.ref_tweet.type === 'retweeted' ? (
 								<span
-									title={`${item.author.name} retweeted ${item.referencing[0].username === item.author.username ? 'themself' : item.referencing[0].name}`}
+									title={`${item.tweet.author.name} retweeted ${item.ref_tweet.author.handle === item.tweet.author.handle ? 'themself' : item.ref_tweet.author.name}`}
 									className='flex gap-2 items-center justify-center text-green-400'
 								>
-									<RetweetIcon className={'w-4'} />{item.referencing[0].username === item.author.username ? ' themself' : ''}
+									<RetweetIcon className={'w-4'} />{item.ref_tweet.author.handle === item.tweet.author.handle ? ' themself' : ''}
 								</span>
 							) : (
 								<span
-									title={`${item.author.name} ${item.referencing[0].type.replace('_', ' ')} ${item.referencing[0].username === item.author.username ? 'themselves' : item.referencing[0].name}`}
+									title={`${item.tweet.author.name} ${item.ref_tweet.type!.replace('_', ' ')} ${item.ref_tweet.author.handle === item.tweet.author.handle ? 'themselves' : item.ref_tweet.author.name}`}
 									className='text-blue-400'
 								>
-									{item.referencing[0].type.replace('_', ' ')}{item.referencing[0].username === item.author.username ? ' themselves' : ''}
+									{item.ref_tweet.type!.replace('_', ' ')}{item.ref_tweet.author.handle === item.tweet.author.handle ? ' themselves' : ''}
 								</span>
 							)}
 
-							{item.referencing[0].username !== item.author.username &&
-								<Link href={`/@${item.referencing[0].username}`}>
+							{item.ref_tweet.author.handle !== item.tweet.author.handle &&
+								<Link href={`/@${item.ref_tweet.author.handle}`}>
 									<a
-										title={`View ${item.referencing[0].name}'s (@${item.referencing[0].username}) Profile`}
+										title={`View ${item.ref_tweet.author.name}'s (@${item.ref_tweet.author.handle}) Profile`}
 										className={linkClass + ' flex flex-wrap items-center justify-center gap-1'}
 									>
 										<Image
-											src={item.referencing[0].profile_image_url}
-											alt={item.referencing[0].name + '\'s profile image'}
+											src={item.ref_tweet.author.image}
+											alt={item.ref_tweet.author.name + '\'s profile image'}
 											width={24}
 											height={24}
 											className='rounded-full'
 										/>
-										@{item.referencing[0].username}
+										@{item.ref_tweet.author.handle}
 									</a>
 								</Link>
 							}

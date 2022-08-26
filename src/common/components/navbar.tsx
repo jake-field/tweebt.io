@@ -14,7 +14,7 @@ export default function NavBar({ session }: Props) {
 		<div className='fixed z-40 select-none p-3 flex flex-row flex-wrap items-center justify-center gap-2 w-full bg-slate-200 dark:bg-slate-900 border-b border-slate-400 dark:border-slate-800' >
 			<span className='text-xl text-slate-700 dark:text-slate-300 border-l border-r px-3 border-slate-500 hidden sm:block'>
 				<Link href='/'>
-					<a title='tweebt'>tweebt</a>
+					<a title='tweebt.io'>tweebt.io</a>
 				</Link>
 			</span>
 

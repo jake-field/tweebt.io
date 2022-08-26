@@ -1,11 +1,11 @@
-import ProfileClass from '../profile/types/profile';
+import Profile from '../profile/types/profile';
 import { validateHandle } from '../profile/utils/validation';
 import { TwitterEndpoints } from './endpoints';
 import User from './types/user';
 
 //Function to get the profile of a twitter user by their username (@handle)
 //TODO: more error checking and edge cases, and consider performance impact of bio parsing
-export async function getProfile(handle: string): Promise<ProfileClass> {
+export async function getProfile(handle: string): Promise<Profile> {
 	//check for required environment variables
 	if (!process.env.TWITTER_API_TOKEN) return { error: { title: 'Server Error', details: 'missing environment variables' } };
 
@@ -28,5 +28,5 @@ export async function getProfile(handle: string): Promise<ProfileClass> {
 		user.errors.forEach(error => console.log(error));
 	}
 
-	return new ProfileClass(user);
+	return new Profile(user);
 }

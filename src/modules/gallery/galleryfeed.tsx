@@ -46,7 +46,6 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 			if (target.replies === false) merge.push('replies');
 			if (target.retweets === false) merge.push('retweets');
 			if (merge.length > 0) exclude = '&exclude=' + merge.join(',');
-			console.log('exclude attachement:', exclude);
 		} else console.log('cannot use excludes here')
 
 		//TODO: make a pagination object or even an api object for specific values
@@ -67,7 +66,6 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 				//store for items or if the meta was fully recieved
 				//storing for meta helps prevent re-requesting empty results
 				if ((data.items && data.items.length > 0) || data.meta) {
-					console.log('GalleryFeed(): ', 'fetchData(): ', `fetch successful [${data.meta?.result_count || 0} result(s)]`);
 					setGallery([...gallery, data]);
 				} else {
 					console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch failed, api did not return either items or metadata');

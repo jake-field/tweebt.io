@@ -42,7 +42,6 @@ export default function useStorageState<T>(key: string, defaultValue: T): [T, Di
 	//Update storage on state update, this helps if there are custom functions
 	useEffect(() => {
 		localStorage[key] = JSON.stringify(state); //TODO: sanitize
-		console.log(state);
 	}, [state, key]);
 
 	return [state, setState];

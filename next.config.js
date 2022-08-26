@@ -54,7 +54,7 @@ module.exports = {
 		]
 	},
 
-	//proxy for twitter content, helps with tracking and adblocker issues
+	//proxy for twitter content, helps with negating tracking and adblocker issues
 	async rewrites() {
 		return [
 			{
@@ -62,7 +62,7 @@ module.exports = {
 				destination: 'https://pbs.twimg.com/:path*',
 			},
 			{
-				source: '/staticimg/:path*',
+				source: '/simg/:path*',
 				destination: 'https://abs.twimg.com/:path*',
 			},
 		]

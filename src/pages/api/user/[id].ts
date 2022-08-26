@@ -33,8 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	// (params?.newest_id ? `&since_id=${params?.newest_id}` : '') +
 	// (params?.oldest_id ? `&until_id=${params?.oldest_id}` : '');
 
-	let apiRes: Response | undefined = undefined;
-	apiRes = await TwitterEndpoints.getUsersTweets(id as string, token?.accessToken || apitoken, galleryQuery);
+	//fetch with user token if there is one, otherwise anonymous via application apiToken
+	let apiRes = await TwitterEndpoints.getUsersTweets(id as string, token?.accessToken || apitoken, galleryQuery);
 
 	if (apiRes) {
 		if (apiRes.status != 200) {
@@ -46,11 +46,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		}
 
 		const timeline = (await apiRes.json()) as Timeline;
-
-		//display error count. As far as I'm aware, these are mostly deleted tweets, with some being protected tweets
-		if (timeline.errors) console.log(timeline.errors?.length, `timeline error${timeline.errors.length > 1 ? 's' : ''}`);
-		//console.log('timeline errors: ', timeline.errors);
-
 		const response = new Gallery(timeline);
 		return res.status(apiRes.status).json(response);
 	} else {

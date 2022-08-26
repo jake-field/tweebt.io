@@ -63,7 +63,7 @@ export const authOptions: NextAuthOptions = {
 					email: data.username, //Use email section for twitter handle
 
 					//relocate to local nextjs proxy to bypass adblockers
-					image: data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//i, '/img/').replace(/https:\/\/abs.twimg.com\//i, '/staticimg/'),
+					image: data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//i, '/img/').replace(/https:\/\/abs.twimg.com\//i, '/simg/'),
 				};
 			}
 		}),

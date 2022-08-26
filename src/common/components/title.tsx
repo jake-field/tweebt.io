@@ -9,7 +9,7 @@ interface Props {
 
 export default function Title({ title, desc, image }: Props) {
 	const router = useRouter();
-	const appName = 'tweebt';
+	const appName = 'tweebt.io';
 	const description = 'Search Twitter or view your feed as rolling gallery of images to streamline your browsing.';
 	const ogTitle = title ? `${title} // ${appName}` : appName;
 

@@ -6,9 +6,9 @@ interface Props {
 }
 
 export default function VideoOverlay({ item }: Props) {
-	const isRetweet = (item.referencing && item.referencing[0].type === 'retweeted') || false;
-	const tweetHandle = isRetweet ? item.referencing![0].username : item.author.username;
-	const tweetId = isRetweet ? item.referencing![0].tweet_id : item.tweet_id;
+	const isRetweet = (item.ref_tweet?.type === 'retweeted') || false;
+	const tweetHandle = isRetweet ? item.ref_tweet?.author.handle : item.tweet.author.handle;
+	const tweetId = isRetweet ? item.ref_tweet?.id : item.tweet.id;
 	return (
 		<a
 			href={`https://twitter.com/${tweetHandle}/status/${tweetId}`}

@@ -38,13 +38,13 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 			<GalleryItemOverlay
 				item={item}
 				visible={hover || mobilemode}
-				showMetrics={!mobilemode}
+				showMetrics={true}
 				showTweetText={!mobilemode}
 				topAndBottomLayout={!mobilemode}
 				mobilemode={mobilemode}
 			>
 				<span className='w-full min-h-[200px] inline-grid' style={{ contain: 'content' }} draggable={false}>
-					{item.nsfw && <SpoilerOverlay />}
+					{item.flagged && <SpoilerOverlay />}
 					{item.url.includes('video_thumb') && imgVisible &&
 						<VideoOverlay item={item} />
 					}

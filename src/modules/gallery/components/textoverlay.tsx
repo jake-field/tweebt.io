@@ -16,14 +16,24 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 	const [formattedText, setFormattedText] = useState<JSX.Element>(<></>);
 	const [formattedAltText, setFormattedAltText] = useState<JSX.Element>(<></>);
 	const buttonClass = 'absolute right-1 p-1 hover:ring-2 bg-black bg-opacity-70 pointer-events-auto rounded-md uppercase font-bold';
+	const clearDelay = 150; //delay before hiding text, this allows links to be clicked
+	const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+	let timeoutObject: NodeJS.Timeout | undefined = undefined;
 
 	function toggleText(alt: boolean) {
+		clearTimeout(timeoutObject); //clear the timeout
 		setShowText((alt && showText !== 'alt') ? 'alt' : (!alt && showText !== 'text') ? 'text' : null);
+	}
+
+	function clearText(ms?: number) {
+		clearTimeout(timeoutObject); //clear the timeout
+		if (ms) timeoutObject = setTimeout(() => setShowText(null), ms);
+		else setShowText(null);
 	}
 
 	useEffect(() => {
 		//don't load/store tweet-text in state if we don't show the button, to save DOM elements
-		if (item.text && showTextButton) setFormattedText(FormatTwitterText(item.text));
+		if (item.tweet.text && showTextButton) setFormattedText(FormatTwitterText(item.tweet.text));
 		else setFormattedText(<></>);
 
 		if (item.alt_text) setFormattedAltText(FormatTwitterText(item.alt_text));
@@ -55,26 +65,26 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 
 					onClick={() => toggleText(true)}
 					onMouseEnter={() => { if (showOnHover) setShowText('alt') }}
-					onBlur={() => setShowText(null)}
+					onBlur={() => clearText(clearDelay)}
 
 					//fix for iOS
-					onMouseLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setShowText(null) }}
+					onMouseLeave={() => { if (isAppleMobile) clearText(clearDelay) }}
 				>
 					Alt
 				</button>
 			}
 
-			{item.text &&
+			{item.tweet.text &&
 				<button
 					title='Show Tweet Text'
 					className={`${buttonClass} top-1 ${showTextButton && parentVisibility ? 'block' : 'hidden'}`}
 
 					onClick={() => toggleText(false)}
 					onMouseEnter={() => { if (showOnHover) setShowText('text') }}
-					onBlur={() => setShowText(null)}
+					onBlur={() => clearText(clearDelay)}
 
 					//fix for iOS
-					onMouseLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setShowText(null) }}
+					onMouseLeave={() => { if (isAppleMobile) clearText(clearDelay) }}
 				>
 					<AnnotationIcon className='w-4' />
 				</button>
