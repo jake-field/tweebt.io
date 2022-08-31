@@ -16,7 +16,7 @@ interface Props {
 }
 
 export default function GalleryItemOverlay({ item, visible, showMetrics, showTweetText, children, topAndBottomLayout, mobilemode }: Props) {
-	const bannerClass = 'pointer-events-auto transition-all bg-black bg-opacity-70 backdrop-blur-sm items-center py-2 px-1 flex cursor-default relative ease-in-out duration-150';
+	const bannerClass = 'pointer-events-auto transition-opacity bg-black bg-opacity-70 backdrop-blur-sm items-center py-2 px-1 flex cursor-default relative ease-in-out duration-150';
 	const linkClass = 'text-white visited:text-white dark:text-white dark:visited:text-white hover:text-blue-300 dark:hover:text-blue-300 hover:underline underline-offset-4';
 
 	return (
@@ -24,7 +24,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 			{!(topAndBottomLayout && mobilemode) && children}
 
 			<div className={`${(topAndBottomLayout && !mobilemode) ? 'absolute' : ''} w-full h-full flex flex-col text-xs md:text-sm pointer-events-none text-white`}>
-				<div className={`${bannerClass} z-10 gap-2 justify-center select-text flex-wrap ${visible ? 'top-0' : '-top-20'}`}>
+				<div className={`${bannerClass} z-10 gap-2 justify-center select-text flex-wrap ${visible ? 'opacity-100' : 'opacity-0'}`}>
 					<Link href={`/@${item.tweet.author.handle}`}>
 						<a
 							title={`View ${item.tweet.author.name}'s (@${item.tweet.author.handle}) Profile`}
@@ -35,7 +35,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 								alt={item.tweet.author.name + '\'s profile image'}
 								width={24}
 								height={24}
-								className='rounded-full'
+								className='rounded-full w-24 h-24'
 							/>
 							{item.tweet.author.name}{!item.ref_tweet ? <span className='text-gray-300 font-light'>@{item.tweet.author.handle}</span> : ''}
 						</a>
@@ -70,7 +70,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 											alt={item.ref_tweet.author.name + '\'s profile image'}
 											width={24}
 											height={24}
-											className='rounded-full'
+											className='rounded-full w-24 h-24'
 										/>
 										@{item.ref_tweet.author.handle}
 									</a>
@@ -88,7 +88,7 @@ export default function GalleryItemOverlay({ item, visible, showMetrics, showTwe
 					</div>
 				}
 
-				<div className={`${bannerClass} z-20 justify-evenly ${visible ? 'bottom-0' : '-bottom-11'}`}>
+				<div className={`${bannerClass} z-20 justify-evenly ${visible ? 'opacity-100' : 'opacity-0'}`}>
 					<MetricsList item={item} hideNumbers={!showMetrics} />
 				</div>
 			</div>

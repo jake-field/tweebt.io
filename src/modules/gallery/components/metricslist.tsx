@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function MetricsList({ item, hideNumbers }: Props) {
-	const className = 'flex gap-1 transition-all ease-in-out duration-200 cursor-pointer text-white visited:text-white dark:text-white dark:visited:text-white';
+	const className = 'flex gap-1 cursor-pointer text-white visited:text-white dark:text-white dark:visited:text-white';
 	const isRetweet = (item.ref_tweet?.type === 'retweeted') || false;
 	const tweetHandle = isRetweet ? item.ref_tweet?.author.handle : item.tweet.author.handle;
 	const tweetID = isRetweet ? item.ref_tweet?.id : item.tweet.id;

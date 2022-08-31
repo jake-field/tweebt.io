@@ -11,3 +11,21 @@ a {
 h1 {
 	@apply text-lg
 }
+
+/*Consider putting this elsewhere*/
+.scrollTop {
+	/*Layout*/
+	@apply flex flex-row items-center justify-evenly;
+	@apply fixed overflow-hidden z-50;
+	@apply w-fit h-10 bottom-5 right-5 p-2 gap-1;
+	@apply bg-slate-100 dark:bg-slate-700;
+	@apply shadow-lg rounded-full;
+	@apply text-xs uppercase whitespace-nowrap;
+
+	/*Interactions*/
+	@apply select-none cursor-pointer hover:ring;
+
+	/*Animation*/
+	@apply transition-transform will-change-transform translate-x-96;
+	@apply duration-300 ease-in-out;
+}

@@ -65,6 +65,10 @@ module.exports = {
 				source: '/simg/:path*',
 				destination: 'https://abs.twimg.com/:path*',
 			},
+			{
+				source: '/vimg/:path*',
+				destination: 'https://video.twimg.com/:path*',
+			},
 		]
 	},
 }

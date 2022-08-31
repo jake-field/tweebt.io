@@ -36,17 +36,26 @@ export interface Media {
 	tweet: Tweet;
 	ref_tweet?: Tweet; //optional, may not reference a tweet
 
-	url: string;
+	url: string; //image url or video preview
 
 	width: number;
 	height: number;
 
 	alt_text?: string; //optional, may contain alternative text
 	flagged?: boolean; //optional, may be flagged by author/twitter as potentially sensitive
+
+	//video stuff
+	video_url?: string;
+	videolq_url?: string;
+	duration_ms?: number;
+	view_count?: number;
 }
 
-function fixImageUrl(url?: string) {
-	return url?.replace(/https:\/\/pbs.twimg.com\//, '/img/').replace(/https:\/\/abs.twimg.com\//, '/simg/');
+function fixMediaUrl(url?: string) {
+	return url?.
+		replace(/https:\/\/pbs.twimg.com\//, '/img/').
+		replace(/https:\/\/abs.twimg.com\//, '/simg/').
+		replace(/https:\/\/video.twimg.com\//, '/vimg/');
 }
 
 export default class Gallery {
@@ -119,7 +128,7 @@ export default class Gallery {
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
-								image: fixImageUrl(refAuthor?.profile_image_url) || '/simg/sticky/default_profile_images/default_profile_normal.png',
+								image: fixMediaUrl(refAuthor?.profile_image_url) || '/simg/sticky/default_profile_images/default_profile_normal.png',
 							},
 						};
 					}
@@ -129,6 +138,30 @@ export default class Gallery {
 					let tweetText = tweet.text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 					if (ref) tweetText = tweetText.replace(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 					else tweetText = tweetText.replace(/( ?https:\/\/t.co\/\w* ?)*$/gim, '');
+
+					//if video, get highest quality
+					let bitrate = -1;
+					let lqbitrate = 999999999999999;
+					let videoURL: string | undefined = undefined;
+					let videolqURL: string | undefined = undefined;
+					if (item.type === 'video') {
+						item.variants?.forEach(variant => {
+							if (variant.bit_rate && variant.bit_rate >= bitrate) {
+								bitrate = variant.bit_rate;
+								videoURL = variant.url;
+							}
+
+							if (variant.bit_rate && variant.bit_rate <= lqbitrate) {
+								lqbitrate = variant.bit_rate;
+								videolqURL = variant.url;
+							}
+						});
+					} else {
+						videoURL = item.variants?.find(v => v.url.includes('mp4'))?.url;
+					}
+
+					//only one available
+					if (videolqURL === videoURL) videolqURL = undefined;
 
 					//push to the response items array
 					this.items.push({
@@ -148,18 +181,24 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: fixImageUrl(author?.profile_image_url) || ''
+								image: fixMediaUrl(author?.profile_image_url) || ''
 							},
 						},
 						ref_tweet: ref,
 
-						url: fixImageUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
+						url: fixMediaUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
 
 						width: item.width,
 						height: item.height,
 
 						alt_text: item.alt_text,
 						flagged: tweet.possibly_sensitive ? true : undefined,
+
+						//video stuff
+						duration_ms: item.duration_ms,
+						view_count: item.public_metrics?.view_count,
+						video_url: fixMediaUrl(videoURL),
+						videolq_url: fixMediaUrl(videolqURL),
 					});
 				}
 			});

@@ -16,8 +16,9 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 	const [formattedText, setFormattedText] = useState<JSX.Element>(<></>);
 	const [formattedAltText, setFormattedAltText] = useState<JSX.Element>(<></>);
 	const buttonClass = 'absolute right-1 p-1 hover:ring-2 bg-black bg-opacity-70 pointer-events-auto rounded-md uppercase font-bold';
+	const animClass = 'transition-opacity duration-100 ease-in-out';
 	const clearDelay = 150; //delay before hiding text, this allows links to be clicked
-	const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+	const isAppleTouchDevice = /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
 	let timeoutObject: NodeJS.Timeout | undefined = undefined;
 
 	function toggleText(alt: boolean) {
@@ -48,8 +49,7 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 	return (
 		<>
 			<div
-				className='top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-black bg-opacity-90 pointer-events-auto overflow-y-auto'
-				style={{ display: showText ? 'flex' : 'none' }}
+				className={`${animClass} top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-black bg-opacity-90 overflow-y-auto ${showText ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
 				onClick={() => setShowText(null)}
 			>
 				<p className='font-bold w-3/4 border-b border-gray-700'>{(showText === 'alt') && 'Alt Text:' || 'Tweet Text:'}</p>
@@ -58,33 +58,33 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 				</span>
 			</div>
 
-			{item.alt_text &&
+			{item.alt_text && showAltButton &&
 				<button
 					title='Show Image Alt Text'
-					className={`${buttonClass} bottom-1 text-xs px-2 ${showAltButton && parentVisibility ? 'block' : 'hidden'}`}
+					className={`${buttonClass} ${animClass} bottom-1 text-xs px-2 ${parentVisibility ? 'opacity-100' : 'opacity-0'}`}
 
 					onClick={() => toggleText(true)}
 					onMouseEnter={() => { if (showOnHover) setShowText('alt') }}
 					onBlur={() => clearText(clearDelay)}
 
 					//fix for iOS
-					onMouseLeave={() => { if (isAppleMobile) clearText(clearDelay) }}
+					onMouseLeave={() => { if (isAppleTouchDevice) clearText(clearDelay) }}
 				>
 					Alt
 				</button>
 			}
 
-			{item.tweet.text &&
+			{item.tweet.text && showTextButton &&
 				<button
 					title='Show Tweet Text'
-					className={`${buttonClass} top-1 ${showTextButton && parentVisibility ? 'block' : 'hidden'}`}
+					className={`${buttonClass} ${animClass} top-1 ${parentVisibility ? 'opacity-100' : 'opacity-0'}`}
 
 					onClick={() => toggleText(false)}
 					onMouseEnter={() => { if (showOnHover) setShowText('text') }}
 					onBlur={() => clearText(clearDelay)}
 
 					//fix for iOS
-					onMouseLeave={() => { if (isAppleMobile) clearText(clearDelay) }}
+					onMouseLeave={() => { if (isAppleTouchDevice) clearText(clearDelay) }}
 				>
 					<AnnotationIcon className='w-4' />
 				</button>

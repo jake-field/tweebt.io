@@ -1,3 +1,4 @@
+import { XCircleIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { SpinnerIcon } from '../../../common/icons/spinnericon';
@@ -12,8 +13,6 @@ interface Props {
 export default function GalleryItemPopup({ galleryItem, visible, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
-	const [modalVisible, setModalVisible] = useState(false);
-	const [fade, setFade] = useState(false);
 
 	//when galleryItem changes, force loaded to false so we get the loading indicator
 	useEffect(() => {
@@ -21,30 +20,37 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 		setLoaded(false);
 	}, [galleryItem]);
 
-	//fading assistance
-	useEffect(() => {
-		if (visible) {
-			setModalVisible(true);
-			setTimeout(() => setFade(true), 20); //give time for display:flex to kick in to allow animations
-		}
-		else {
-			setFade(false);
-		}
-	}, [visible]);
-
 	//don't render if no item
 	if (!galleryItem) return null;
 
 	return (
-		<div style={{ display: modalVisible ? 'flex' : 'none' }}>
-			<div
-				className='select-none flex flex-row justify-center items-center w-full h-full fixed top-0 left-0 bg-black z-50 bg-opacity-80 backdrop-blur transition-opacity ease-in-out duration-150'
-				onClick={onClick}
-				style={{ opacity: fade ? '100' : '0' }}
-				onTransitionEnd={() => { if (!visible) setModalVisible(false); }}
-			>
-				<div className='flex flex-col justify-center items-center h-[95vh] max-w-[95vw]'>
-					{(!loaded || !imgVisible) && <SpinnerIcon className='absolute w-10 h-10 text-white' />}
+		<div
+			className={`select-none flex flex-row justify-center items-center w-full h-full fixed top-0 left-0 bg-black z-50 bg-opacity-80 backdrop-blur transition-opacity ease-in-out duration-150 ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+			onClick={onClick}
+		>
+			<div className='flex flex-col justify-center items-center max-w-[95vw] max-h-[80vh] md:max-h-[90vh] h-auto w-auto'>
+				{(!loaded || !imgVisible) && <SpinnerIcon className='absolute w-10 h-10 text-white' />}
+
+				<span className='relative h-0 w-full bottom-8' title='Close'>
+					<XCircleIcon className='absolute right-0 w-7 hover:text-red-400 text-gray-400 cursor-pointer' />
+				</span>
+
+				{visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
+					<video
+						className='max-h-[80vh] md:max-h-[90vh] w-auto'
+						width={galleryItem.width}
+						height={galleryItem.height}
+						poster={galleryItem.url}
+						playsInline
+						autoPlay
+						loop
+						controls={loaded}
+						onClick={(e) => { e.stopPropagation() }} //prevent the popup from closing when clicking on a video
+						onPlay={() => { setLoaded(true); setImgVisible(true) }}
+					>
+						<source src={galleryItem.video_url} type='video/mp4' />
+					</video>
+				) : visible && (
 					<Image
 						//src={galleryItem.url + '?name=orig'} //pull full size
 						src={galleryItem.url + '?name=medium'}
@@ -58,9 +64,9 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 						onLoadStart={() => setLoaded(false)}
 						onLoadingComplete={() => setLoaded(true)}
 						onTransitionEnd={() => setImgVisible(visible)}
-						className={`object-contain shadow-lg transition-opacity ease-in-out duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+						className={`object-scale-down shadow-lg transition-opacity ease-in-out duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
 					/>
-				</div>
+				)}
 			</div>
 		</div>
 	)

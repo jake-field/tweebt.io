@@ -40,6 +40,7 @@ export class ModalViewState extends GenericView<ModalViewState> { }
 
 export class TileViewState extends GenericView<TileViewState> {
 	imageSettings: ImageQuality = { optimize: undefined, twitterQuality: 'small' };
+	autoplayVideos = false; //If true, videos will autoplay on the feed (gifs will still always autoplay)
 	showAuthorIfOwnProfile = false; //show author if it's their own post on their profile [@handle = item.author on profile page] (doesn't apply to replies/retweets)
 }
 

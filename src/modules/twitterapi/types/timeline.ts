@@ -4,12 +4,23 @@ import { Tweet } from './tweet';
 interface Media {
 	media_key: string;
 	type: string;
-	url: string;
-	preview_image_url?: string;
+	url?: string;
 	possibly_sensitive?: boolean;
 	width: number;
 	height: number;
 	alt_text?: string;
+
+	//video/gif variables
+	preview_image_url?: string;
+	duration_ms?: number;
+	variants?: {
+		content_type: string;
+		url: string;
+		bit_rate?: number;
+	}[];
+	public_metrics?: {
+		view_count: number;
+	}
 }
 
 //TODO: figure this one out, we have two, but one is a userReponse

@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		'expansions=attachments.media_keys,author_id,referenced_tweets.id,referenced_tweets.id.author_id' +
 		'&user.fields=profile_image_url' +
 		'&tweet.fields=possibly_sensitive,public_metrics,referenced_tweets' + //includes [id, text]
-		'&media.fields=preview_image_url,url,width,height,alt_text' + //includes [media_key, type]
+		'&media.fields=preview_image_url,url,width,height,alt_text,duration_ms,public_metrics,variants' + //includes [media_key, type]
 		(exclude ? `&exclude=${exclude}` : '') +
 		(next ? `&pagination_token=${next}` : '') +
 		`&max_results=${max_results || 10}`;
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 		const timeline = (await apiRes.json()) as Timeline;
 		const response = new Gallery(timeline);
-		return res.status(apiRes.status).json(response);
+		return res.status(apiRes.status).json(response);//.end(JSON.stringify(response, undefined, 2));//
 	} else {
 		return res.status(400).end('no appropriate endpoint');
 	}

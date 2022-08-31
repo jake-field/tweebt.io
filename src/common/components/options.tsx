@@ -1,12 +1,12 @@
 import { LogoutIcon, LoginIcon } from "@heroicons/react/outline";
-import { EyeOffIcon, FlagIcon, MoonIcon, UserIcon } from "@heroicons/react/solid";
+import { EyeOffIcon, FlagIcon, MoonIcon, PlayIcon, UserIcon } from "@heroicons/react/solid";
 import { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { ResultsContext } from "../contexts/appsettings/results";
 import { GetDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
-import { TileBlurContext } from "../contexts/appsettings/view";
+import { TileBlurContext, TileViewContext } from "../contexts/appsettings/view";
 import { ReplyIcon, RetweetIcon } from "../icons/twittericons";
 import ToggleSwitch from "./toggleswitch";
 
@@ -17,6 +17,7 @@ interface Props {
 export default function Options({ session }: Props) {
 	const liClassName = 'w-full border-b last:border-b-0 border-gray-500 py-3 px-4 hover:bg-slate-500 cursor-pointer';
 	const [visible, setVisible] = useState(false);
+	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
 	// const [modalVisible, setModalVisible] = useState(false);
 
 	return (
@@ -28,7 +29,7 @@ export default function Options({ session }: Props) {
 				onBlur={() => setVisible(false)}
 
 				//fix for iOS
-				onMouseLeave={() => { if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) setVisible(false) }}
+				onMouseLeave={() => { if (isAppleTouchDevice) setVisible(false) }}
 			>
 				<span className='flex justify-center items-center gap-1' onClick={() => setVisible(!visible)}>
 					{session?.user ? (
@@ -51,7 +52,7 @@ export default function Options({ session }: Props) {
 					<ThemeContext.Consumer>
 						{({ theme, set }) =>
 							<ToggleSwitch
-								label='Dark Mode'
+								label='Toggle dark mode'
 								checked={theme === 'dark' || theme === 'sys' && GetDeviceTheme() === 'dark'}
 								className={liClassName + ' justify-between'}
 								onClick={(e) => set({ theme: e.currentTarget.checked ? 'dark' : 'light' })}
@@ -64,7 +65,7 @@ export default function Options({ session }: Props) {
 					<TileBlurContext.Consumer>
 						{({ blur, set }) =>
 							<ToggleSwitch
-								label='Blur Flagged'
+								label='Blur flagged media'
 								checked={blur}
 								className={liClassName + ' justify-between'}
 								onClick={(e) => set({ blur: e.currentTarget.checked })}
@@ -73,6 +74,19 @@ export default function Options({ session }: Props) {
 							</ToggleSwitch>
 						}
 					</TileBlurContext.Consumer>
+
+					<TileViewContext.Consumer>
+						{({ autoplayVideos, set }) =>
+							<ToggleSwitch
+								label='Autoplay inline preview videos on your feed'
+								checked={autoplayVideos}
+								className={liClassName + ' justify-between'}
+								onClick={(e) => set({ autoplayVideos: e.currentTarget.checked })}
+							>
+								<span className='flex gap-2'><PlayIcon className='w-4' />Video Previews</span>
+							</ToggleSwitch>
+						}
+					</TileViewContext.Consumer>
 
 					<ResultsContext.Consumer>
 						{({ feedOptions: { flagged, replies, retweets }, set }) =>
