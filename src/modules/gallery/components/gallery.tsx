@@ -74,7 +74,7 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 				initialLoad={false}
 				loadMore={loadNext}
 				hasMore={canLoadMore()}
-				threshold={1000} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
+				threshold={2500} //so high due to react-masonry-css having heavily unbalanced columns, this helps hide the troughs
 			>
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
 					{gallery.map(listing => (

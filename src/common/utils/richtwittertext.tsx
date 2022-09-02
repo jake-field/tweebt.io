@@ -28,13 +28,3 @@ export default function FormatTwitterText(s: string, prettifyLinks?: boolean, li
 		</>
 	);
 }
-
-export async function FormatTwitterTextAsync(s: string, prettifyLinks?: boolean, linkLength?: number): Promise<JSX.Element> {
-	return new Promise((res, rej) => {
-		try {
-			res(FormatTwitterText(s, prettifyLinks, linkLength));
-		} catch (err) {
-			rej(err);
-		}
-	});
-}

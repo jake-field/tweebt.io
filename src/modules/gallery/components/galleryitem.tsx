@@ -98,7 +98,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 									<>
 										{autoplayVideos || item.type !== 'video' ? (
 											<video
-												className='w-full h-full object-cover'
+												className='w-full h-full min-h-[200px] object-cover'
 												style={{ height: '-webkit-fill-available' }}
 												poster={item.url}
 												width={item.width}

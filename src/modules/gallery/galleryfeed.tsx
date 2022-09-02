@@ -110,7 +110,7 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 				</div>
 			}
 
-			{!hasMore() &&
+			{!hasMore() && gallery.at(0)?.error === undefined &&
 				<div className='flex flex-row items-center justify-center h-48 text-gray-600 dark:text-gray-400'>
 					You&apos;ve gone as far back as I can show!
 				</div>

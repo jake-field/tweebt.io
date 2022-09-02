@@ -1,3 +1,4 @@
+import ProxyUrl from '../../../common/utils/proxyurl';
 import Timeline, { Meta } from '../../twitterapi/types/timeline';
 
 export interface Error {
@@ -49,13 +50,6 @@ export interface Media {
 	videolq_url?: string;
 	duration_ms?: number;
 	view_count?: number;
-}
-
-function fixMediaUrl(url?: string) {
-	return url?.
-		replace(/https:\/\/pbs.twimg.com\//, '/img/').
-		replace(/https:\/\/abs.twimg.com\//, '/simg/').
-		replace(/https:\/\/video.twimg.com\//, '/vimg/');
 }
 
 export default class Gallery {
@@ -128,7 +122,7 @@ export default class Gallery {
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
-								image: fixMediaUrl(refAuthor?.profile_image_url) || '/simg/sticky/default_profile_images/default_profile_normal.png',
+								image: ProxyUrl(refAuthor?.profile_image_url) || '/media/user_normal.png',
 							},
 						};
 					}
@@ -160,6 +154,10 @@ export default class Gallery {
 						videoURL = item.variants?.find(v => v.url.includes('mp4'))?.url;
 					}
 
+					//remove ?tag=12 etc. from them
+					if (videoURL) videoURL = videoURL?.replace(/\?tag=.*/i, '');
+					if (videolqURL) videolqURL = (videolqURL as string)?.replace(/\?tag=.*/i, ''); //no idea why this throws an error without (* as string)
+
 					//only one available
 					if (videolqURL === videoURL) videolqURL = undefined;
 
@@ -181,12 +179,12 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: fixMediaUrl(author?.profile_image_url) || ''
+								image: ProxyUrl(author?.profile_image_url) || ''
 							},
 						},
 						ref_tweet: ref,
 
-						url: fixMediaUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
+						url: ProxyUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
 
 						width: item.width,
 						height: item.height,
@@ -197,8 +195,8 @@ export default class Gallery {
 						//video stuff
 						duration_ms: item.duration_ms,
 						view_count: item.public_metrics?.view_count,
-						video_url: fixMediaUrl(videoURL),
-						videolq_url: fixMediaUrl(videolqURL),
+						video_url: ProxyUrl(videoURL),
+						videolq_url: ProxyUrl(videolqURL),
 					});
 				}
 			});

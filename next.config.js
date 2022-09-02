@@ -56,19 +56,59 @@ module.exports = {
 
 	//proxy for twitter content, helps with negating tracking and adblocker issues
 	async rewrites() {
-		return [
-			{
-				source: '/img/:path*',
-				destination: 'https://pbs.twimg.com/:path*',
-			},
-			{
-				source: '/simg/:path*',
-				destination: 'https://abs.twimg.com/:path*',
-			},
-			{
-				source: '/vimg/:path*',
-				destination: 'https://video.twimg.com/:path*',
-			},
-		]
+		return {
+			beforeFiles: [
+				//original crunching
+				// {
+				// 	source: '/img/:path*',
+				// 	destination: 'https://pbs.twimg.com/:path*',
+				// },
+				// {
+				// 	source: '/simg/:path*',
+				// 	destination: 'https://abs.twimg.com/:path*',
+				// },
+				// {
+				// 	source: '/vimg/:path*',
+				// 	destination: 'https://video.twimg.com/:path*',
+				// },
+
+				//generic proxy url crunching (ORDER IS IMPORTANT HERE)
+				//videos
+				{
+					source: '/media/v/:id/:size/:file',
+					destination: 'https://video.twimg.com/ext_tw_video/:id/pu/vid/:size/:file',
+				},
+				{
+					source: '/media/v/:id/:file',
+					destination: 'https://pbs.twimg.com/ext_tw_video_thumb/:id/pu/img/:file',
+				},
+
+				//gifs
+				{
+					source: '/media/v/:file.mp4',
+					destination: 'https://video.twimg.com/tweet_video/:file.mp4',
+				},
+				{
+					source: '/media/v/:file',
+					destination: 'https://pbs.twimg.com/tweet_video_thumb/:file',
+				},
+
+				//profile pictures
+				{
+					source: '/media/:user/:file',
+					destination: 'https://pbs.twimg.com/profile_images/:user/:file',
+				},
+				{
+					source: '/media/user_:size',
+					destination: 'https://abs.twimg.com/sticky/default_profile_images/default_profile_:size',
+				},
+
+				//images
+				{
+					source: '/media/:file',
+					destination: 'https://pbs.twimg.com/media/:file',
+				},
+			]
+		}
 	},
 }

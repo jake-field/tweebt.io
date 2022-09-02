@@ -1,6 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { JWT } from 'next-auth/jwt';
+import ProxyUrl from '../../../common/utils/proxyurl';
 
 interface TwitterRefreshToken {
 	token_type: string;
@@ -63,7 +64,7 @@ export const authOptions: NextAuthOptions = {
 					email: data.username, //Use email section for twitter handle
 
 					//relocate to local nextjs proxy to bypass adblockers
-					image: data.profile_image_url.replace(/https:\/\/pbs.twimg.com\//i, '/img/').replace(/https:\/\/abs.twimg.com\//i, '/simg/'),
+					image: ProxyUrl(data.profile_image_url),
 				};
 			}
 		}),

@@ -1,0 +1,14 @@
+export default function ProxyUrl(url?: string) {
+	return url?.
+		//static
+		replace(/https:\/\/abs.twimg.com\/sticky\/default_profile_images\/default_profile/, '/media/user').
+
+		//image
+		replace(/https:\/\/pbs.twimg.com\/(media|profile_images)\//, '/media/').
+
+		//videos
+		replace(/https:\/\/(?:video|pbs).twimg.com\/ext_tw_video(?:_thumb)?\/(.+)\/pu\/(?:vid|img)\//, '/media/v/$1/').
+
+		//gifs
+		replace(/https:\/\/(video|pbs).twimg.com\/tweet_video(_thumb)?\//, '/media/v/');
+}
