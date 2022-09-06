@@ -26,6 +26,8 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 
 	function videoFix() {
 		setTimeout(() => setVideoVis(false), 200);
+		if (galleryItem?.video_url && !galleryItem.video_url.includes('?tag=12')) galleryItem.video_url += '?tag=12';
+		else if (galleryItem?.video_url) galleryItem.video_url = galleryItem.video_url.replace('?tag=12', '');
 		setTimeout(() => setVideoVis(true), 500);
 	}
 
@@ -53,7 +55,7 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 						playsInline
 						autoPlay //this will fail on iOS if we have to fix the video and it has audio (safari blocks autoplay on unmuted videos)
 						loop
-						controls={loaded}
+						controls={loaded && galleryItem.type === 'video'} //don't show controls on gifs
 						onClick={(e) => { e.stopPropagation() }} //prevent the popup from closing when clicking on a video
 						onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
 						onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }}
