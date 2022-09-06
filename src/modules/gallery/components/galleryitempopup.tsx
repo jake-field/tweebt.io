@@ -56,7 +56,7 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 						autoPlay //this will fail on iOS if we have to fix the video and it has audio (safari blocks autoplay on unmuted videos)
 						loop
 						controls={loaded && galleryItem.type === 'video'} //don't show controls on gifs
-						onClick={(e) => { e.stopPropagation() }} //prevent the popup from closing when clicking on a video
+						onClick={(e) => { if (galleryItem.type === 'video') e.stopPropagation() }} //prevent the popup from closing when clicking on a video (ignore for gif)
 						onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
 						onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }}
 						onError={() => { if (isAppleTouchDevice) videoFix(); }} //dummy fix for iOS issues

@@ -26,6 +26,8 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 
 	function videoFix() {
 		setTimeout(() => setVideoVis(false), 200);
+		if (item?.video_url && !item.video_url.includes('?tag=12')) item.video_url += '?tag=12';
+		else if (item?.video_url) item.video_url = item.video_url.replace('?tag=12', '');
 		setTimeout(() => setVideoVis(true), 500);
 	}
 
@@ -115,8 +117,8 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 												playsInline //fails on iOS sometimes if there is an audio track (quicktime issue?)
 												loop
 												muted
-												onPlay={() => { if(!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
-												onLoadedData={(e) => { if(!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }} //iOS fix, only update if needed
+												onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
+												onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }} //iOS fix, only update if needed
 												onError={() => { if (isAppleTouchDevice) videoFix(); }} //dummy fix for iOS issues
 												onClick={onClick}
 												draggable={false}
