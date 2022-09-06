@@ -8,6 +8,7 @@ export default function ProxyUrl(url?: string) {
 
 		//videos
 		replace(/https:\/\/(?:video|pbs).twimg.com\/ext_tw_video(?:_thumb)?\/(.+)\/pu\/(?:vid|img)\//, '/media/v/$1/').
+		replace(/https:\/\/(?:video|pbs).twimg.com\/amplify_video(?:_thumb)?\/(.+)\/(?:vid|img)\//, '/media/v2/$1/').
 
 		//gifs
 		replace(/https:\/\/(video|pbs).twimg.com\/tweet_video(_thumb)?\//, '/media/v/');

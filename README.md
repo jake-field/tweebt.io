@@ -9,6 +9,16 @@ It serves as a project to learn React, NextJS and TailwindCSS to produce a usabl
 This readme will be replaced at some point with more information.
 Below are some issues I'm running into currently which hopefully be fixed soon enough.
 
+## TODO:
+- Consider making my own mosaic grid code (probably ditch Next/Image as well since Twitter already compresses)
+	- Keep an eye on MDN's CSS Mosaic grid update
+- Reduce DOM size by replacing offscreen items with placeholders or fixed height spacers, replacing videos with their preview images
+- Adjust gallery objects to have a stored source (handle, search term, feed) so that back/forward retains state without having to reload
+- Make fancy landing page
+- Implement options panel fully
+- Offload inline CSS into component.css files to reduce html size etc.
+- Fix auth issues (mainly iOS), also error page on failed auth.
+
 ## Mosaic Issues:
 - Probably my fault but columns can get unbalanced fairly quickly
 	- Most likely caused by no fixed height of elements in CSS

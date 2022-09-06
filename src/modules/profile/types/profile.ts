@@ -42,7 +42,7 @@ export default class Profile {
 			name: user.data.name,
 
 			//route through proxy and use full 400x400 image here
-			image: ProxyUrl(user.data.profile_image_url)!.replace(/normal/gi, '400x400'), //enforce large profile image
+			image: ProxyUrl(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
 		}
 
 		//optional flags/info

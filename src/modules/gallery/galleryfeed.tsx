@@ -50,13 +50,15 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 
 		//TODO: make a pagination object or even an api object for specific values
 		fetch(`${apiEndpoint}${apiEndpoint.includes('?') ? '&' : '?'}max_results=100${pagination}${exclude}`)
-			.then((res) => {
+			.then(async (res) => {
 				//intercept response status to catch errors
 				if (res.status != 200) {
 					//TODO: this should be refreshed using refresh tokens, please implement this ASAP
 					console.log('GalleryFeed(): ', 'fetchData(): ', `fetch denied by api, status code: ${res.status} [${res.statusText}]`);
-					signOut();
-					router.push('/');
+					await signOut({ redirect: false }); //don't redirect, signout and reload the current page for "best" current experience
+					console.log('forcing signout')
+					router.reload();
+					//router.push('/');
 					throw res.statusText
 				}
 				return res

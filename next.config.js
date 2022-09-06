@@ -83,6 +83,16 @@ module.exports = {
 					destination: 'https://pbs.twimg.com/ext_tw_video_thumb/:id/pu/img/:file',
 				},
 
+				//amp videos
+				{
+					source: '/media/v2/:id/:size/:file',
+					destination: 'https://video.twimg.com/amplify_video/:id/vid/:size/:file',
+				},
+				{
+					source: '/media/v2/:id/:file',
+					destination: 'https://pbs.twimg.com/amplify_video_thumb/:id/img/:file',
+				},
+
 				//gifs
 				{
 					source: '/media/v/:file.mp4',

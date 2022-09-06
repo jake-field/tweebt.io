@@ -17,9 +17,17 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false); //true when image loads
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [hover, setHover] = useState(false);
+	const [videoVis, setVideoVis] = useState(true);
 
 	let mobilemode = false;
 	let topAndBottomLayout = true;
+
+	const isAppleTouchDevice = /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
+
+	function videoFix() {
+		setTimeout(() => setVideoVis(false), 200);
+		setTimeout(() => setVideoVis(true), 500);
+	}
 
 	//force actions if touchscreen for now
 	//consider putting this elsewhere or having a toggle
@@ -60,7 +68,7 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 				topAndBottomLayout={!mobilemode}
 				mobilemode={mobilemode}
 			>
-				<span className='w-full min-h-[200px] inline-grid' style={{ contain: 'content' }} draggable={false}>
+				<span className='w-full min-h-[200px] max-h[500px] inline-grid' style={{ contain: 'content' }} draggable={false}>
 					{item.flagged && <SpoilerOverlay />}
 					{item.type === 'video' && imgVisible &&
 						<TileViewContext.Consumer>
@@ -96,19 +104,22 @@ export default function GalleryMediaItem({ item, onClick }: Props) {
 							<TileViewContext.Consumer>
 								{({ autoplayVideos }) =>
 									<>
-										{autoplayVideos || item.type !== 'video' ? (
+										{autoplayVideos && videoVis || item.type !== 'video' ? (
 											<video
 												className='w-full h-full min-h-[200px] object-cover'
 												style={{ height: '-webkit-fill-available' }}
-												poster={item.url}
+												poster={item.url} //required for safari/apple
 												width={item.width}
 												height={item.height}
-												autoPlay
-												playsInline
+												autoPlay //consider swapping this for onHover(200ms)
+												playsInline //fails on iOS sometimes if there is an audio track (quicktime issue?)
 												loop
 												muted
-												onPlay={() => { setLoaded(true); setImgVisible(true) }}
+												onPlay={() => { if(!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
+												onLoadedData={(e) => { if(!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }} //iOS fix, only update if needed
+												onError={() => { if (isAppleTouchDevice) videoFix(); }} //dummy fix for iOS issues
 												onClick={onClick}
+												draggable={false}
 											>
 												<source src={item.videolq_url || item.video_url} type='video/mp4' />
 											</video>

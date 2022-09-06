@@ -12,13 +12,22 @@ interface Props {
 
 export default function GalleryItemPopup({ galleryItem, visible, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
+	const [videoVis, setVideoVis] = useState(true);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
+
+	//testing for video fixes
+	const isAppleTouchDevice = /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
 
 	//when galleryItem changes, force loaded to false so we get the loading indicator
 	useEffect(() => {
 		setImgVisible(false);
 		setLoaded(false);
 	}, [galleryItem]);
+
+	function videoFix() {
+		setTimeout(() => setVideoVis(false), 200);
+		setTimeout(() => setVideoVis(true), 500);
+	}
 
 	//don't render if no item
 	if (!galleryItem) return null;
@@ -35,18 +44,20 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 					<XCircleIcon className='absolute right-0 w-7 hover:text-red-400 text-gray-400 cursor-pointer' />
 				</span>
 
-				{visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
+				{videoVis && visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
 					<video
 						className='max-h-[80vh] md:max-h-[90vh] w-auto'
 						width={galleryItem.width}
 						height={galleryItem.height}
 						poster={galleryItem.url}
 						playsInline
-						autoPlay
+						autoPlay //this will fail on iOS if we have to fix the video and it has audio (safari blocks autoplay on unmuted videos)
 						loop
 						controls={loaded}
 						onClick={(e) => { e.stopPropagation() }} //prevent the popup from closing when clicking on a video
-						onPlay={() => { setLoaded(true); setImgVisible(true) }}
+						onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
+						onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }}
+						onError={() => { if (isAppleTouchDevice) videoFix(); }} //dummy fix for iOS issues
 					>
 						<source src={galleryItem.video_url} type='video/mp4' />
 					</video>

@@ -179,7 +179,7 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: ProxyUrl(author?.profile_image_url) || ''
+								image: ProxyUrl(author?.profile_image_url) || '/media/user_normal.png'
 							},
 						},
 						ref_tweet: ref,
