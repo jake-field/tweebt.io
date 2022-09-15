@@ -7,7 +7,7 @@ export default function ProxyUrl(url?: string) {
 		replace(/https:\/\/pbs.twimg.com\/(media|profile_images)\//, '/media/').
 
 		//videos
-		replace(/https:\/\/(?:video|pbs).twimg.com\/ext_tw_video(?:_thumb)?\/(.+)\/pu\/(?:vid|img)\//, '/media/v/$1/').
+		replace(/https:\/\/(?:video|pbs).twimg.com\/ext_tw_video(?:_thumb)?\/(.+)\/(p[u|r])\/(?:vid|img)\//, '/media/v/$1/$2/').
 		replace(/https:\/\/(?:video|pbs).twimg.com\/amplify_video(?:_thumb)?\/(.+)\/(?:vid|img)\//, '/media/v2/$1/').
 
 		//gifs

@@ -17,7 +17,6 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 - Make fancy landing page
 - Implement options panel fully
 - Offload inline CSS into component.css files to reduce html size etc.
-- Fix auth issues (mainly iOS), also error page on failed auth.
 
 ## Mosaic Issues:
 - Probably my fault but columns can get unbalanced fairly quickly
@@ -31,6 +30,13 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 	- Open Issue on NextAuth repo: https://github.com/nextauthjs/next-auth/issues/4902
 
 ## Twitter Issues:
+- Accounts that were public, now protected, will contain media that fails to resolve. If a protected account unlocks, media can still fail to resolve (404)
+	- general media urls can fail to resolve as the last few letters of the file are scrambled
+	- videos go from /pu/ to /pr/, some /pr/ videos may resolve.
+	- I attempted to try load the media via a fetch with the bearer token attached to the header, however, got an access level error (essentials)???
+	- https://twittercommunity.com/t/media-resource-image-404/133136/5
 - iOS oauth issue: https://twittercommunity.com/t/cannot-have-ios-devices-authenticate-with-oauth2-0-in-a-web-application/173772
+	- logging in on iOS devices with the twitter app installed will open the twitter app's in-app browser which breaks auth.
+	- temp fix is to "open in safari" when the auth page is FULLY loaded
 - `offline.access` scope issues: https://twittercommunity.com/t/refresh-token-expiring-with-offline-access-scope/168899/14
-	- Unsure if this is on my end but for the most part this seems like an issue on their end
+	- This scope issue prevents accounts from being logged in on multiple devices, invalidating other devices when logging in

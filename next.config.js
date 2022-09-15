@@ -75,12 +75,12 @@ module.exports = {
 				//generic proxy url crunching (ORDER IS IMPORTANT HERE)
 				//videos
 				{
-					source: '/media/v/:id/:size/:file',
-					destination: 'https://video.twimg.com/ext_tw_video/:id/pu/vid/:size/:file',
+					source: '/media/v/:id/:pu/:size/:file',
+					destination: 'https://video.twimg.com/ext_tw_video/:id/:pu/vid/:size/:file',
 				},
 				{
-					source: '/media/v/:id/:file',
-					destination: 'https://pbs.twimg.com/ext_tw_video_thumb/:id/pu/img/:file',
+					source: '/media/v/:id/:pu/:file',
+					destination: 'https://pbs.twimg.com/ext_tw_video_thumb/:id/:pu/img/:file',
 				},
 
 				//amp videos
