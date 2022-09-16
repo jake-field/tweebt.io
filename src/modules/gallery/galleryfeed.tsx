@@ -5,12 +5,14 @@ import Gallery from './types/gallery';
 import GalleryComponent from './components/gallery';
 import { SpinnerIcon } from '../../common/icons/spinnericon';
 import { ResultsContext } from '../../common/contexts/appsettings/results';
+import { ProfileData } from '../profile/types/profile';
 
 interface Props {
 	apiEndpoint: string;
+    profile?: ProfileData;
 }
 
-export default function GalleryFeed({ apiEndpoint }: Props) {
+export default function GalleryFeed({ apiEndpoint, profile }: Props) {
 	const router = useRouter();
 	const resultsContext = useContext(ResultsContext);
 	const [gallery, setGallery] = useState<Gallery[]>([]);
@@ -44,8 +46,9 @@ export default function GalleryFeed({ apiEndpoint }: Props) {
 			let target = apiEndpoint.startsWith('/api/user') ? resultsContext.profileOptions : resultsContext.feedOptions;
 			let merge: string[] = [];
 			if (target.replies === false) merge.push('replies');
-			if (target.retweets === false) merge.push('retweets');
+			if (target.retweets === false || profile?.protected) merge.push('retweets');
 			if (merge.length > 0) exclude = '&exclude=' + merge.join(',');
+			if(profile?.protected) console.log('protected profile, excluding retweets to preserve feed (Twitter\'s API refuses to serve a retweeted image from a protected account)')
 		} else console.log('cannot use excludes here')
 
 		//TODO: make a pagination object or even an api object for specific values
