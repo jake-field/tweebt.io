@@ -6,6 +6,7 @@ export interface Tweet {
 	author_id: string;
 	possibly_sensitive?: boolean;
 	public_metrics?: PublicTweetMetrics;
+	created_at: string;
 
 	attachments?: {
 		media_keys?: string[];

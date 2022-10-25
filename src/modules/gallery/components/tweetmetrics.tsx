@@ -19,7 +19,7 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 				href={`https://twitter.com/intent/tweet?in_reply_to=${tweetID}`}
 			>
 				<ReplyIcon />
-				<span>{showNumbers && formatNumber(item.tweet.metrics!.replies)}</span>
+				{showNumbers && <span>{formatNumber(item.tweet.metrics!.replies)}</span>}
 			</a>
 			<a
 				title={`Retweet (${pluralize(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes, 'retweet')})`}
@@ -27,7 +27,7 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 				href={`https://twitter.com/intent/retweet?tweet_id=${tweetID}`}
 			>
 				<RetweetIcon />
-				<span>{showNumbers && formatNumber(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes)}</span>
+				{showNumbers && <span>{formatNumber(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes)}</span>}
 			</a>
 			<a
 				title={`Like (${pluralize(item.tweet.metrics!.likes, 'like')})`}
@@ -35,13 +35,14 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 				href={`https://twitter.com/intent/like?tweet_id=${tweetID}`}
 			>
 				<LikeIcon />
-				<span>{showNumbers && formatNumber(item.tweet.metrics!.likes)}</span>
+				{showNumbers && <span>{formatNumber(item.tweet.metrics!.likes)}</span>}
 			</a>
 			<a
-				title='View on Twitter'
+				title={`View on Twitter (Posted ${item.tweet.created_at})`}
 				href={`https://twitter.com/${tweetHandle}/status/${tweetID}`}
 			>
 				<TwitterIcon />
+				<p className='text-gray-400'>{item.tweet.created_at_short}</p>
 			</a>
 		</>
 	)

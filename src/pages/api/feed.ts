@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const galleryQuery =
 		'expansions=attachments.media_keys,author_id,referenced_tweets.id,referenced_tweets.id.author_id' +
 		'&user.fields=profile_image_url' +
-		'&tweet.fields=possibly_sensitive,public_metrics,referenced_tweets' + //includes [id, text]
+		'&tweet.fields=possibly_sensitive,public_metrics,referenced_tweets,created_at' + //includes [id, text]
 		'&media.fields=preview_image_url,url,width,height,alt_text,duration_ms,public_metrics,variants' + //includes [media_key, type]
 		(exclude ? `&exclude=${exclude}` : '') +
 		(next ? `&pagination_token=${next}` : '') +

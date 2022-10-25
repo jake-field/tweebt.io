@@ -1,4 +1,5 @@
-import ProxyUrl from '../../../common/utils/proxyurl';
+import { formatTimeAgo, shortenTimeAgo } from '../../../common/utils/formatnumber';
+import proxyUrl from '../../../common/utils/proxyurl';
 import Timeline, { Meta } from '../../twitterapi/types/timeline';
 
 export interface Error {
@@ -27,6 +28,8 @@ export interface Tweet {
 	author: Author;
 	metrics?: Metrics;
 	text?: string;
+	created_at: string;
+	created_at_short?: string;
 }
 
 //TODO: Rename this once cleanup is complete
@@ -116,6 +119,7 @@ export default class Gallery {
 							//Use this tweet id if the original is deleted/protected, this allows us to still show the reference in some form
 							id: refTweet?.id || tweet.id,
 							type: refDesc.type,
+							created_at: formatTimeAgo(refTweet?.created_at || tweet.created_at),
 
 							author: {
 								id: refAuthor?.id || author?.id || '',
@@ -127,9 +131,11 @@ export default class Gallery {
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
-								image: ProxyUrl(refAuthor?.profile_image_url) || '/media/user_normal.png',
+								image: proxyUrl(refAuthor?.profile_image_url) || '/media/user_normal.png',
 							},
 						};
+
+						ref.created_at_short = shortenTimeAgo(ref.created_at);
 					}
 
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
@@ -174,6 +180,8 @@ export default class Gallery {
 						tweet: {
 							id: tweet.id,
 							text: tweetText,
+							created_at: formatTimeAgo(tweet.created_at),
+							created_at_short: shortenTimeAgo(formatTimeAgo(tweet.created_at)),
 							metrics: {
 								replies: metricsTweet.public_metrics?.reply_count || 0,
 								likes: metricsTweet.public_metrics?.like_count || 0,
@@ -184,12 +192,12 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: ProxyUrl(author?.profile_image_url) || '/media/user_normal.png'
+								image: proxyUrl(author?.profile_image_url) || '/media/user_normal.png'
 							},
 						},
 						ref_tweet: ref,
 
-						url: ProxyUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
+						url: proxyUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
 
 						width: item.width,
 						height: item.height,
@@ -200,8 +208,8 @@ export default class Gallery {
 						//video stuff
 						duration_ms: item.duration_ms,
 						view_count: item.public_metrics?.view_count,
-						video_url: ProxyUrl(videoURL),
-						videolq_url: ProxyUrl(videolqURL),
+						video_url: proxyUrl(videoURL),
+						videolq_url: proxyUrl(videolqURL),
 					});
 				}
 			});

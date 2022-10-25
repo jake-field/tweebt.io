@@ -1,4 +1,4 @@
-export default function ProxyUrl(url?: string) {
+export default function proxyUrl(url?: string) {
 	return url?.
 		//static
 		replace(/https:\/\/abs.twimg.com\/sticky\/default_profile_images\/default_profile/, '/media/user').
