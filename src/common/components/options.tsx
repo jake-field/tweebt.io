@@ -75,7 +75,7 @@ export default function Options({ session }: Props) {
 						}
 					</TileBlurContext.Consumer>
 
-					<TileViewContext.Consumer>
+					{/* <TileViewContext.Consumer>
 						{({ autoplayVideos, set }) =>
 							<ToggleSwitch
 								label='Autoplay inline preview videos on your feed'
@@ -86,7 +86,7 @@ export default function Options({ session }: Props) {
 								<span className='flex gap-2'><PlayIcon className='w-4' />Video Previews</span>
 							</ToggleSwitch>
 						}
-					</TileViewContext.Consumer>
+					</TileViewContext.Consumer> */}
 
 					<ResultsContext.Consumer>
 						{({ feedOptions: { flagged, replies, retweets }, set }) =>

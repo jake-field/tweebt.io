@@ -45,6 +45,11 @@ export default class Profile {
 			image: ProxyUrl(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
 		}
 
+		if (encodeURI(user.data.name) === '%EF%B8%8F') {
+			console.log('user is using an empty character, replacing with handle');
+			this.data.name = user.data.username;
+		}
+
 		//optional flags/info
 		if (user.data.protected) this.data.protected = true;
 		if (user.data.verified) this.data.verified = true;

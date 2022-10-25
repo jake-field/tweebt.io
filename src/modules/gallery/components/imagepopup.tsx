@@ -1,3 +1,4 @@
+import styles from '../styles/popup.module.css';
 import { XCircleIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
 import { MouseEventHandler, useEffect, useState } from 'react';
@@ -10,7 +11,7 @@ interface Props {
 	onClick: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function GalleryItemPopup({ galleryItem, visible, onClick }: Props) {
+export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
 	const [videoVis, setVideoVis] = useState(true);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
@@ -36,19 +37,14 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 
 	return (
 		<div
-			className={`select-none flex flex-row justify-center items-center w-full h-full fixed top-0 left-0 bg-black z-50 bg-opacity-80 backdrop-blur transition-opacity ease-in-out duration-150 ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+			className={`${styles.container} ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
 			onClick={onClick}
 		>
-			<div className='flex flex-col justify-center items-center max-w-[95vw] max-h-[80vh] md:max-h-[90vh] h-auto w-auto'>
-				{(!loaded || !imgVisible) && <SpinnerIcon className='absolute w-10 h-10 text-white' />}
-
-				<span className='relative h-0 w-full bottom-8' title='Close'>
-					<XCircleIcon className='absolute right-0 w-7 hover:text-red-400 text-gray-400 cursor-pointer' />
-				</span>
-
+			<div>
+				{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader} />}
+				<span className={styles.close} title='Close'><XCircleIcon /></span>
 				{videoVis && visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
 					<video
-						className='max-h-[80vh] md:max-h-[90vh] w-auto'
 						width={galleryItem.width}
 						height={galleryItem.height}
 						poster={galleryItem.url}
@@ -77,7 +73,7 @@ export default function GalleryItemPopup({ galleryItem, visible, onClick }: Prop
 						onLoadStart={() => setLoaded(false)}
 						onLoadingComplete={() => setLoaded(true)}
 						onTransitionEnd={() => setImgVisible(visible)}
-						className={`object-scale-down shadow-lg transition-opacity ease-in-out duration-150 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+						className={`${styles.image} ${loaded ? 'opacity-100' : 'opacity-0'}`}
 					/>
 				)}
 			</div>

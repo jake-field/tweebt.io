@@ -16,7 +16,8 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 - Adjust gallery objects to have a stored source (handle, search term, feed) so that back/forward retains state without having to reload
 - Make fancy landing page
 - Implement options panel fully
-- Offload inline CSS into component.css files to reduce html size etc.
+- Consider replacing Next/Image implementations for better control (Twitter already manages compression so it's not needed except for lazy loading)
+	- May make it easier to fix the mosaic issues
 
 ## Mosaic Issues:
 - Probably my fault but columns can get unbalanced fairly quickly

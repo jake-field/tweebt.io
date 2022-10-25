@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Masonry from 'react-masonry-css'
-import GalleryItemPopup from './galleryitempopup';
+import ImagePopup from './imagepopup';
 import Gallery, { Media } from '../types/gallery';
-import GalleryMediaItem from './galleryitem'
+import ImageTile from './imagetile'
 import InfiniteScroll from 'react-infinite-scroller';
 
 interface Props {
@@ -34,7 +34,7 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 		document.body.style.width = item ? '100%' : '';
 
 		if (!item) {
-			const num = Number(scroll.substring(0,scroll.indexOf('px')));
+			const num = Number(scroll.substring(0, scroll.indexOf('px')));
 			scrollTo({ top: -num });
 		}
 
@@ -62,13 +62,8 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 	if (gallery.length === 0 || gallery[0].items.length === 0) return null;
 
 	return (
-		<div className='flex flex-col items-center w-full select-none'>
-			<GalleryItemPopup
-				galleryItem={selectedGalleryItem}
-				visible={modalVisible}
-				onClick={() => updateImagePopup()}
-			/>
-
+		<>
+			<ImagePopup galleryItem={selectedGalleryItem} visible={modalVisible} onClick={() => updateImagePopup()} />
 			<InfiniteScroll
 				className='w-full max-w-[2500px]'
 				initialLoad={false}
@@ -79,15 +74,11 @@ export default function GalleryComponent({ gallery, loadNext, canLoadMore }: Pro
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto' columnClassName=''>
 					{gallery.map(listing => (
 						listing.items.map((item, index) => (
-							<GalleryMediaItem 
-								key={index}
-								item={item}
-								onClick={() => updateImagePopup(item)}
-							/>
+							<ImageTile key={index} item={item} onClick={() => updateImagePopup(item)} />
 						))
 					))}
 				</Masonry>
 			</InfiniteScroll>
-		</div>
+		</>
 	)
 }

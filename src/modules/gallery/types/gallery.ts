@@ -90,6 +90,11 @@ export default class Gallery {
 					const author = timeline.includes?.users?.find(u => u.id === tweet.author_id);
 					if (author === undefined) console.log('MISSING TWEET AUTHOR');
 
+					if (author && encodeURI(author.name) === '%EF%B8%8F') {
+						console.log('author is using an empty character, replacing with handle');
+						author.name = author.username;
+					}
+
 					//build the referencing object, taking the reference tweet and username (not id) of the tweet author
 					//this is mainly done to fix public-metrics as only retweets and tweetID are passed, not user or likes/replies
 					let ref: Tweet | undefined = undefined;

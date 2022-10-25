@@ -10,12 +10,12 @@ interface Props {
 export default function Title({ title, desc, image }: Props) {
 	const router = useRouter();
 	const appName = 'tweebt.io';
+	const ogTitle = title ? `${title}` : appName;
 	const description = 'Search Twitter or view your feed as rolling gallery of images to streamline your browsing.';
-	const ogTitle = title ? `${title} // ${appName}` : appName;
 
 	return (
 		<Head>
-			<title>{ogTitle}</title>
+			<title>{title ? `${title} // ${appName}` : appName}</title>
 			<link rel='icon' href='/favicon.ico' />
 
 			<meta property='og:type' content='website' />

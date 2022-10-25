@@ -1,0 +1,28 @@
+.container {
+	@apply select-none flex flex-row justify-center items-center w-full h-full fixed top-0 left-0 bg-black z-50 bg-opacity-80 backdrop-blur transition-opacity ease-in-out duration-150;
+}
+
+/* centers the content in the middle of the container*/
+.container div {
+	@apply flex flex-col justify-center items-center max-w-[95vw] max-h-[80vh] md:max-h-[90vh] h-auto w-auto;
+}
+
+.container video {
+	@apply max-h-[80vh] md:max-h-[90vh] w-auto;
+}
+
+.image {
+	@apply object-scale-down shadow-lg transition-opacity ease-in-out duration-150;
+}
+
+.loader {
+	@apply absolute w-10 h-10 text-white;
+}
+
+.close {
+	@apply relative h-0 w-full bottom-8;
+}
+
+.close svg {
+	@apply absolute right-0 w-7 hover:text-red-400 text-gray-400 cursor-pointer;
+}
