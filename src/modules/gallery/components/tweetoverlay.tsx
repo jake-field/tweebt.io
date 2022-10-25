@@ -18,18 +18,10 @@ export default function TweetOverlay({ item, visible, showMetrics, showTweetText
 	return (
 		<div className={`${styles.banneroverlay} ${(!mobilemode) ? 'absolute' : ''} ${visible ? 'opacity-100' : 'opacity-0'}`}>
 			<div className={`${styles.banner} z-10 gap-2 justify-center select-text flex-wrap`}>
-				<Link href={`/@${item.tweet.author.handle}`}>
-					<a title={`View ${item.tweet.author.name}'s (@${item.tweet.author.handle}) Profile`}>
-						<Image
-							src={item.tweet.author.image}
-							alt={item.tweet.author.name + '\'s profile image'}
-							width={24}
-							height={24}
-							className='rounded-full w-24 h-24'
-						/>
-						{item.tweet.author.name || item.tweet.author.handle}
-						{!item.ref_tweet ? <span className='text-gray-300 font-light'>@{item.tweet.author.handle}</span> : ''}
-					</a>
+				<Link href={`/@${item.tweet.author.handle}`} title={`View ${item.tweet.author.name}'s (@${item.tweet.author.handle}) Profile`}>
+					<Image src={item.tweet.author.image} alt={item.tweet.author.name + '\'s profile image'} width={24} height={24} />
+					{item.tweet.author.name || item.tweet.author.handle}
+					{!item.ref_tweet ? <span className='text-gray-300 font-light'>@{item.tweet.author.handle}</span> : ''}
 				</Link>
 
 				{item.ref_tweet &&
@@ -53,17 +45,9 @@ export default function TweetOverlay({ item, visible, showMetrics, showTweetText
 						)}
 
 						{item.ref_tweet.author.handle !== item.tweet.author.handle &&
-							<Link href={`/@${item.ref_tweet.author.handle}`}>
-								<a title={`View ${item.ref_tweet.author.name}'s (@${item.ref_tweet.author.handle}) Profile`}>
-									<Image
-										src={item.ref_tweet.author.image}
-										alt={item.ref_tweet.author.name + '\'s profile image'}
-										width={24}
-										height={24}
-										className='rounded-full w-24 h-24'
-									/>
-									@{item.ref_tweet.author.handle}
-								</a>
+							<Link href={`/@${item.ref_tweet.author.handle}`} title={`View ${item.ref_tweet.author.name}'s (@${item.ref_tweet.author.handle}) Profile`}>
+								<Image src={item.ref_tweet.author.image} alt={item.ref_tweet.author.name + '\'s profile image'} width={24} height={24} />
+								@{item.ref_tweet.author.handle}
 							</Link>
 						}
 					</>

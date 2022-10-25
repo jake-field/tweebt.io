@@ -40,7 +40,7 @@ export default function ImageTile({ item, onClick }: Props) {
 				}
 
 				<a
-					className='inline-grid'
+					className=''
 					href={item.video_url || item.url + '?name=orig'} //more control for mobile devices to serve the full image
 					onClick={(e) => e.preventDefault()} //prevent navigating to the image itself
 					draggable={false}
@@ -68,14 +68,13 @@ export default function ImageTile({ item, onClick }: Props) {
 							src={item.url + '?name=small'} //pull smaller pre-compressed image from twitter
 							width={item.width}
 							height={item.height}
-							alt={item.alt_text || item.tweet.text}
+							alt={item.alt_text || item.tweet.text || ''}
 							placeholder='empty'
 							//quality={75} //consider changing this, but this is acceptable for mosaic formatting
 							unoptimized={true} //save server processing stress
 							onLoadingComplete={() => setLoaded(true)}
 							onTransitionEnd={() => setImgVisible(true)}
 							onClick={onClick}
-							layout='responsive'
 							draggable={false}
 						/>
 					)}

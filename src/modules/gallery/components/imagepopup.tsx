@@ -42,7 +42,6 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 		>
 			<div>
 				{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader} />}
-				<span className={styles.close} title='Close'><XCircleIcon /></span>
 				{videoVis && visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
 					<video
 						width={galleryItem.width}
@@ -63,7 +62,7 @@ export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
 					<Image
 						//src={galleryItem.url + '?name=orig'} //pull full size
 						src={galleryItem.url + '?name=medium'}
-						alt={galleryItem.alt_text}
+						alt={galleryItem.alt_text || ''}
 						width={galleryItem.width}
 						height={galleryItem.height}
 						//quality={100}

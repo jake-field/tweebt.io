@@ -8,19 +8,16 @@
 }
 
 .container video {
-	@apply max-h-[80vh] md:max-h-[90vh] w-auto;
+	@apply max-h-[80vh] md:max-h-[90vh] w-auto rounded-md;
 }
 
 .image {
-	@apply object-scale-down shadow-lg transition-opacity ease-in-out duration-150;
+	@apply object-scale-down shadow-lg transition-opacity ease-in-out duration-150 rounded-md w-auto;
+	max-height: inherit;
 }
 
 .loader {
 	@apply absolute w-10 h-10 text-white;
-}
-
-.close {
-	@apply relative h-0 w-full bottom-8;
 }
 
 .close svg {

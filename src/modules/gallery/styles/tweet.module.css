@@ -16,7 +16,7 @@
 }
 
 .image {
-	@apply transition-opacity object-cover ease-in duration-150;
+	@apply transition-opacity object-cover ease-in duration-150 w-full h-full;
 	content-visibility: auto;
 }
 
@@ -71,6 +71,10 @@
 .banner a {
 	@apply text-white visited:text-white dark:text-white dark:visited:text-white hover:text-blue-300 dark:hover:text-blue-300;
 	@apply flex flex-wrap items-center justify-center gap-1;
+}
+
+.banner img {
+	@apply rounded-full;
 }
 
 .banneroverlay {

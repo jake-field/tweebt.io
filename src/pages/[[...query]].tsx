@@ -73,30 +73,17 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 
 	return (
 		<div className='flex flex-col items-center min-h-screen pt-20 px-1'>
-			{profile && (
-				<>
-					<Title
-						title={`${profile.name} (@${profile.handle})`}
-						image={profile.image.replace('400x400', '200x200')}
-						desc={(profile.bio instanceof Array) ? profile.bio.map(value => { return (value.link || value.text) }).join('') : profile.bio || `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`}
-					//desc={`Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`}
-					/>
-					<ProfileCard profile={profile} />
-					<GalleryFeed profile={profile} apiEndpoint={apiEndpoint} />
-				</>
-			) || (session || apiEndpoint.includes('search')) && (
-				<>
-					<Title
-						title={apiEndpoint.includes('search') ? `${router.query['q']}` : `Latest Tweets`}
-					/>
-					<GalleryFeed apiEndpoint={apiEndpoint} />
-				</>
-			) || (
-					<>
-						<Title />
-						<Landing />
-					</>
-				)}
+			<Title
+				title={apiEndpoint.includes('search') ? `${router.query['q']}` : profile ? `${profile.name} (@${profile.handle})` : session ? `Latest Tweets` : undefined}
+				image={profile?.image.replace('400x400', '200x200')}
+				desc={(profile?.bio instanceof Array) ? profile.bio.map(value => { return (value.link || value.text) }).join('') : profile?.bio || profile ? `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!` : undefined}
+			/>
+			{profile && <ProfileCard profile={profile} />}
+			{!session && apiEndpoint === '/api/feed' ? (
+				<Landing />
+			) : (
+				<GalleryFeed profile={profile || undefined} apiEndpoint={apiEndpoint} />
+			)}
 		</div>
 	)
 }
