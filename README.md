@@ -9,34 +9,6 @@ It serves as a project to learn React, NextJS and TailwindCSS to produce a usabl
 This readme will be replaced at some point with more information.
 Below are some issues I'm running into currently which hopefully be fixed soon enough.
 
-## TODO:
-- Consider making my own mosaic grid code (probably ditch Next/Image as well since Twitter already compresses)
-	- Keep an eye on MDN's CSS Mosaic grid update
-- Reduce DOM size by replacing offscreen items with placeholders or fixed height spacers, replacing videos with their preview images
-- Adjust gallery objects to have a stored source (handle, search term, feed) so that back/forward retains state without having to reload
-- Make fancy landing page
-- Implement options panel fully
-
-## Issues:
-- Certain profiles will render hydration issues in production due to their bio content.
-	- tweebt.io/@\_RMeco_
-	- tweebt.io/@esuthio
-	- tweebt.io/@megurumiru
-	- tweebt.io/@YUKKI_BUNNY
-
-## Mosaic Issues:
-- Probably my fault but columns can get unbalanced fairly quickly
-	- Most likely caused by no fixed height of elements in CSS
-	- Can be 'hidden' by increasing infinite-scroll's update point
-
-## NextJS Issues:
-- `onLoadingComplete` does not fire properly on cached images in Safari (iOS, iPadOS) in `next@13.0.0` update.
-	- Adjusted for by forcing `z-50` on image.
-- darkmode: `@apply bg-slate-100 dark:bg-slate-400` does not apply correctly within a *.module.css file.
-	- https://github.com/tailwindlabs/tailwindcss/discussions/2917
-	- https://github.com/tailwindlabs/tailwindcss/issues/3258
-	- https://github.com/vercel/next.js/discussions/22461
-
 ## NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support
 	- Manually coded automatic refresh token rotation supported, but only on age expiry: https://next-auth.js.org/tutorials/refresh-token-rotation
