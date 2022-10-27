@@ -7,15 +7,19 @@ import { ProfileData } from './types/profile';
 
 interface Props {
     profile: ProfileData;
+    debug_nourl?: boolean;
+    debug_nobio?: boolean;
+    debug_nometrics?: boolean;
+    debug_noname?: boolean;
 }
 
 //TODO: add a placeholder here and allow null user
 //      then if no data, display an error here for cleanliness
-export default function ProfileCard({ profile }: Props) {
+export default function ProfileCard({ profile, debug_nobio, debug_nourl, debug_nometrics, debug_noname }: Props) {
     const metricsClassName = 'inline-flex items-center justify-center gap-1 rounded-lg bg-slate-900 px-2';
-    
+
     if (!profile) return null;
-    
+
     return (
         <div className='flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5'>
             <div className='select-none rounded-full overflow-hidden shadow-2xl w-[100px] h-[100px] border-4 border-slate-50 dark:border-slate-700 relative top-7 z-10 hover:scale-[1.5] scale-100 transition-transform will-change-transform ease-in-out delay-150 duration-300'>
@@ -33,23 +37,27 @@ export default function ProfileCard({ profile }: Props) {
             </div>
 
             <div className='max-w-100 bg-slate-100 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center'>
-                <span className='text-xl font-bold inline-flex gap-1'>
-                    {profile.name}
-                    {profile.protected && <p title='Protected' className='inline-flex'><LockClosedIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
-                    {profile.verified && <p title='Verified' className='inline-flex'><BadgeCheckIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
-                </span>
+                {!debug_noname &&
+                    <>
+                        <span className='text-xl font-bold inline-flex gap-1'>
+                            {profile.name}
+                            {profile.protected && <p title='Protected' className='inline-flex'><LockClosedIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                            {profile.verified && <p title='Verified' className='inline-flex'><BadgeCheckIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                        </span>
 
-                <a
-                    href={`https://twitter.com/${profile.handle}`}
-                    title={`Open ${profile.name}'s profile on Twitter`}
-                    className='bg-slate-200 dark:bg-slate-900 rounded-lg p-1 gap-1 inline-flex w-fit'
-                    target='_blank'
-                    rel='noreferrer'
-                >
-                    @{profile.handle}<TwitterIcon className='w-4' />
-                </a>
+                        <a
+                            href={`https://twitter.com/${profile.handle}`}
+                            title={`Open ${profile.name}'s profile on Twitter`}
+                            className='bg-slate-200 dark:bg-slate-900 rounded-lg p-1 gap-1 inline-flex w-fit'
+                            target='_blank'
+                            rel='noreferrer'
+                        >
+                            @{profile.handle}<TwitterIcon className='w-4' />
+                        </a>
+                    </>
+                }
 
-                {profile.bio &&
+                {!debug_nobio && profile.bio &&
                     <p className='whitespace-pre-line'>
                         {(profile.bio instanceof Array) ? (
                             profile.bio.map((value, index) => {
@@ -69,7 +77,7 @@ export default function ProfileCard({ profile }: Props) {
                     </p>
                 }
 
-                {profile.url &&
+                {!debug_nourl && profile.url &&
                     <p>
                         <a
                             href={(!profile.url.startsWith('http') ? 'https://' : '') + profile.url}
@@ -83,7 +91,7 @@ export default function ProfileCard({ profile }: Props) {
                     </p>
                 }
 
-                {profile.follower_count !== undefined && profile.following_count !== undefined && profile.tweet_count !== undefined &&
+                {!debug_nometrics && profile.follower_count !== undefined && profile.following_count !== undefined && profile.tweet_count !== undefined &&
                     <span className='flex gap-1 text-slate-300 select-none'>
                         <p className={metricsClassName} title={`${pluralize(profile.tweet_count, 'Tweet')}`}>
                             <TwitterIcon className='w-4' />{formatNumber(profile.tweet_count)}

@@ -1,5 +1,3 @@
-import { Session, unstable_getServerSession } from 'next-auth';
-import { useRouter } from 'next/router';
 import Title from '../../common/components/title';
 import ProfileCard from '../../modules/profile/profilecard';
 import { ProfileData } from '../../modules/profile/types/profile';
@@ -7,6 +5,10 @@ import { getProfile } from '../../modules/twitterapi';
 
 interface Props {
 	profile: ProfileData | null;
+	debug_nourl: boolean;
+	debug_nobio: boolean
+	debug_noname: boolean;
+	debug_nometrics: boolean;
 	error: { title: string, details: string } | null;
 }
 
@@ -14,6 +16,10 @@ interface Props {
 export async function getServerSideProps(context: any /* NextPageContext */): Promise<{ props: Props }> {
 	//check for and attempt to grab user profile
 	const slug = context.query['user'] as string[] || undefined;
+	const debug_a = context.query['nourl'] as string || undefined
+	const debug_b = context.query['nobio'] as string || undefined;
+	const debug_c = context.query['noname'] as string || undefined;
+	const debug_d = context.query['nometrics'] as string || undefined;
 
 	//Fetch profile if a handle is passed in (query is valid here if isHandle is valid)
 	const profileRes = await getProfile(slug.at(0)!);
@@ -21,12 +27,16 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 	return {
 		props: {
 			profile: profileRes ? profileRes.data || null : null,
+			debug_nourl: debug_a !== undefined,
+			debug_nobio: debug_b !== undefined,
+			debug_noname: debug_c !== undefined,
+			debug_nometrics: debug_d !== undefined,
 			error: profileRes?.error || null
 		},
 	}
 }
 
-export default function User({ profile, error }: Props) {
+export default function User({ profile, debug_nobio, debug_nourl, debug_nometrics, debug_noname, error }: Props) {
 	if (error) {
 		return (
 			<div className='flex flex-col items-center w-screen min-h-screen pt-20'>
@@ -43,12 +53,7 @@ export default function User({ profile, error }: Props) {
 
 	return (
 		<div className='flex flex-col items-center min-h-screen pt-20 px-1'>
-			<Title
-				title={profile ? `${profile.name} (@${profile.handle})` : undefined}
-				image={profile?.image.replace('400x400', '200x200')}
-				desc={(profile?.bio instanceof Array) ? profile.bio.map(value => { return (value.link || value.text) }).join('') : profile?.bio || profile ? `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!` : undefined}
-			/>
-			{profile && <ProfileCard profile={profile} />}
+			{profile && <ProfileCard profile={profile} debug_nourl={debug_nourl} debug_nobio={debug_nobio} debug_nometrics={debug_nometrics} debug_noname={debug_noname} />}
 		</div>
 	)
 }
