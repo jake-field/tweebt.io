@@ -32,6 +32,10 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 ## NextJS Issues:
 - `onLoadingComplete` does not fire properly on cached images in Safari (iOS, iPadOS) in `next@13.0.0` update.
 	- Adjusted for by forcing `z-50` on image.
+- darkmode: `@apply bg-slate-100 dark:bg-slate-400` does not apply correctly within a *.module.css file.
+	- https://github.com/tailwindlabs/tailwindcss/discussions/2917
+	- https://github.com/tailwindlabs/tailwindcss/issues/3258
+	- https://github.com/vercel/next.js/discussions/22461
 
 ## NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support

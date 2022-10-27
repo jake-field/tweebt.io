@@ -18,6 +18,7 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 		<>
 			<a
 				title={`Reply (${pluralize(item.tweet.metrics!.replies, 'repl', 'y', 'ies')})`}
+				className='hover:text-blue-400 dark:hover:text-blue-400'
 				href={`https://twitter.com/intent/tweet?in_reply_to=${tweetID}`}
 				{...sharedAttrb}
 			>
@@ -45,10 +46,11 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 			<a
 				title={`View on Twitter (Posted ${item.tweet.created_at})`}
 				href={`https://twitter.com/${tweetHandle}/status/${tweetID}`}
+				className='hover:text-blue-400 dark:hover:text-blue-400'
 				{...sharedAttrb}
 			>
 				<TwitterIcon />
-				<p className='text-gray-400'>{item.tweet.created_at_short}</p>
+				<p>{item.tweet.created_at_short}</p>
 			</a>
 		</>
 	)

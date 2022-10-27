@@ -60,7 +60,7 @@ export default function TweetOverlay({ item, visible, showMetrics, showTweetText
 				}
 			</div>
 
-			<div className={`${styles.banner} ${styles.metric} z-20 justify-evenly`}>
+			<div className={`${styles.metric} z-20 justify-evenly`}>
 				<TweetMetrics item={item} showNumbers={showMetrics} />
 			</div>
 		</div>

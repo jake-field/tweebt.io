@@ -1,10 +1,10 @@
 .overlay {
-	@apply absolute z-30 pointer-events-none flex flex-col w-full h-full justify-end items-end text-white text-xs text-left;
+	@apply absolute z-30 pointer-events-none flex flex-col w-full h-full justify-end items-end text-white text-xs text-left select-none;
 	content-visibility: auto;
 }
 
 .overlay div {
-	@apply top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-black bg-opacity-90 overflow-y-auto;
+	@apply top-0 left-0 p-2 flex-col gap-1 w-full h-full bg-slate-900 bg-opacity-90 overflow-y-auto;
 }
 
 .overlay button {
@@ -13,6 +13,10 @@
 
 .overlay p {
 	@apply font-bold w-3/4 border-b border-gray-700;
+}
+
+.overlay a {
+	@apply text-blue-400 visited:text-blue-400 hover:text-blue-200 hover:underline;
 }
 
 .overlay span { 
