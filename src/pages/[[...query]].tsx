@@ -1,6 +1,5 @@
 import { Session, unstable_getServerSession } from 'next-auth';
 import Title from '../common/components/title';
-import { validateHandle } from '../modules/profile/utils/validation';
 import { getProfile } from '../modules/twitterapi';
 import { authOptions } from './api/auth/[...nextauth]';
 import { ProfileData } from '../modules/profile/types/profile';
@@ -8,6 +7,7 @@ import GalleryFeed from '../modules/gallery/galleryfeed';
 import Landing from '../common/components/landing';
 import ProfileCard from '../modules/profile/profilecard';
 import { useRouter } from 'next/router';
+import { isValidHandle } from '../common/utils/regextests';
 
 interface Props {
 	session: Session | null;
@@ -26,7 +26,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 	const query = slug ? slug.at(0)?.replace(/^me$/, `@${session?.user?.email}` || '') : undefined; //TODO: consider q here as per how the api works
 	const q = context.query['q'] as string || undefined;
 
-	const isHandle = query ? (query !== 'search') && validateHandle(query) : false;
+	const isHandle = query ? (query !== 'search') && isValidHandle(query) : false;
 	const search = query && (query === 'search') && q ? encodeURIComponent(q) : undefined;
 
 	//Fetch profile if a handle is passed in (query is valid here if isHandle is valid)
@@ -76,7 +76,7 @@ export default function Home({ session, profile, apiEndpoint, error }: Props) {
 			<Title
 				title={apiEndpoint.includes('search') ? `${router.query['q']}` : profile ? `${profile.name} (@${profile.handle})` : session ? `Latest Tweets` : undefined}
 				image={profile?.image.replace('400x400', '200x200')}
-				desc={(profile?.bio instanceof Array) ? profile.bio.map(value => { return (value.link || value.text) }).join('') : profile?.bio || profile ? `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!` : undefined}
+				desc={profile?.bio || profile ? `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!` : undefined}
 			/>
 			{profile && <ProfileCard profile={profile} />}
 			{!session && apiEndpoint === '/api/feed' ? (

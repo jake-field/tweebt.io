@@ -1,0 +1,98 @@
+/* Container
+Transparent, helps contain and space the image and profile card
+*/
+.container {
+	@apply flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5;
+}
+:global(.dark) .container {
+	@apply text-white;
+}
+.container a {
+	@apply hover:underline;
+	@apply text-blue-500 visited:text-blue-500 hover:text-blue-600;
+}
+:global(.dark) .container a {
+	@apply text-blue-400 visited:text-blue-400 hover:text-blue-200;
+}
+.container svg {
+	@apply w-4;
+}
+
+/* Image
+Profile image styling
+*/
+.image {
+	@apply border-slate-50;
+	@apply relative w-[100px] h-[100px] top-7 z-10 select-none rounded-full overflow-hidden shadow-2xl border-4;
+
+	/*Animation*/
+	@apply hover:scale-[1.5] scale-100 transition-transform will-change-transform ease-in-out delay-150 duration-300;
+}
+:global(.dark) .image {
+	@apply border-slate-700;
+}
+
+/* Card
+Visible rounded background within container
+*/
+.card {
+	@apply bg-slate-100;
+	@apply rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center;
+}
+:global(.dark) .card {
+	@apply bg-slate-800;
+}
+
+/* Header
+Name, Protected & Verified icons
+*/
+.header {
+	@apply text-xl font-bold inline-flex gap-1;
+}
+.header p {
+	@apply inline-flex;
+}
+.header svg { /* Slightly bigger for these icons to make them pop*/
+	@apply w-5;
+}
+
+/* Handle
+User's handle with the Twitter icon
+*/
+.handle {
+	@apply bg-slate-200 rounded-lg p-1 gap-1 inline-flex w-fit;
+}
+:global(.dark) .handle {
+	@apply bg-slate-900;
+}
+
+/* Bio/Description
+Bio/description text for the user
+*/
+.bio {
+	@apply whitespace-pre-line;
+}
+
+/* Url
+User's url/link to wherever
+*/
+.url {
+	@apply inline-flex gap-1;
+}
+.url span {
+	@apply text-ellipsis whitespace-nowrap overflow-hidden max-w-xs;
+}
+
+/* Metrics
+Tweet count, followers, following
+*/
+.metrics {
+	@apply flex gap-1 select-none;
+}
+.metrics p {
+	@apply bg-slate-200 text-slate-500;
+	@apply inline-flex items-center justify-center gap-1 rounded-lg px-2;
+}
+:global(.dark) .metrics p {
+	@apply bg-slate-900 text-slate-300;
+}

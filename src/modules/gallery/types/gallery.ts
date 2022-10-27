@@ -81,7 +81,7 @@ export default class Gallery {
 		//check that the timeline has tweets (data)
 		if (timeline.data) {
 			//for each media item
-			timeline.includes?.media.forEach(item => {
+			timeline.includes?.media?.forEach(item => {
 				//look up tweet by matching media key
 				const tweet = timeline.data?.find(t => t.attachments?.media_keys?.includes(item.media_key));
 

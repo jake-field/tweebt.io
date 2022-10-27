@@ -9,38 +9,6 @@ It serves as a project to learn React, NextJS and TailwindCSS to produce a usabl
 This readme will be replaced at some point with more information.
 Below are some issues I'm running into currently which hopefully be fixed soon enough.
 
-## TODO:
-- Consider making my own mosaic grid code (probably ditch Next/Image as well since Twitter already compresses)
-	- Keep an eye on MDN's CSS Mosaic grid update
-- Reduce DOM size by replacing offscreen items with placeholders or fixed height spacers, replacing videos with their preview images
-- Adjust gallery objects to have a stored source (handle, search term, feed) so that back/forward retains state without having to reload
-- Make fancy landing page
-- Implement options panel fully
-
-## Issues:
-- `onLoadingComplete` does not fire properly on cached images in Safari (iOS, iPadOS) in `next@13.0.0` update. Adjusted for by forcing `z-50` on image.
-- Certain profiles will render production react error #418, #423, #425 on first load/refresh. Navigating to this user via the search bar does not cause this.
-	- Profiles:
-		- tweebt.io/@\_RMeco_
-		- tweebt.io/@esuthio
-		- tweebt.io/@megurumiru
-		- tweebt.io/@YUKKI_BUNNY
-	- Errors:
-		- #418: `Hydration failed because the initial UI does not match what was rendered on the server.`
-		- #423: `There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.`
-		- #425: `Text content does not match server-rendered HTML.`
-	- Error cannot be replicated on local machine, dev or production.
-	- Seems to be related to date/time and React18. Problem existed before adding `momentJS` to the project.
-	- I can't yet figure out why there would be a mismatch for these particular users
-		- Other Japanese profiles do not seem cause this issue, so doesn't appear to be an issue with character sets
-		- There are no further errors while scrolling down their page, to it has to be top-level for these accounts.
-	- https://github.com/vercel/next.js/issues/37489
-
-## Mosaic Issues:
-- Probably my fault but columns can get unbalanced fairly quickly
-	- Most likely caused by no fixed height of elements in CSS
-	- Can be 'hidden' by increasing infinite-scroll's update point
-
 ## NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support
 	- Manually coded automatic refresh token rotation supported, but only on age expiry: https://next-auth.js.org/tutorials/refresh-token-rotation

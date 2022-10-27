@@ -1,3 +1,4 @@
+import { AnchorHTMLAttributes } from "react";
 import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "../../../common/icons/twittericons";
 import { formatNumber, pluralize } from "../../../common/utils/formatnumber";
 import { Media } from "../types/gallery";
@@ -11,12 +12,15 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 	const isRetweet = (item.ref_tweet?.type === 'retweeted');
 	const tweetHandle = isRetweet ? item.ref_tweet?.author.handle : item.tweet.author.handle;
 	const tweetID = isRetweet ? item.ref_tweet?.id : item.tweet.id;
+	const sharedAttrb: AnchorHTMLAttributes<HTMLAnchorElement> = { target: '_blank', rel: 'noreferrer' };
 
 	return (
 		<>
 			<a
 				title={`Reply (${pluralize(item.tweet.metrics!.replies, 'repl', 'y', 'ies')})`}
+				className='hover:text-blue-400 dark:hover:text-blue-400'
 				href={`https://twitter.com/intent/tweet?in_reply_to=${tweetID}`}
+				{...sharedAttrb}
 			>
 				<ReplyIcon />
 				{showNumbers && <span>{formatNumber(item.tweet.metrics!.replies)}</span>}
@@ -25,6 +29,7 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 				title={`Retweet (${pluralize(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes, 'retweet')})`}
 				className='hover:text-green-400 dark:hover:text-green-400'
 				href={`https://twitter.com/intent/retweet?tweet_id=${tweetID}`}
+				{...sharedAttrb}
 			>
 				<RetweetIcon />
 				{showNumbers && <span>{formatNumber(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes)}</span>}
@@ -33,6 +38,7 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 				title={`Like (${pluralize(item.tweet.metrics!.likes, 'like')})`}
 				className='hover:text-red-400 dark:hover:text-red-400'
 				href={`https://twitter.com/intent/like?tweet_id=${tweetID}`}
+				{...sharedAttrb}
 			>
 				<LikeIcon />
 				{showNumbers && <span>{formatNumber(item.tweet.metrics!.likes)}</span>}
@@ -40,9 +46,11 @@ export default function TweetMetrics({ item, showNumbers }: Props) {
 			<a
 				title={`View on Twitter (Posted ${item.tweet.created_at})`}
 				href={`https://twitter.com/${tweetHandle}/status/${tweetID}`}
+				className='hover:text-blue-400 dark:hover:text-blue-400'
+				{...sharedAttrb}
 			>
 				<TwitterIcon />
-				<p className='text-gray-400'>{item.tweet.created_at_short}</p>
+				<p>{item.tweet.created_at_short}</p>
 			</a>
 		</>
 	)
