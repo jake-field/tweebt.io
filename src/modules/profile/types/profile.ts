@@ -71,37 +71,38 @@ export default class Profile {
 			//does bio contain entities? (url/@/#)
 			//TODO: support cashtags?
 			if (entities) {
-				let pattern: string = '';
+				this.data.bio = bio;
+				// let pattern: string = '';
 
-				//precondition urls, replacing t.co with the normal urls
-				entities?.urls?.forEach((value) => bio = bio.replace(value.url, value.expanded_url));
+				// //precondition urls, replacing t.co with the normal urls
+				// entities?.urls?.forEach((value) => bio = bio.replace(value.url, value.expanded_url));
 
-				//build pattern for split and push info to bio_data
-				entities?.urls?.forEach(url => pattern += `(${url.expanded_url})|`);
-				entities?.mentions?.forEach(mention => pattern += `(@${mention.username})|`);
-				entities?.hashtags?.forEach(hashtag => pattern += `(#${hashtag.tag})|`);
+				// //build pattern for split and push info to bio_data
+				// entities?.urls?.forEach(url => pattern += `(${url.expanded_url})|`);
+				// entities?.mentions?.forEach(mention => pattern += `(@${mention.username})|`);
+				// entities?.hashtags?.forEach(hashtag => pattern += `(#${hashtag.tag})|`);
 
-				//error checking
-				if (pattern === '') {
-					console.log('missing pattern, something went wrong here, returning plain bio');
-					this.data.bio = bio;
-					return; //exit early
-				}
+				// //error checking
+				// if (pattern === '') {
+				// 	console.log('missing pattern, something went wrong here, returning plain bio');
+				// 	this.data.bio = bio;
+				// 	return; //exit early
+				// }
 
-				//remove extra |
-				pattern = pattern.substring(0, pattern.length - 1);
+				// //remove extra |
+				// pattern = pattern.substring(0, pattern.length - 1);
 
-				//split
-				const splitRegex = new RegExp(pattern, 'g');
-				const split = bio?.split(splitRegex);
-				let bioArray: { text?: string, link?: string }[] = [];
+				// //split
+				// const splitRegex = new RegExp(pattern, 'g');
+				// const split = bio?.split(splitRegex);
+				// let bioArray: { text?: string, link?: string }[] = [];
 
-				//determine link from text
-				split.forEach(value => {
-					if (value) bioArray.push(splitRegex.test(value) ? { link: value.replace(/^https?:\/\//, '') } : { text: value });
-				});
+				// //determine link from text
+				// split.forEach(value => {
+				// 	if (value) bioArray.push(splitRegex.test(value) ? { link: value.replace(/^https?:\/\//, '') } : { text: value });
+				// });
 
-				this.data.bio = bioArray;
+				// this.data.bio = bioArray;
 			} else {
 				//no entities, just pass down bio as is
 				this.data.bio = bio;

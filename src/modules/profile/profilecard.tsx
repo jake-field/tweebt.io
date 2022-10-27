@@ -7,16 +7,18 @@ import { ProfileData } from './types/profile';
 
 interface Props {
     profile: ProfileData;
-    debug_nourl?: boolean;
-    debug_nobio?: boolean;
-    debug_nometrics?: boolean;
-    debug_noname?: boolean;
 }
 
 //TODO: add a placeholder here and allow null user
 //      then if no data, display an error here for cleanliness
-export default function ProfileCard({ profile, debug_nobio, debug_nourl, debug_nometrics, debug_noname }: Props) {
+export default function ProfileCard({ profile }: Props) {
     const metricsClassName = 'inline-flex items-center justify-center gap-1 rounded-lg bg-slate-900 px-2';
+
+    //debug test
+    console.log('-----------------');
+    console.log(profile.name);
+    console.log(profile.bio);
+    console.log('-----------------');
 
     if (!profile) return null;
 
@@ -37,37 +39,37 @@ export default function ProfileCard({ profile, debug_nobio, debug_nourl, debug_n
             </div>
 
             <div className='max-w-100 bg-slate-100 dark:bg-slate-800 rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center'>
-                {!debug_noname &&
-                    <>
-                        <span className='text-xl font-bold inline-flex gap-1'>
-                            {profile.name}
-                            {profile.protected && <p title='Protected' className='inline-flex'><LockClosedIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
-                            {profile.verified && <p title='Verified' className='inline-flex'><BadgeCheckIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
-                        </span>
+                <span className='text-xl font-bold inline-flex gap-1'>
+                    {profile.name}
+                    {profile.protected && <p title='Protected' className='inline-flex'><LockClosedIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                    {profile.verified && <p title='Verified' className='inline-flex'><BadgeCheckIcon className='w-5 text-blue-500 dark:text-blue-400' /></p>}
+                </span>
 
-                        <a
-                            href={`https://twitter.com/${profile.handle}`}
-                            title={`Open ${profile.name}'s profile on Twitter`}
-                            className='bg-slate-200 dark:bg-slate-900 rounded-lg p-1 gap-1 inline-flex w-fit'
-                            target='_blank'
-                            rel='noreferrer'
-                        >
-                            @{profile.handle}<TwitterIcon className='w-4' />
-                        </a>
-                    </>
-                }
+                <a
+                    href={`https://twitter.com/${profile.handle}`}
+                    title={`Open ${profile.name}'s profile on Twitter`}
+                    className='bg-slate-200 dark:bg-slate-900 rounded-lg p-1 gap-1 inline-flex w-fit'
+                    target='_blank'
+                    rel='noreferrer'
+                >
+                    @{profile.handle}<TwitterIcon className='w-4' />
+                </a>
 
-                {!debug_nobio && profile.bio &&
+                {profile.bio &&
                     <p className='whitespace-pre-line'>
                         {(profile.bio instanceof Array) ? (
                             profile.bio.map((value, index) => {
                                 if (value.text) {
+                                    console.log(value.text);
                                     return value.text;
                                 }
                                 else if (value.link) {
-                                    if (value.link.startsWith('@')) return <Link key={index} href={value.link} title={value.link}>{value.link}</Link>;
-                                    else if (value.link.startsWith('#')) return <Link key={index} title={value.link} href={`/search?q=${encodeURIComponent(value.link)}`}>{value.link}</Link>;
-                                    else return <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} title={value.link} target='_blank' rel='noreferrer'>{value.link.length > 24 ? value.link.substring(0, 22) + '...' : value.link}</a>
+                                    let element = <a></a>;
+                                    if (value.link.startsWith('@')) element = <Link key={index} href={value.link} title={value.link}>{value.link}</Link>;
+                                    else if (value.link.startsWith('#')) element = <Link key={index} title={value.link} href={`/search?q=${encodeURIComponent(value.link)}`}>{value.link}</Link>;
+                                    else element = <a key={index} href={(!value.link.startsWith('http') ? 'https://' : '') + value.link} title={value.link}>{value.link.length > 24 ? value.link.substring(0, 22) + '...' : value.link}</a>
+                                    console.log(element);
+                                    return element;
                                 }
                                 return 'error';
                             })
@@ -77,7 +79,7 @@ export default function ProfileCard({ profile, debug_nobio, debug_nourl, debug_n
                     </p>
                 }
 
-                {!debug_nourl && profile.url &&
+                {profile.url &&
                     <p>
                         <a
                             href={(!profile.url.startsWith('http') ? 'https://' : '') + profile.url}
@@ -91,7 +93,7 @@ export default function ProfileCard({ profile, debug_nobio, debug_nourl, debug_n
                     </p>
                 }
 
-                {!debug_nometrics && profile.follower_count !== undefined && profile.following_count !== undefined && profile.tweet_count !== undefined &&
+                {profile.follower_count !== undefined && profile.following_count !== undefined && profile.tweet_count !== undefined &&
                     <span className='flex gap-1 text-slate-300 select-none'>
                         <p className={metricsClassName} title={`${pluralize(profile.tweet_count, 'Tweet')}`}>
                             <TwitterIcon className='w-4' />{formatNumber(profile.tweet_count)}
