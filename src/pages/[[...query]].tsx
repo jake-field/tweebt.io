@@ -8,18 +8,23 @@ import Landing from '../common/components/landing';
 import ProfileCard from '../modules/profile/profilecard';
 import { useRouter } from 'next/router';
 import { isValidHandle } from '../common/utils/regextests';
+import { GetClientThemeFromCookies } from '../common/contexts/appsettings/theme';
 
 interface Props {
 	session: Session | null;
 	profile: ProfileData | null;
 	error: { title: string, details: string } | null;
 	apiEndpoint: string;
+	darkmode: boolean;
 }
 
 //fetch the session on the serverside
 export async function getServerSideProps(context: any /* NextPageContext */): Promise<{ props: Props }> {
 	//fetch session using NextAuth recommened server-side function (NextPageContext does not like this function)
 	const session = await unstable_getServerSession(context.req, context.res, authOptions);
+
+	//Cookie pull for server-side theme
+	const darktheme = GetClientThemeFromCookies(context) === 'dark';
 
 	//check for and attempt to grab user profile
 	const slug = context.query['query'] as string[] || undefined;
@@ -45,7 +50,9 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 			apiEndpoint: profileRes?.data ? `/api/user/${profileRes.data.id}` : search ? `/api/search/${search}` : '/api/feed',
 
 			//Return potential profile error if requested
-			error: profileRes?.error || null
+			error: profileRes?.error || null,
+
+			darkmode: darktheme
 		},
 	}
 
@@ -54,7 +61,7 @@ export async function getServerSideProps(context: any /* NextPageContext */): Pr
 	//timeline: `/api/feed?&max_results=100${pagination}`) //exclude=replies,retweets
 }
 
-export default function Home({ session, profile, apiEndpoint, error }: Props) {
+export default function Home({ session, profile, apiEndpoint, error, darkmode }: Props) {
 	const router = useRouter();
 
 	if (error) {

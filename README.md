@@ -9,6 +9,18 @@ It serves as a project to learn React, NextJS and TailwindCSS to produce a usabl
 This readme will be replaced at some point with more information.
 Below are some issues I'm running into currently which hopefully be fixed soon enough.
 
+## General Tasks:
+- Speed up initial pageload, should come with the overhaul involved with suspense boundaries
+- Consider adjusting mosacic to pulled time differences (More than 2 hours ago, 1 day ago, 2 days ago, 1 year ago)
+- Create a fancy landing page
+
+## Next 13 Tasks:
+- Once `<head>` is fixed in the app directory, update from pages/ to app/ schema
+	- https://beta.nextjs.org/docs/routing/pages-and-layouts#modifying-head
+- Migrate api to app/ once support is added
+- Reconfigure mosaic/infinite loading to use React Suspense Boundaries for server-side streaming of content for speed.
+	- https://beta.nextjs.org/docs/data-fetching/streaming-and-suspense
+
 ## NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support
 	- Manually coded automatic refresh token rotation supported, but only on age expiry: https://next-auth.js.org/tutorials/refresh-token-rotation

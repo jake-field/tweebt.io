@@ -5,6 +5,7 @@ import { TwitterIcon } from '../../common/icons/twittericons';
 import { formatNumber, pluralize } from '../../common/utils/formatnumber';
 import FormatTwitterText from '../../common/utils/richtwittertext';
 import { ProfileData } from './types/profile';
+import { useEffect, useState } from 'react';
 
 interface Props {
     profile: ProfileData;
@@ -13,7 +14,12 @@ interface Props {
 //TODO: add a placeholder here and allow null user
 //      then if no data, display an error here for cleanliness
 export default function ProfileCard({ profile }: Props) {
-    if (!profile) return null;
+    const [bio, setBio] = useState<string | undefined>(undefined);
+
+    //Assuming hydration error comes from Heroku's build environment, only render the bio on the client, not the server
+    useEffect(() => {
+        if (profile.bio) setBio(profile.bio);
+    }, [profile]);
 
     return (
         <div className={styles.container}>
@@ -44,7 +50,7 @@ export default function ProfileCard({ profile }: Props) {
                     @{profile.handle}<TwitterIcon />
                 </a>
 
-                {profile.bio && <p className={styles.bio}>{FormatTwitterText(profile.bio, true)}</p>}
+                {bio && <p className={styles.bio}>{FormatTwitterText(bio, true)}</p>}
                 {profile.url &&
                     <a href={`https://${profile.url}`} className={styles.url} target='_blank' rel='noreferrer'>
                         <LinkIcon /><span>{profile.url}</span>
