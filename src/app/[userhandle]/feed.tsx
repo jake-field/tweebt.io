@@ -43,18 +43,16 @@ export default function Feed({ profile }: Props) {
 	//function for fetching data
 	function fetchData() {
 		//ignore request if already fetching, prevents double ups/unwanted requests
-		if (loading) return;
-		setLoading(true);
-
-		let pagination = gallery?.meta.next_token ? `&next=${gallery.meta.next_token}` : '';
+		if (!loading) setLoading(true); else return;
 
 		let target = resultsContext.profileOptions;
 		let merge: string[] = [];
 		if (target.replies === false) merge.push('replies');
 		if (target.retweets === false || profile?.protected) merge.push('retweets');
 		let exclude = merge.length ? '&exclude=' + merge.join(',') : '';
+		let pagination = gallery?.meta.next_token ? `&next=${gallery.meta.next_token}` : '';
 
-		console.log('fetch',`/api/user/${profile.id}?max_results=100${pagination}${exclude}`,`[${gallery?.items.length || 0} item(s)]`);
+		console.log('fetch', `/api/user/${profile.id}?max_results=100${pagination}${exclude}`, `[${gallery?.items.length || 0} item(s)]`);
 		fetch(`/api/user/${profile.id}?max_results=100${pagination}${exclude}`)
 			.then((res) => {
 				if (res.status === 401) {
@@ -64,10 +62,8 @@ export default function Feed({ profile }: Props) {
 				return res.json();
 			})
 			.then((data: Gallery) => {
-				//store for items or if the meta was fully recieved
-				//storing for meta helps prevent re-requesting empty results
 				if ((data.items && data.items.length > 0) || data.meta) {
-					const newGallery: Gallery = {
+					setGallery({
 						items: gallery?.items ? [...gallery?.items, ...data.items] : [...data.items],
 						error: data.error || gallery?.error, //use newest error?
 						meta: {
@@ -77,17 +73,17 @@ export default function Feed({ profile }: Props) {
 							next_token: data.meta.next_token, //only use current next token
 							previous_token: gallery?.meta.previous_token || data.meta.previous_token, //should take oldest prev token
 						}
-					};
-
-					//apply new gallery
-					setGallery(newGallery);
-				} else {
-					console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch failed, api did not return either items or metadata');
+					});
 				}
-			}).finally(() => {
-				setLoading(false);
 			}).catch(err => {
-				console.log('GalleryFeed(): ', 'fetchData(): ', 'fetch failed with error: ', err);
+				setGallery({
+					items: gallery?.items ? [...gallery.items] : [],
+					meta: { result_count: gallery?.meta.result_count || 0 },
+					error: { title: 'Unknown Error', detail: `An unexpected error has occured.\n[${err}]` }
+				});
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	}
 

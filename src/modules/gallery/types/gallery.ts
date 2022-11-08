@@ -1,5 +1,6 @@
 import { formatTimeAgo, shortenTimeAgo } from '../../../common/utils/formatnumber';
-import proxyUrl from '../../../common/utils/proxyurl';
+import proxyMediaURL from '../../../common/utils/proxymediaurl';
+import { fixCarets } from '../../../common/utils/regextests';
 import Timeline, { Meta } from '../../twitterapi/types/timeline';
 
 export interface Error {
@@ -85,18 +86,13 @@ export default class Gallery {
 				//look up tweet by matching media key
 				const tweet = timeline.data?.find(t => t.attachments?.media_keys?.includes(item.media_key));
 
-				if (!tweet) console.log('MISSING TWEET FOR MEDIA ITEM');
-
 				//if we found a matching tweet (this should always be true)
 				if (tweet) {
 					//find tweet author
 					const author = timeline.includes?.users?.find(u => u.id === tweet.author_id);
-					if (author === undefined) console.log('MISSING TWEET AUTHOR');
 
-					if (author && encodeURI(author.name) === '%EF%B8%8F') {
-						console.log('author is using an empty character, replacing with handle');
-						author.name = author.username;
-					}
+					//If user uses the null character as their twitter name, replace it with their handle for the sake of UI/UX
+					if (author && encodeURI(author.name) === '%EF%B8%8F') author.name = author.username;
 
 					//build the referencing object, taking the reference tweet and username (not id) of the tweet author
 					//this is mainly done to fix public-metrics as only retweets and tweetID are passed, not user or likes/replies
@@ -105,8 +101,6 @@ export default class Gallery {
 
 					//if there are referenced tweets
 					if (tweet.referenced_tweets) {
-						if (tweet.referenced_tweets.length > 1) console.log('FOR SOME REASON THERE IS MORE THAN ONE REFERENCED TWEET HERE');
-
 						//If refTweet cannot be found, then the Tweet is deleted or inacessible. (deleted, suspended/protected)
 						const refDesc = tweet.referenced_tweets[0];
 						const refTweet = timeline.includes?.tweets?.find(t => t.id === refDesc.id);
@@ -131,7 +125,7 @@ export default class Gallery {
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
-								image: proxyUrl(refAuthor?.profile_image_url) || '/media/user_normal.png',
+								image: proxyMediaURL(refAuthor?.profile_image_url) || '/media/user_normal.png',
 							},
 						};
 
@@ -140,7 +134,7 @@ export default class Gallery {
 
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
 					//don't strip the leading @ if we are referencing someone as there is no twitter prepended @
-					let tweetText = tweet.text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+					let tweetText = fixCarets(tweet.text);
 					if (ref) tweetText = tweetText.replace(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 					else tweetText = tweetText.replace(/( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 
@@ -192,12 +186,12 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: proxyUrl(author?.profile_image_url) || '/media/user_normal.png'
+								image: proxyMediaURL(author?.profile_image_url) || '/media/user_normal.png'
 							},
 						},
 						ref_tweet: ref,
 
-						url: proxyUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
+						url: proxyMediaURL(item.preview_image_url || item.url)!, //proxy for unoptimized images
 
 						width: item.width,
 						height: item.height,
@@ -208,8 +202,8 @@ export default class Gallery {
 						//video stuff
 						duration_ms: item.duration_ms,
 						view_count: item.public_metrics?.view_count,
-						video_url: proxyUrl(videoURL),
-						videolq_url: proxyUrl(videolqURL),
+						video_url: proxyMediaURL(videoURL),
+						videolq_url: proxyMediaURL(videolqURL),
 					});
 				}
 			});

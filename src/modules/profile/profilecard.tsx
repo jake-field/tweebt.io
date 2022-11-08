@@ -5,7 +5,7 @@ import { BadgeCheckIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } fr
 import Image from 'next/image';
 import { TwitterIcon } from '../../common/icons/twittericons';
 import { formatNumber, pluralize } from '../../common/utils/formatnumber';
-import FormatTwitterText from '../../common/utils/richtwittertext';
+import formatTwitterText from '../../common/utils/richtwittertext';
 import { ProfileData } from './types/profile';
 import { useEffect, useState } from 'react';
 
@@ -52,9 +52,9 @@ export default function ProfileCard({ profile }: Props) {
                     @{profile.handle}<TwitterIcon />
                 </a>
 
-                {bio && <p className={styles.bio}>{FormatTwitterText(bio, true)}</p>}
+                {bio && <p className={styles.bio}>{formatTwitterText(bio, true)}</p>}
                 {!bio && profile.bio && <p className={styles.bio}>{profile.bio}</p>}
-                
+
                 {profile.url &&
                     <a href={`https://${profile.url}`} className={styles.url} target='_blank' rel='noreferrer'>
                         <LinkIcon /><span>{profile.url}</span>

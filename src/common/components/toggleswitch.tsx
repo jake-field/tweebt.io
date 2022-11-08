@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ToggleSwitch({ id, label, className, checked, disabled, hideLabel, onClick, children }: Props) {
-	if (id === undefined && label === undefined) console.log('toggle switch is missing both id and label, please include at least one to ensure functionality!');
+	if (id === undefined && label === undefined) console.warn('toggle switch is missing both id and label, please include at least one to ensure functionality!');
 	const inputId = id || `toggle-${label?.toLowerCase().replaceAll(' ', '-')}`;
 
 	return (

@@ -1,4 +1,4 @@
-import proxyUrl from "../../../common/utils/proxyurl";
+import proxyMediaURL from "../../../common/utils/proxymediaurl";
 import User from "../../twitterapi/types/user";
 
 export interface ProfileData {
@@ -42,7 +42,7 @@ export default class Profile {
 			name: encodeURI(user.data.name) === '%EF%B8%8F' ? user.data.username : user.data.name,
 
 			//route image through proxy and use full 400x400 image here
-			image: proxyUrl(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
+			image: proxyMediaURL(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
 
 			//metrics
 			follower_count: user.data.public_metrics?.followers_count || 0,

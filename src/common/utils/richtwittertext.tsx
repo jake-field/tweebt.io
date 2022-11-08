@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { fixCarets, twitterTextSplitterRegex, twitterTextMatchRegex } from "./regextests";
 
-//Returns a JSX element with formatted text
-export default function FormatTwitterText(s: string, prettifyLinks?: boolean, linkLength?: number): JSX.Element {
+export default function formatTwitterText(s: string, prettifyLinks?: boolean, linkLength?: number) {
 	const t = fixCarets(s);
 	return (
 		<>

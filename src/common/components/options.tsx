@@ -1,12 +1,12 @@
 import { LogoutIcon, LoginIcon } from "@heroicons/react/outline";
-import { EyeOffIcon, FlagIcon, MoonIcon, PlayIcon, UserIcon } from "@heroicons/react/solid";
+import { EyeOffIcon, FlagIcon, MoonIcon, UserIcon } from "@heroicons/react/solid";
 import { Session } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { ResultsContext } from "../contexts/appsettings/results";
-import { GetDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
-import { TileBlurContext, TileViewContext } from "../contexts/appsettings/view";
+import { getDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
+import { TileBlurContext } from "../contexts/appsettings/view";
 import { ReplyIcon, RetweetIcon } from "../icons/twittericons";
 import ToggleSwitch from "./toggleswitch";
 
@@ -18,11 +18,9 @@ export default function Options({ session }: Props) {
 	const liClassName = 'w-full border-b last:border-b-0 border-gray-500 py-3 px-4 hover:bg-slate-300 hover:dark:bg-slate-500 cursor-pointer';
 	const [visible, setVisible] = useState(false);
 	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
-	// const [modalVisible, setModalVisible] = useState(false);
 
 	return (
 		<>
-			{/* <OptionsModal visible={modalVisible} onClose={() => setModalVisible(false)} /> */}
 			<button
 				title={session?.user?.name || 'Not Signed In'}
 				className='cursor-pointer flex flex-col gap-1 z-10 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
@@ -53,7 +51,7 @@ export default function Options({ session }: Props) {
 						{({ theme, set }) =>
 							<ToggleSwitch
 								label='Toggle dark mode'
-								checked={theme === 'dark' || theme === 'sys' && GetDeviceTheme() === 'dark'}
+								checked={theme === 'dark' || theme === 'sys' && getDeviceTheme() === 'dark'}
 								className={liClassName + ' justify-between'}
 								onClick={(e) => set({ theme: e.currentTarget.checked ? 'dark' : 'light' })}
 							>
@@ -157,17 +155,6 @@ export default function Options({ session }: Props) {
 							</div>
 						}
 					</ResultsContext.Consumer>
-
-					{/* <div
-						className={liClassName}
-						title='Additional Settings'
-						onClick={() => { setVisible(false); setModalVisible(true); }}
-					>
-						<span className='flex gap-2'>
-							<CogIcon className='w-4' />
-							Additional Settings
-						</span>
-					</div> */}
 
 					<div
 						className={liClassName}
