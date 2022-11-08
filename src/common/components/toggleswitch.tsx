@@ -38,17 +38,12 @@ export default function ToggleSwitch({ id, label, className, checked, disabled, 
 				title={label}
 				htmlFor={inputId}
 				className='
-					rounded-full
+					flex items-center w-8 h-4 rounded-full
 					peer-enabled:cursor-pointer
 					peer-enabled:hover:ring-2
 					peer-checked:justify-end 
 					peer-enabled:peer-checked:bg-slate-400
-					peer-enabled:bg-slate-800
-					bg-slate-600
-					w-8
-					h-4
-					flex
-					items-center
+					peer-enabled:bg-slate-800 bg-slate-600
 				'
 			>
 				<span

@@ -1,3 +1,5 @@
+'use client';
+
 import styles from './styles/profilecard.module.css';
 import { BadgeCheckIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/solid';
 import Image from 'next/image';
@@ -51,6 +53,8 @@ export default function ProfileCard({ profile }: Props) {
                 </a>
 
                 {bio && <p className={styles.bio}>{FormatTwitterText(bio, true)}</p>}
+                {!bio && profile.bio && <p className={styles.bio}>{profile.bio}</p>}
+                
                 {profile.url &&
                     <a href={`https://${profile.url}`} className={styles.url} target='_blank' rel='noreferrer'>
                         <LinkIcon /><span>{profile.url}</span>

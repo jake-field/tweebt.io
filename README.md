@@ -10,15 +10,16 @@ This readme will be replaced at some point with more information.
 Below are some issues I'm running into currently which hopefully be fixed soon enough.
 
 ## General Tasks:
-- Speed up initial pageload, should come with the overhaul involved with suspense boundaries
 - Consider adjusting mosacic to pulled time differences (More than 2 hours ago, 1 day ago, 2 days ago, 1 year ago)
 - Create a fancy landing page
 
 ## Next 13 Tasks:
+- Monitor https://github.com/nextauthjs/next-auth/issues/5647
+	- Currently using a custom implementation of getSession in `lib/session.ts` to fix serverside session state
 - Once `<head>` is fixed in the app directory, update from pages/ to app/ schema
 	- https://beta.nextjs.org/docs/routing/pages-and-layouts#modifying-head
 - Migrate api to app/ once support is added
-- Reconfigure mosaic/infinite loading to use React Suspense Boundaries for server-side streaming of content for speed.
+- Consider using suspense boundaries
 	- https://beta.nextjs.org/docs/data-fetching/streaming-and-suspense
 
 ## NextAuth Issues:
@@ -32,9 +33,12 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 	- general media urls can fail to resolve as the last few letters of the file are scrambled
 	- videos go from /pu/ to /pr/, some /pr/ videos may resolve.
 	- I attempted to try load the media via a fetch with the bearer token attached to the header, however, got an access level error (essentials)???
+	- This can happen on your feed if logged in, should be able to fix by making a seperate request for that particular tweet on the client.
+	- This appears to be linked to retweet content only, I would have to fire a lot of requests to fix it.
 	- https://twittercommunity.com/t/media-resource-image-404/133136/5
 - iOS oauth issue: https://twittercommunity.com/t/cannot-have-ios-devices-authenticate-with-oauth2-0-in-a-web-application/173772
-	- logging in on iOS devices with the twitter app installed will open the twitter app's in-app browser which breaks auth.
+	- logging in on iOS devices with the twitter app installed will open the twitter app's in-app browser which breaks auth/sessions.
 	- temp fix is to "open in safari" when the auth page is FULLY loaded
+	- issue seems to lie with https://twitter.com/.well-known/apple-app-site-association not excluding the oauth2.0 path
 - `offline.access` scope issues: https://twittercommunity.com/t/refresh-token-expiring-with-offline-access-scope/168899/14
 	- This scope issue prevents accounts from being logged in on multiple devices, invalidating other devices when logging in

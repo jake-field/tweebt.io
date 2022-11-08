@@ -7,7 +7,7 @@ export function formatNumber(n: number, precision: number = 1) {
 
 //small helper for numbers
 export function pluralize(n: number, str: string, singular = '', plural = 's') {
-	return `${n} ${str}${n === 1 ? singular : plural}`;
+	return `${n.toLocaleString()} ${str}${n === 1 ? singular : plural}`;
 }
 
 //helper for dates

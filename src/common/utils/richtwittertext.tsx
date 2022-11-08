@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { fixCarets, twitterTextRegex, twitterTextRegex2 } from "./regextests";
+import { fixCarets, twitterTextSplitterRegex, twitterTextMatchRegex } from "./regextests";
 
 //Returns a JSX element with formatted text
 export default function FormatTwitterText(s: string, prettifyLinks?: boolean, linkLength?: number): JSX.Element {
-	let t = fixCarets(s);
-
+	const t = fixCarets(s);
 	return (
 		<>
-			{t.split(twitterTextRegex).map((str, i) => {
-				if (str?.match(twitterTextRegex2)) {
+			{t.split(twitterTextSplitterRegex).map((str, i) => {
+				if (str?.match(twitterTextMatchRegex)) {
 					return (
 						<Link
 							key={i}

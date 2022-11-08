@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function Options({ session }: Props) {
-	const liClassName = 'w-full border-b last:border-b-0 border-gray-500 py-3 px-4 hover:bg-slate-500 cursor-pointer';
+	const liClassName = 'w-full border-b last:border-b-0 border-gray-500 py-3 px-4 hover:bg-slate-300 hover:dark:bg-slate-500 cursor-pointer';
 	const [visible, setVisible] = useState(false);
 	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
 	// const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +46,7 @@ export default function Options({ session }: Props) {
 				</span>
 
 				<div
-					className='text-white absolute rounded-lg bg-slate-700 top-11 right-3 font-light'
+					className='absolute rounded-lg bg-slate-100 dark:bg-slate-700 top-11 right-3 font-light border border-slate-400 dark:border-slate-500'
 					style={{ contain: 'content', display: visible ? 'block' : 'none' }}
 				>
 					<ThemeContext.Consumer>
@@ -99,7 +99,7 @@ export default function Options({ session }: Props) {
 										checked={retweets}
 										onClick={(e) => set({ feedOptions: { flagged, replies, retweets: e.currentTarget.checked } })}
 									>
-										<RetweetIcon className='w-5 text-green-400' />
+										<RetweetIcon className='w-5 text-green-500' />
 									</ToggleSwitch>
 									<ToggleSwitch
 										label='Display Replies on Feed'
@@ -134,7 +134,7 @@ export default function Options({ session }: Props) {
 										checked={retweets}
 										onClick={(e) => set({ profileOptions: { flagged, replies, retweets: e.currentTarget.checked } })}
 									>
-										<RetweetIcon className='w-5 text-green-400' />
+										<RetweetIcon className='w-5 text-green-500' />
 									</ToggleSwitch>
 									<ToggleSwitch
 										label='Display Replies on Profiles'

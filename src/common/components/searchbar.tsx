@@ -1,5 +1,7 @@
+'use client';
+
 import { SearchIcon } from '@heroicons/react/solid';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -13,7 +15,7 @@ export default function Searchbar({ route, placeholder, value }: Props) {
     const [query, setQuery] = useState(value || '');
 
     useEffect(() => {
-        setQuery(router.query['q'] as string || value || '');
+        //setQuery(router.query['q'] as string || value || '');
     }, [router, value])
 
     function handleSubmit(e: any) {
