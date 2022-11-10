@@ -39,17 +39,18 @@ export default function ToggleSwitch({ id, label, className, checked, disabled, 
 				htmlFor={inputId}
 				className='
 					flex items-center w-8 h-4 rounded-full
+					border dark:border-0 border-slate-300 shadow-inner
 					peer-enabled:cursor-pointer
 					peer-enabled:hover:ring-2
 					peer-checked:justify-end 
-					peer-enabled:peer-checked:bg-slate-400
-					peer-enabled:bg-slate-800 bg-slate-600
+					peer-enabled:peer-checked:bg-lime-500
+					peer-enabled:bg-slate-400 bg-slate-400
+					overflow-hidden
 				'
 			>
 				<span
 					title={disabled ? 'Disabled' : 'Toggle'}
-					className='rounded-full h-4 w-4'
-					style={{ backgroundColor: disabled ? 'slategrey' : 'white' }}
+					className={`rounded-full h-4 w-4 border dark:border-0 border-slate-300 shadow-lg drop-shadow-lg ${disabled ? 'bg-slate-200' : 'bg-white'}`}
 				/>
 			</label>
 		</div>

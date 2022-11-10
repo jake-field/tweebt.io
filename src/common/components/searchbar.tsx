@@ -21,13 +21,13 @@ export default function Searchbar({ route, placeholder, value }: Props) {
 
     function handleSubmit(e: any) {
         e.preventDefault();
-        const val = e.target['query'].value;
+        const val = e.target['query'].value as string;
 
         //ignore empty requests
         if (val.length === 0 || val.length === 1 && val.startsWith('@')) return;
 
         //select route
-        let target = `${route}${val.startsWith('@') ? '' : 'search?q='}${val.startsWith('@') ? val : encodeURIComponent(val)}`;
+        let target = `${route}${val.startsWith('@') ? '' : 'search/'}${val.startsWith('@') ? val : val.replace('#', '%23')}`;
 
         router.push(target);
     }

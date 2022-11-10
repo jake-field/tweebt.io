@@ -2,7 +2,7 @@ import styles from '../styles/tweettext.module.css';
 import { AnnotationIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import formatTwitterText from "../../../common/utils/richtwittertext";
-import { Media } from "../types/gallery"
+import { Media } from "../types/gallery.types"
 
 interface Props {
 	item: Media;

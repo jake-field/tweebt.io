@@ -1,7 +1,7 @@
-import { Error } from './errors';
+import { ResourceError } from './errors';
 import { Tweet } from './tweet';
 
-interface Media {
+export interface Media {
 	media_key: string;
 	type: string;
 	url?: string;
@@ -23,9 +23,7 @@ interface Media {
 	}
 }
 
-//TODO: figure this one out, we have two, but one is a userReponse
-//		maybe make a generic response type?
-interface User {
+export interface User {
 	id: string;
 	name: string;
 	username: string;
@@ -48,5 +46,5 @@ export default interface Timeline {
 		tweets?: Tweet[]; //shell tweets for replies/quotes/retweets
 	}
 	meta?: Meta;
-	errors?: Error[];
+	errors?: ResourceError[];
 }

@@ -2,7 +2,7 @@ import styles from '../styles/tweet.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import { RetweetIcon } from '../../../common/icons/twittericons';
-import { Media } from '../types/gallery';
+import { Media } from '../types/gallery.types';
 import TweetMetrics from './tweetmetrics';
 import TextOverlay from './textoverlay';
 

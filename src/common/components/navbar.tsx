@@ -40,7 +40,7 @@ export default function NavBar({ session }: Props) {
 					<Searchbar route='/' placeholder='Search by @, # or topic' />
 				</span>
 
-				<Options session={session} />
+				<Options />
 			</div>
 			<div className='h-20' />
 		</>

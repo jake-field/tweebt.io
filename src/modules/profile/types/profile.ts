@@ -1,5 +1,5 @@
 import proxyMediaURL from "../../../common/utils/proxymediaurl";
-import User from "../../twitterapi/types/user";
+import UserProfileResponse from "../../twitterapi/types/user";
 
 export interface ProfileData {
 	id: string;
@@ -23,7 +23,7 @@ export default class Profile {
 	data?: ProfileData;
 	error?: { title: string, details: string };
 
-	constructor(user?: User) {
+	constructor(user?: UserProfileResponse) {
 		//error on invalid user
 		if (!user || !user.data) {
 			this.error = {

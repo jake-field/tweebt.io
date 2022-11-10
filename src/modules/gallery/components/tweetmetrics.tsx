@@ -1,7 +1,7 @@
 import { AnchorHTMLAttributes } from "react";
 import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "../../../common/icons/twittericons";
 import { formatNumber, pluralize } from "../../../common/utils/formatnumber";
-import { Media } from "../types/gallery";
+import { Media } from "../types/gallery.types";
 
 interface Props {
 	item: Media;

@@ -1,3 +1,4 @@
+import { unstable_getServerSession } from "next-auth";
 import Title from "../../common/components/title";
 import { getProfile } from "../../modules/twitterapi";
 
@@ -8,10 +9,10 @@ interface Props {
 }
 
 export default async function Head({ params: { userhandle } }: Props) {
-	const profile = await getProfile(`${!userhandle.startsWith('@') ? '@' : ''}${userhandle}`); //react will dedupe
+	const session = await unstable_getServerSession() || undefined;
+	const profile = await getProfile(`${!userhandle.startsWith('@') ? '@' : ''}${session && userhandle === 'me' ? session.user?.email : userhandle}`);
 
 	if (!profile?.data) {
-		console.log(profile)
 		return (
 			<title>404 - User Not Found // tweebt.io</title>
 		)

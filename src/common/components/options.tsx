@@ -1,8 +1,10 @@
+'use client';
+
 import { LogoutIcon, LoginIcon } from "@heroicons/react/outline";
 import { EyeOffIcon, FlagIcon, MoonIcon, UserIcon } from "@heroicons/react/solid";
-import { Session } from "next-auth";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ResultsContext } from "../contexts/appsettings/results";
 import { getDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
@@ -10,14 +12,21 @@ import { TileBlurContext } from "../contexts/appsettings/view";
 import { ReplyIcon, RetweetIcon } from "../icons/twittericons";
 import ToggleSwitch from "./toggleswitch";
 
-interface Props {
-	session?: Session;
-}
-
-export default function Options({ session }: Props) {
-	const liClassName = 'w-full border-b last:border-b-0 border-gray-500 py-3 px-4 hover:bg-slate-300 hover:dark:bg-slate-500 cursor-pointer';
+export default function Options() {
+	const pathname = usePathname();
+	const { data: session } = useSession();
+	const liClassName = 'w-full border-b last:border-b-0 border-slate-300 dark:border-slate-500 py-3 px-4 hover:bg-slate-200 hover:dark:bg-slate-500 cursor-pointer';
 	const [visible, setVisible] = useState(false);
 	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
+
+	function handleSignInAndOut() {
+		if (session) {
+			signOut({ redirect: pathname === '/' }); //Only redirect when logging out on your feed
+			setVisible(false);
+		} else {
+			signIn('twitter');
+		}
+	}
 
 	return (
 		<>
@@ -159,9 +168,7 @@ export default function Options({ session }: Props) {
 					<div
 						className={liClassName}
 						title={`Sign ${session ? 'Out' : 'In'}`}
-
-						//TODO: disable redirect (currently not because there is no re-render on session logout)
-						onClick={() => session ? signOut(/*{ redirect: false }*/) : signIn('twitter')}
+						onClick={() => handleSignInAndOut()}
 					>
 						<span className='flex gap-2'>
 							{session ? <LogoutIcon className='w-4' /> : <LoginIcon className='w-4' />}

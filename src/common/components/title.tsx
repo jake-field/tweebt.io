@@ -8,7 +8,7 @@ interface Props {
 export default function Title({ url, title, desc, image }: Props) {
 	const appName = 'tweebt.io';
 	const ogTitle = title ? `${title}` : appName;
-	const description = 'Search Twitter or view your feed as rolling gallery of images to streamline your browsing.';
+	const description = 'Search Twitter users, hashtags, topics, or your personal feed as a moasaic gallery of images to streamline your browsing';
 
 	return (
 		<>

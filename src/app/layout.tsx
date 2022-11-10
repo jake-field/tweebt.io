@@ -17,8 +17,12 @@ export default async function RootLayout({ children }: any) {
 
 	return (
 		<html lang='en' className={darkMode ? 'dark' : undefined}>
+			<head>
+				<meta name="viewport" content="width=device-width" />
+			</head>
 			<body>
 				<Providers session={session}>
+					{/* {session && <NavBar session={session} />} */ /* TODO: reinclude this once we can retreive the current route in this file */}
 					<ScrollTop />
 					{children}
 				</Providers>

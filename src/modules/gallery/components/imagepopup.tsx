@@ -1,8 +1,8 @@
 import styles from '../styles/popup.module.css';
 import Image from 'next/image';
 import { MouseEventHandler, useEffect, useState } from 'react';
-import { SpinnerIcon } from '../../../common/icons/spinnericon';
-import { Media } from '../types/gallery';
+import SpinnerIcon from '../../../common/icons/spinnericon';
+import { Media } from '../types/gallery.types';
 
 interface Props {
 	item?: Media;
