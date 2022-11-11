@@ -1,8 +1,8 @@
 import styles from '../styles/tweettext.module.css';
-import { AnnotationIcon } from "@heroicons/react/solid";
 import { useEffect, useState } from "react";
 import formatTwitterText from "../../../common/utils/richtwittertext";
 import { Media } from "../types/gallery.types"
+import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
 
 interface Props {
 	item: Media;
@@ -79,7 +79,7 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 					onMouseEnter={() => { if (showOnHover) setShowText('text') }}
 					onMouseLeave={() => { if (isAppleTouchDevice) clearText(clearDelay) }} //fix for iOS
 				>
-					<AnnotationIcon />
+					<ChatBubbleBottomCenterTextIcon />
 				</button>
 			}
 		</div>

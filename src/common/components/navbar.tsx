@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeIcon, UserIcon } from '@heroicons/react/solid';
+import { HomeIcon, UserIcon } from '@heroicons/react/24/solid';
 import { Session } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';

@@ -49,7 +49,7 @@
 }
 
 .playbutton {
-	@apply w-1/4 text-gray-100 bg-gray-500 rounded-full opacity-80;
+	@apply w-1/4 text-sky-500 bg-slate-100 shadow-lg border-2 border-sky-500;
 }
 
 .loader {

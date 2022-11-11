@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowCircleUpIcon } from '@heroicons/react/solid';
+import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 
 export default function ScrollTop() {
@@ -30,7 +30,7 @@ export default function ScrollTop() {
 			style={{ transform: visible ? `translate(0, 0)` : undefined }}
 		>
 			<p>Scroll to Top</p>
-			<ArrowCircleUpIcon className='w-6' />
+			<ArrowUpCircleIcon className='w-6' />
 		</span>
 	)
 }

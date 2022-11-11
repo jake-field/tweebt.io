@@ -5,7 +5,6 @@ import { ResultsContext } from "../../../common/contexts/appsettings/results";
 import getGallery, { GalleryParams } from "..";
 import Gallery from "../types/gallery";
 import { ProfileData } from "../../profile/types/profile";
-import toQueryString from "../../twitterapi/types/params";
 import { Media } from "../types/gallery.types";
 import ImagePopup from "./imagepopup";
 import InfiniteScroll from "react-infinite-scroller";
@@ -96,7 +95,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 			>
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto'>
 					{gallery && gallery.items.map((item, index) => (
-						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} />
+						<ImageTile key={index} item={item} hidePoster={item.tweet.author.id === profile?.id} ignoreMobile={demo} onClick={() => setSelectedGalleryItem(item)} />
 					))}
 				</Masonry>
 			</InfiniteScroll>

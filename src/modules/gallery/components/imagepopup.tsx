@@ -12,13 +12,7 @@ interface Props {
 export default function ImagePopup({ item, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
 	const [visible, setVisible] = useState(false);
-	const [videoVis, setVideoVis] = useState(true);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
-
-	//testing for video fixes
-	function isAppleTouchDevice() {
-		return /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
-	}
 
 	//when galleryItem changes, force loaded to false so we get the loading indicator
 	useEffect(() => {
@@ -44,13 +38,6 @@ export default function ImagePopup({ item, onClick }: Props) {
 		setLoaded(false);
 	}, [item]);
 
-	function videoFix() {
-		setTimeout(() => setVideoVis(false), 200);
-		if (item?.video_url && !item.video_url.includes('?tag=12')) item.video_url += '?tag=12';
-		else if (item?.video_url) item.video_url = item.video_url.replace('?tag=12', '');
-		setTimeout(() => setVideoVis(true), 500);
-	}
-
 	return (
 		<div
 			className={`${styles.container} ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
@@ -59,21 +46,33 @@ export default function ImagePopup({ item, onClick }: Props) {
 			{item &&
 				<div>
 					{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader} />}
-					{videoVis && item.type !== 'photo' && item.video_url ? (
+					{item.type !== 'photo' && (item.video_url || item.videolq_url) ? (
 						<video
 							width={item.width}
 							height={item.height}
 							poster={item.url}
 							playsInline
-							autoPlay //this will fail on iOS if we have to fix the video and it has audio (safari blocks autoplay on unmuted videos)
+							autoPlay
 							loop
 							controls={loaded && item.type === 'video'} //don't show controls on gifs
 							onClick={(e) => { if (item.type === 'video') e.stopPropagation() }} //prevent the popup from closing when clicking on a video (ignore for gif)
 							onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
 							onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }}
-							onError={() => { if (isAppleTouchDevice()) videoFix(); }} //dummy fix for iOS issues
 						>
-							<source src={item.video_url} type='video/mp4' />
+							{item.video_url && //full video, 3 sources to ensure it plays on every device (meta sometimes comes scrambled with wrong duration)
+								<>
+									<source src={item.video_url} type='video/mp4' />
+									<source src={item.video_url + '?tag=12'} type='video/mp4' />
+									<source src={item.video_url + `#t=0,${item.duration_ms! / 1000}`} type='video/mp4' />
+								</>
+							}
+							{item.videolq_url && //compressed video, 3 sources to ensure it plays on every device (meta sometimes comes scrambled with wrong duration)
+								<>
+									<source src={item.videolq_url} type='video/mp4' />
+									<source src={item.videolq_url + '?tag=12'} type='video/mp4' />
+									<source src={item.videolq_url + `#t=0,${item.duration_ms! / 1000}`} type='video/mp4' />
+								</>
+							}
 						</video>
 					) : (
 						<Image

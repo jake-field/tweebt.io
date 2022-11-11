@@ -18,7 +18,10 @@ module.exports = {
 			},
 			animation: {
 				scrolldemo: 'scrolldemo 120s ease-in-out infinite'
-			}
+			},
+			screens: {
+				'sm-h': { 'raw': '(min-height: 640px)' },
+			},
 		},
 	},
 	plugins: [],

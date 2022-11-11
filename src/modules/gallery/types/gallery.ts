@@ -68,7 +68,7 @@ export default class Gallery {
 								//Sometimes user won't be valid due to a protected/deleted tweet
 								//In this case, try match the username from the tweet text
 								//	or use the author username as Twitter has a special redirect for threads
-								name: refAuthor?.name || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.name || '',
+								name: refAuthor?.name || '[Deleted Tweet]',
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
