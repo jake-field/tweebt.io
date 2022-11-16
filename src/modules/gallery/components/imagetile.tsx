@@ -2,12 +2,12 @@ import styles from '../styles/tweet.module.css';
 import { MouseEventHandler, useState } from 'react';
 import SpinnerIcon from '../../../common/icons/spinnericon';
 import { Media } from '../types/gallery.types';
-import TweetOverlay from './tweetoverlay';
 import SpoilerOverlay from './spoileroverlay';
 import TextOverlay from './textoverlay';
 import { TileViewContext } from '../../../common/contexts/appsettings/view';
 import { GifIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import MediaComponent from './mediacomponent';
+import TweetMetrics from './tweetmetrics';
 
 interface Props {
 	item: Media;
@@ -50,10 +50,6 @@ export default function ImageTile({ item, hidePoster, ignoreMobile, onClick }: P
 					</span>
 				}
 
-				{(item.alt_text || item.tweet.text) && touchScreenMode &&
-					<TextOverlay item={item} showAltButton showTextButton parentVisibility={true} />
-				}
-
 				<a
 					className=''
 					href={item.video_url || item.url + '?name=orig'} //more control for mobile devices to serve the full image
@@ -91,13 +87,9 @@ export default function ImageTile({ item, hidePoster, ignoreMobile, onClick }: P
 					)}
 				</a>
 			</span>
-			<TweetOverlay
+			<TweetMetrics
 				item={item}
 				visible={hover || touchScreenMode}
-				hidePoster={hidePoster}
-				showMetrics={true}
-				showTweetText={!touchScreenMode}
-				mobilemode={touchScreenMode}
 			/>
 		</div >
 	);

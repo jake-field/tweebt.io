@@ -22,14 +22,14 @@ Transparent, helps contain and space the image and profile card
 Profile image styling
 */
 .image {
-	@apply border-slate-100;
+	@apply bg-slate-100 border-slate-100;
 	@apply relative w-[150px] h-[150px] top-9 z-10 select-none rounded-full overflow-hidden border-4;
 
 	/*Animation*/
 	@apply hover:scale-[1.5] scale-100 transition-transform will-change-transform ease-in-out delay-150 duration-300;
 }
 :global(.dark) .image {
-	@apply border-slate-700;
+	@apply bg-slate-700 border-slate-700;
 }
 
 /* Card

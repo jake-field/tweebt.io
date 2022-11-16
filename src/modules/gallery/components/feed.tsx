@@ -40,7 +40,6 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 		//TODO: fix for Next13 bug (pathname check for root demo)
 		if (searchQuery) document.title = `${searchQuery} // tweebt.io`;
 		if (profile && pathname !== '/') document.title = `${profile.name} (@${profile.handle}) // tweebt.io`;
-		else if (pathname === '/') document.title = 'tweebt.io';
 
 		//force a gallery wipe if searching
 		fetchData(0, searchQuery !== undefined);
