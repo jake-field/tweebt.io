@@ -28,12 +28,13 @@ export default function TweetMetrics({ visible, item }: Props) {
 					href={`/@${item.tweet.author.handle}`}
 					title={`View ${item.tweet.author.name}'s (@${item.tweet.author.handle}) Profile`}
 					className='hover:text-blue-400 dark:hover:text-blue-400'
+					style={{ minWidth: (item.ref_tweet && !referencingSelf) ? 'auto' : '0px' }}
 				>
 					<Image src={item.tweet.author.image} alt={item.tweet.author.name + '\'s profile image'} width={36} height={36} />
 					{(!item.ref_tweet || referencingSelf) &&
 						<span className='flex flex-col min-w-0 flex-nowrap items-start justify-center pr-2'>
 							<p className='text-xs sm:text-sm text-gray-100 font-medium text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{item.tweet.author.name}</p>
-							<p className='text-xs text-gray-300 font-normal italic'>@{item.tweet.author.handle}</p>
+							<p className='text-xs text-gray-300 font-normal italic text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>@{item.tweet.author.handle}</p>
 						</span>
 					}
 				</a>
@@ -56,7 +57,7 @@ export default function TweetMetrics({ visible, item }: Props) {
 						<Image src={item.ref_tweet.author.image} alt={item.ref_tweet.author.name + '\'s profile image'} width={36} height={36} />
 						<span className='flex flex-col min-w-0 flex-nowrap items-start justify-center pr-2'>
 							<p className='text-xs sm:text-sm text-gray-100 font-medium text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>{item.ref_tweet.author.name}</p>
-							<p className='text-xs text-gray-300 italic'>@{item.ref_tweet.author.handle}</p>
+							<p className='text-xs text-gray-300 italic text-ellipsis overflow-hidden whitespace-nowrap max-w-full'>@{item.ref_tweet.author.handle}</p>
 						</span>
 					</a>
 				}

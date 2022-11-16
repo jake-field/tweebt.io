@@ -94,7 +94,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 			>
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto'>
 					{gallery && gallery.items.map((item, index) => (
-						<ImageTile key={index} item={item} hidePoster={item.tweet.author.id === profile?.id} ignoreMobile={demo} onClick={() => setSelectedGalleryItem(item)} />
+						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} />
 					))}
 				</Masonry>
 			</InfiniteScroll>

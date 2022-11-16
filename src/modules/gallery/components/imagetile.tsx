@@ -11,16 +11,25 @@ import TweetMetrics from './tweetmetrics';
 
 interface Props {
 	item: Media;
-	hidePoster?: boolean;
-	ignoreMobile?: boolean
 	onClick?: MouseEventHandler<any>;
 }
 
-export default function ImageTile({ item, hidePoster, ignoreMobile, onClick }: Props) {
+export default function ImageTile({ item, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false); //true when image loads
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [hover, setHover] = useState(false);
-	const touchScreenMode = !ignoreMobile && window.matchMedia('(any-pointer: coarse)').matches;
+	const touchScreenMode = window.matchMedia('(any-pointer: coarse)').matches;
+
+	//On mobile, first click displays the overlay, second tap opens the popup
+	//On any other device, clicking opens the popup since hover shows the overlay
+	function handleClick(e: any) {
+		if (touchScreenMode) {
+			if (!hover) setHover(true);
+			else if (onClick) onClick(e);
+		} else {
+			if (onClick) onClick(e);
+		}
+	}
 
 	return (
 		<div
@@ -68,7 +77,7 @@ export default function ImageTile({ item, hidePoster, ignoreMobile, onClick }: P
 									setVisible={(e) => setImgVisible(e)}
 									lowQuality
 									muted={!(hover && unmuteVideoOnHover && item.type === 'video')}
-									onClick={onClick}
+									onClick={handleClick}
 									asImage={!autoplayGifs && item.type === 'animated_gif' || !autoplayVideos && item.type === 'video'}
 								/>
 							}
@@ -82,14 +91,14 @@ export default function ImageTile({ item, hidePoster, ignoreMobile, onClick }: P
 							setLoaded={(e) => setLoaded(e)}
 							setVisible={(e) => setImgVisible(e)}
 							lowQuality
-							onClick={onClick}
+							onClick={handleClick}
 						/>
 					)}
 				</a>
 			</span>
 			<TweetMetrics
 				item={item}
-				visible={hover || touchScreenMode}
+				visible={hover}
 			/>
 		</div >
 	);
