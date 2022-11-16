@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	//build standard query params for the app
 	const baseParams: BaseTweetParams = {
 		expansions: ['attachments.media_keys', 'author_id', 'referenced_tweets.id', 'referenced_tweets.id.author_id'],
-		"user.fields": ['profile_image_url'],
+		'user.fields': ['profile_image_url', 'protected'], //protected to help against the broken retweet image issue
 		'tweet.fields': ['possibly_sensitive', 'public_metrics', 'referenced_tweets', 'created_at'],
 		'media.fields': ['preview_image_url', 'url', 'width', 'height', 'alt_text', 'duration_ms', 'public_metrics', 'variants'],
 		max_results: Number(max_results) || 10,

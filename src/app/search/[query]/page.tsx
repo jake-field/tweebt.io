@@ -13,7 +13,7 @@ export default async function Search({ params }: Props) {
 
 	return (
 		<div className='flex flex-col items-center w-full'>
-			<NavBar session={session} /> {/* TODO: remove when layout supports getting path */}
+			<NavBar session={session} searchBarValue={params.query} /> {/* TODO: remove when layout supports getting path */}
 			<Feed searchQuery={params.query} />
 		</div>
 	)

@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon, FilmIcon, FlagIcon } from "@heroicons/react/24/outline";
-import { EyeSlashIcon, GifIcon, MoonIcon, SpeakerWaveIcon, UserIcon } from "@heroicons/react/24/solid";
+import { Cog6ToothIcon, EyeSlashIcon, GifIcon, MoonIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -18,7 +18,7 @@ export default function Options() {
 	const [visible, setVisible] = useState(false);
 	const [disableMuteOption, setDisableMuteOption] = useState(false);
 
-	const liClassName = 'w-max sm-h:landscape:min-w-full portrait:min-w-full landscape:border-r sm-h:landscape:border-r-0 sm-h:landscape:border-b last:border-b-0 border-slate-300 dark:border-slate-500 py-3 px-4 hover:bg-slate-200 hover:dark:bg-slate-500 cursor-pointer';
+	const liClassName = 'w-max sm-h:landscape:min-w-full portrait:min-w-full landscape:border-r portrait:border-b sm-h:landscape:border-r-0 sm-h:landscape:border-b last:border-b-0 border-slate-300 dark:border-slate-500 py-3 px-4 hover:bg-slate-200 hover:dark:bg-slate-500 cursor-pointer';
 	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
 	const touchScreenMode = (typeof window !== "undefined") && window.matchMedia('(any-pointer: coarse)').matches;
 
@@ -39,28 +39,28 @@ export default function Options() {
 		<>
 			<button
 				title={session?.user?.name || 'Not Signed In'}
-				className='cursor-pointer flex flex-col gap-1 z-10 bg-slate-100 dark:bg-slate-700 rounded-full sm:pr-3 items-center justify-center text-sm'
+				className='cursor-pointer flex flex-col gap-1 z-10 items-center justify-center text-sm'
 				onBlur={() => setVisible(false)}
 
 				//fix for iOS
 				onMouseLeave={() => { if (isAppleTouchDevice) setVisible(false) }}
 			>
-				<span className='flex justify-center items-center gap-1' onClick={() => setVisible(!visible)}>
+				<span
+					className={`flex justify-center items-center gap-1 ${session && 'bg-slate-50 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 hover:ring-2 shadow-sm rounded-full'}`}
+					onClick={() => setVisible(!visible)}
+				>
 					{session?.user ? (
 						<>
 							<Image className='rounded-full' src={session.user.image!} alt={`@${session.user.email}`} width='28' height='28' />
-							<span className='hidden sm:block'>@{session.user.email}</span>
+							<span className='hidden sm:block sm:pr-2'>@{session.user.email}</span>
 						</>
 					) : (
-						<>
-							<UserIcon className='w-7 bg-gray-300 fill-gray-500 dark:bg-gray-400 dark:fill-gray-700 rounded-full p-1' />
-							<span className='hidden sm:block'>Not Signed In</span>
-						</>
+						<Cog6ToothIcon className='w-7 fill-blue-600 dark:fill-blue-400 hover:fill-blue-800 dark:hover:fill-blue-200 rounded-full' />
 					)}
 				</span>
 
 				<div
-					className={`text-slate-900 dark:text-slate-100 flex-row sm-h:landscape:flex-col portrait:flex-col absolute rounded-lg bg-slate-100 dark:bg-slate-700 top-11 right-3 font-light border border-slate-400 dark:border-slate-500`}
+					className={`text-slate-900 dark:text-slate-100 flex-row sm-h:landscape:flex-col portrait:flex-col absolute rounded-lg bg-slate-100 dark:bg-slate-700 top-14 right-3 font-light border border-slate-400 dark:border-slate-500 z-50`}
 					style={{ contain: 'content', display: visible ? 'flex' : 'none' }}
 				>
 					<div className='flex flex-col w-max sm-h:landscape:border-b portrait:border-b border-slate-300 dark:border-slate-500' style={{ height: 'unset' }}>
@@ -110,13 +110,14 @@ export default function Options() {
 										checked={autoplayVideos}
 										className='flex flex-col justify-between'
 										onClick={(e) => set({ autoplayVideos: e.currentTarget.checked })}
+										disabled
 									>
 										<FilmIcon className='w-5' />
 									</ToggleSwitch>
 									<ToggleSwitch
 										label='Unmute videos with audio when you hover over them'
 										checked={unmuteVideoOnHover}
-										disabled={disableMuteOption}
+										disabled={true || disableMuteOption} //TODO: restore this
 										className='flex flex-col justify-between'
 										onClick={(e) => set({ unmuteVideoOnHover: e.currentTarget.checked })}
 									>

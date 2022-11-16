@@ -11,7 +11,7 @@ export default function formatTwitterText(s: string, prettifyLinks?: boolean, li
 						<Link
 							key={i}
 							title={str.startsWith('#') ? `Search for ${str}` : str.startsWith('@') ? `Go to ${str.replace('/', '')}'s profile` : str}
-							href={str.startsWith('#') ? `/search?q=${encodeURIComponent(str)}` : str.match(/^@\/?\w*/)?.at(0)?.replace('/', '') || str}
+							href={str.startsWith('#') ? `/search/${encodeURIComponent(str)}` : str.match(/^@\/?\w*/)?.at(0)?.replace('/', '') || str}
 							target={str.match(/^[#@]/) ? '_self' : '_blank'}
 							referrerPolicy='no-referrer'
 						>

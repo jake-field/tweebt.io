@@ -22,6 +22,10 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 - Consider using suspense boundaries
 	- https://beta.nextjs.org/docs/data-fetching/streaming-and-suspense
 
+## NextJS 13 Issues:
+- Navbar links soft navigate, no way of forcing currently
+	- https://github.com/vercel/next.js/issues/42546
+
 ## NextAuth Issues:
 - No support for manually updating object data or forcing a token refresh. Twitter invalidates a token if you log in on another device, requiring a refresh, which NextAuth doesn't support
 	- Manually coded automatic refresh token rotation supported, but only on age expiry: https://next-auth.js.org/tutorials/refresh-token-rotation

@@ -37,6 +37,9 @@ export default function ProfileCard({ profile }: Props) {
                 />
             </div>
             <div className={styles.card}>
+                <div className='h-1 absolute top-0 bg-gradient-to-r from-transparent via-slate-100 dark:via-slate-700 w-full' />
+                <div className='h-1 absolute bottom-0 bg-gradient-to-r from-transparent via-slate-100 dark:via-slate-700 w-full' />
+
                 <span className={styles.header}>
                     {profile.name}
                     {profile.protected && <p title='Protected'><LockClosedIcon /></p>}

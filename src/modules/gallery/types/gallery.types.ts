@@ -8,6 +8,7 @@ export interface Author {
 	handle: string;
 	name: string;
 	image: string;
+	protected?: boolean;
 }
 
 export interface Metrics {
@@ -31,7 +32,7 @@ export interface Tweet {
 //TODO: Rename this once cleanup is complete
 export interface Media {
 	id: string;
-	type: string; //image, video, animated_gif
+	type: ('photo' | 'video' | 'animated_gif');
 
 	tweet: Tweet;
 	ref_tweet?: Tweet; //optional, may not reference a tweet

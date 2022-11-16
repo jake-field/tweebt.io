@@ -1,8 +1,7 @@
 'use client';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     route: string;
@@ -12,12 +11,6 @@ interface Props {
 
 export default function Searchbar({ route, placeholder, value }: Props) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const [query, setQuery] = useState(value || '');
-
-    useEffect(() => {
-        setQuery(searchParams.get('q') || value || '');
-    }, [searchParams, value])
 
     function handleSubmit(e: any) {
         e.preventDefault();
@@ -39,7 +32,7 @@ export default function Searchbar({ route, placeholder, value }: Props) {
                 name='query'
                 className='pl-2 py-1 text-black dark:bg-slate-200 placeholder:text-stone-500 min-w-[32px] grow outline-none text-center'
                 autoComplete='off'
-                defaultValue={query}
+                defaultValue={value}
                 placeholder={placeholder}
                 spellCheck='false'
             />

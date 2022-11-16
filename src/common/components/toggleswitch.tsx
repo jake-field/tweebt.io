@@ -38,19 +38,18 @@ export default function ToggleSwitch({ id, label, className, checked, disabled, 
 				title={label}
 				htmlFor={inputId}
 				className='
-					flex items-center w-8 h-4 rounded-full
-					border dark:border-0 border-slate-300 peer-disabled:border-slate-400 shadow-inner
+					flex items-center w-8 h-4 rounded-full shadow-inner
 					peer-enabled:cursor-pointer
 					peer-enabled:hover:ring-2
 					peer-checked:justify-end 
 					peer-enabled:peer-checked:bg-lime-500
-					peer-enabled:bg-slate-400 bg-slate-400 dark:bg-slate-600
+					peer-enabled:bg-slate-400 bg-slate-300 dark:bg-slate-600
 					overflow-hidden
 				'
 			>
 				<span
 					title={disabled ? 'Disabled' : 'Toggle'}
-					className={`rounded-full h-4 w-4 border dark:border-0 shadow-lg drop-shadow-lg ${disabled ? 'bg-slate-500 dark:bg-slate-500 border-slate-400' : 'bg-white border-slate-300'}`}
+					className={`rounded-full h-4 w-4 border dark:border-0 shadow-lg drop-shadow-lg ${disabled ? 'bg-slate-200 dark:bg-slate-500 border-slate-300' : 'bg-white border-slate-300'}`}
 				/>
 			</label>
 		</div>

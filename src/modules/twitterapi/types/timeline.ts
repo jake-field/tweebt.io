@@ -3,7 +3,7 @@ import { Tweet } from './tweet';
 
 export interface Media {
 	media_key: string;
-	type: string;
+	type: ('photo' | 'animated_gif' | 'video');
 	url?: string;
 	possibly_sensitive?: boolean;
 	width: number;
@@ -27,6 +27,7 @@ export interface User {
 	id: string;
 	name: string;
 	username: string;
+	protected?:boolean;
 	profile_image_url?: string;
 }
 

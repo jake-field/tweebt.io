@@ -1,4 +1,4 @@
-import { signIn, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import toQueryString from "../twitterapi/types/params";
 import Gallery from "./types/gallery";
 
@@ -21,7 +21,7 @@ export default async function getGallery(endpoint: string, params: GalleryParams
 	if (res.status === 401) {
 		signOut();
 		//signIn('twitter');
-		throw 'Lost session, forcing login;';
+		throw 'Lost session, forcing logout;';
 	}
 
 	const data: Gallery = await res.json() as Gallery;

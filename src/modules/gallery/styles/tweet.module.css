@@ -21,7 +21,7 @@
 }
 
 .video {
-	@apply w-full h-full min-h-[200px] object-cover;
+	@apply w-full h-full min-h-[200px] transition-opacity object-cover ease-in duration-150;
 	height: -webkit-fill-available;
 	content-visibility: auto;
 }

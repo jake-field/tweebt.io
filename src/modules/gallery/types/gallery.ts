@@ -19,7 +19,11 @@ export default class Gallery {
 			const leadingError = timeline.errors?.at(0);
 
 			if (leadingError !== undefined) {
-				if (leadingError.title.match(/auth/gi)) this.error = { title: 'Unable to view account', detail: 'Account is inacessible\n(Deleted/Suspended/Protected)' };
+				console.log(leadingError)
+				console.log(timeline.data);
+				if (leadingError.title.match(/auth/gi)) this.error = {
+					title: '403 - Unauthorized', detail: 'Inaccessible Account'
+				};
 			} else {
 				this.error = { title: 'Unknown Error', detail: 'Timeline error' };
 				console.log('Unhandled timeline error with missing metadata\n', timeline.errors);
@@ -75,6 +79,16 @@ export default class Gallery {
 								image: proxyMediaURL(refAuthor?.profile_image_url) || '/media/user_normal.png',
 							},
 						};
+
+						//flag protected tweet if either accounts are protected
+						if ((refAuthor?.protected || author?.protected) && refDesc.type === 'retweeted') {
+							console.log('Found protected tweet, excluding from output to client')
+							ref.author.protected = true;
+
+							//Requesting the retweeted tweet to get the image will be hard on some profiles where all 100 tweets
+							//	will need to be refetched, consider the impacts of doing this.
+							return; //TODO: build a list of protected tweets to query the twitter API for the valid image url
+						}
 
 						ref.created_at_short = shortenTimeAgo(ref.created_at);
 					}
@@ -133,6 +147,7 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
+								protected: author?.protected || false,
 								image: proxyMediaURL(author?.profile_image_url) || '/media/user_normal.png'
 							},
 						},

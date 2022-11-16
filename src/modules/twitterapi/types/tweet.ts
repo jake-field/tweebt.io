@@ -17,7 +17,7 @@ export interface Tweet {
 	}[];
 
 	referenced_tweets?: {
-		type: 'retweeted' | 'replied_to' | 'quoted';
+		type: ('retweeted' | 'replied_to' | 'quoted');
 		id: string;
 	}[];
 }

@@ -2,7 +2,7 @@
 Transparent, helps contain and space the image and profile card
 */
 .container {
-	@apply flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-5;
+	@apply flex flex-col items-center w-fit max-w-sm sm:max-w-md text-center relative -top-6;
 }
 :global(.dark) .container {
 	@apply text-white;
@@ -22,8 +22,8 @@ Transparent, helps contain and space the image and profile card
 Profile image styling
 */
 .image {
-	@apply border-slate-50;
-	@apply relative w-[100px] h-[100px] top-7 z-10 select-none rounded-full overflow-hidden shadow-2xl border-4;
+	@apply border-slate-100;
+	@apply relative w-[150px] h-[150px] top-9 z-10 select-none rounded-full overflow-hidden border-4;
 
 	/*Animation*/
 	@apply hover:scale-[1.5] scale-100 transition-transform will-change-transform ease-in-out delay-150 duration-300;
@@ -36,11 +36,11 @@ Profile image styling
 Visible rounded background within container
 */
 .card {
-	@apply bg-slate-100;
-	@apply rounded-lg pb-2 px-3 pt-14 shadow-lg relative bottom-5 flex flex-col text-sm gap-2 items-center;
+	@apply bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200;
+	@apply w-screen sm:w-[80vw] rounded-lg pb-2 px-3 pt-14 relative bottom-5 flex flex-col text-sm gap-2 items-center;
 }
 :global(.dark) .card {
-	@apply bg-slate-800;
+	@apply from-slate-900 via-slate-700 to-slate-900;
 }
 
 /* Header
@@ -60,7 +60,7 @@ Name, Protected & Verified icons
 User's handle with the Twitter icon
 */
 .handle {
-	@apply bg-slate-200 rounded-lg p-1 gap-1 inline-flex w-fit;
+	@apply bg-slate-200 rounded-lg p-1 gap-1 inline-flex w-fit hover:ring-2 decoration-transparent;
 }
 :global(.dark) .handle {
 	@apply bg-slate-900;
@@ -72,12 +72,15 @@ Bio/description text for the user
 .bio {
 	@apply whitespace-pre-line;
 }
+.bio a {
+	@apply hover:ring-2 decoration-transparent rounded-md px-[2px] -mx-[2px];
+}
 
 /* Url
 User's url/link to wherever
 */
 .url {
-	@apply inline-flex gap-1;
+	@apply inline-flex gap-1 hover:ring-2 decoration-transparent rounded-lg px-1;
 }
 .url span {
 	@apply text-ellipsis whitespace-nowrap overflow-hidden max-w-xs;

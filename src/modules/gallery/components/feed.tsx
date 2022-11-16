@@ -48,7 +48,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 	}, [profile, searchQuery]);
 
 	//function for fetching data
-	function fetchData(page?: number, wipe?: boolean) {
+	function fetchData(_page?: number, wipe?: boolean) {
 		if (gallery !== undefined && demo) return; //ignore extra loads if running demo
 
 		//ignore request if already fetching, prevents double ups/unwanted requests
@@ -101,8 +101,11 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 			</InfiniteScroll>
 
 			{(gallery && !hasMore()) && !loading ? (
-				<div className='flex flex-row items-center justify-center h-48 text-gray-600 dark:text-gray-400'>
-					{gallery?.error ? `[${gallery?.error?.title} - ${gallery?.error?.detail}]` : gallery?.items.length === 0 ? 'Nothing but crickets...' : "You've gone as far back as I can show!"}
+				<div className='flex flex-row items-center justify-center h-48 text-gray-600 dark:text-gray-400 whitespace-pre-wrap'>
+					{gallery?.error ? gallery.error.title.startsWith('403') && profile ? `${profile.handle}'s profile is inaccessible because it is ${profile.protected ? 'protected.\nMake sure you\'re logged in to an account that can see their posts!' : 'deleted/suspended.'}`
+						: `${gallery?.error?.title}\n${gallery?.error?.detail}`
+						: gallery?.items.length === 0 ? 'Nothing but crickets...'
+							: "You've gone as far back as I can show!"}
 				</div>
 			) : (
 				<div key='loader' className='flex flex-row items-center justify-center h-48'>
