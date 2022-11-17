@@ -21,6 +21,18 @@ export default function MediaComponent({ className, item, loaded, visible, setLo
 	const srcA = lowQuality ? item.videolq_url : item.video_url;
 	const srcB = lowQuality ? item.video_url : item.videolq_url;
 
+	function videoFix() {
+		//testing for video fixes
+		const isAppleTouchDevice = /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
+
+		if (!isAppleTouchDevice) return;
+
+		setTimeout(() => setVisible(false), 200);
+		if (item?.video_url && !item.video_url.includes('?tag=12')) item.video_url += '?tag=12';
+		else if (item?.video_url) item.video_url = item.video_url.replace('?tag=12', '');
+		setTimeout(() => setVisible(true), 500);
+	}
+
 	//Block clicks on the video player, but only if it's a video. Gifs act like images
 	function defaultClickHandler(e: any) {
 		if (item.type === 'video') e.stopPropagation();
@@ -53,13 +65,14 @@ export default function MediaComponent({ className, item, loaded, visible, setLo
 					draggable={false}
 					muted={muted}
 					playsInline
-					autoPlay={item.type === 'animated_gif'}
+					autoPlay
 					loop
 					preload='auto'
 					controls={loaded && item.type === 'video' && !lowQuality} //don't show controls on gifs
 					onClick={onClick ? onClick : defaultClickHandler} //prevent the popup from closing when clicking on a video (ignore for gif)
-					//onPlay={() => { if (!loaded || !visible) { setLoaded(true); setVisible(true); } }}
-					onLoadedData={(e) => { if (!loaded || !visible) { setLoaded(true); setVisible(true); e.currentTarget.play(); } }}
+					onPlay={() => { if (!loaded || !visible) setLoaded(true); setVisible(true) }}
+					onLoadedData={(e) => { if (!loaded || !visible) setLoaded(true); setVisible(true); }}
+					onError={() => videoFix()} //dummy fix for iOS issues
 					onTransitionEnd={() => setVisible(true)}
 				>
 					{srcA && //load first
