@@ -6,10 +6,10 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ResultsContext } from "../contexts/appsettings/results";
-import { getDeviceTheme, ThemeContext } from "../contexts/appsettings/theme";
-import { TileBlurContext, TileViewContext } from "../contexts/appsettings/view";
-import { ReplyIcon, RetweetIcon } from "../icons/twittericons";
+import { ResultsContext } from "common/contexts/appsettings/results";
+import { getDeviceTheme, ThemeContext } from "common/contexts/appsettings/theme";
+import { TileBlurContext, TileViewContext } from "common/contexts/appsettings/view";
+import { ReplyIcon, RetweetIcon } from "common/icons/twittericons";
 import ToggleSwitch from "./toggleswitch";
 
 export default function Options() {

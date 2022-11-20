@@ -1,9 +1,9 @@
 'use client';
 
 import { signIn } from "next-auth/react";
-import Feed from "../../modules/gallery/components/feed";
-import { ProfileData } from "../../modules/profile/types/profile";
-import { TwitterIcon } from "../icons/twittericons";
+import Feed from "modules/gallery/components/feed";
+import { ProfileData } from "modules/profile/types/profile";
+import { TwitterIcon } from "common/icons/twittericons";
 import Searchbar from "./searchbar";
 
 interface Props {

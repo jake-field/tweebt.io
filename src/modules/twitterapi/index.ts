@@ -1,5 +1,5 @@
-import { isValidHandle } from "../../common/utils/regextests";
-import Profile from "../profile/types/profile";
+import { isValidHandle } from "common/utils/regextests";
+import Profile from "modules/profile/types/profile";
 import toQueryString, { SearchParams, TimelineParams, UserParams } from "./types/params";
 import UserProfileResponse from "./types/user";
 

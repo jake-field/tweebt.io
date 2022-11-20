@@ -1,28 +1,45 @@
 import styles from '../styles/tweet.module.css';
 import Image from "next/image";
-import { AnchorHTMLAttributes } from "react";
-import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "../../../common/icons/twittericons";
-import { formatNumber, pluralize } from "../../../common/utils/formatnumber";
+import { AnchorHTMLAttributes, useEffect, useState } from "react";
+import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "common/icons/twittericons";
+import { formatNumber, pluralize } from "common/utils/formatnumber";
 import { Media } from "../types/gallery.types";
 import { ArrowRightIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/solid';
 import { FilmIcon, GifIcon } from '@heroicons/react/24/outline';
 
 interface Props {
-	visible?: boolean;
-	item: Media;
+	target?: HTMLElement;
+	item?: Media;
 }
 
-export default function TweetMetrics({ visible, item }: Props) {
+export default function TileOverlay({ target, item }: Props) {
+	const [storedTarget, setStoredTarget] = useState<HTMLElement | undefined>();
+	const [visible, setVisible] = useState(false);
+	const [selfHover, setSelfHover] = useState(false);
+
+	useEffect(() => {
+		setVisible(target ? true : false);
+		if (target) setStoredTarget(target);
+	}, [target]);
+
+	//Don't render on first page load, no point. Once user hovers, this component will stay rendered.
+	if (!item) return <></>;
+
 	const isRetweet = (item.ref_tweet?.type === 'retweeted');
 	const isQuote = (item.ref_tweet?.type === 'quoted');
 	const isReply = (item.ref_tweet?.type === 'replied_to');
 	const referencingSelf = (item.ref_tweet?.author.handle === item.tweet.author.handle);
 	const tweetHandle = isRetweet ? item.ref_tweet?.author.handle : item.tweet.author.handle;
 	const tweetID = isRetweet ? item.ref_tweet?.id : item.tweet.id;
-	const sharedAttrb: AnchorHTMLAttributes<HTMLAnchorElement> = { target: '_blank', rel: 'noreferrer' };
+	const extLinkAttributes: AnchorHTMLAttributes<HTMLAnchorElement> = { target: '_blank', rel: 'noreferrer' };
 
 	return (
-		<div className={`${styles.metriccontainer} ${visible ? 'block' : 'hidden'}`}>
+		<div
+			className={`${styles.metriccontainer} ${(visible || selfHover) ? 'opacity-100' : 'opacity-0'} absolute`}
+			style={{ top: storedTarget?.offsetTop, left: storedTarget?.offsetLeft, width: storedTarget?.offsetWidth, height: storedTarget?.offsetHeight }}
+			onMouseEnter={() => setSelfHover(true)}
+			onMouseLeave={() => setSelfHover(false)}
+		>
 			<div className={styles.metricauthors}>
 				<a
 					href={`/@${item.tweet.author.handle}`}
@@ -69,7 +86,7 @@ export default function TweetMetrics({ visible, item }: Props) {
 					title={`Reply (${pluralize(item.tweet.metrics!.replies, 'repl', 'y', 'ies')})`}
 					className='hover:text-blue-400 dark:hover:text-blue-400'
 					href={`https://twitter.com/intent/tweet?in_reply_to=${tweetID}`}
-					{...sharedAttrb}
+					{...extLinkAttributes}
 				>
 					<span>{formatNumber(item.tweet.metrics!.replies)}</span>
 					<ReplyIcon />
@@ -78,7 +95,7 @@ export default function TweetMetrics({ visible, item }: Props) {
 					title={`Retweet (${pluralize(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes, 'retweet')})`}
 					className='hover:text-green-400 dark:hover:text-green-400'
 					href={`https://twitter.com/intent/retweet?tweet_id=${tweetID}`}
-					{...sharedAttrb}
+					{...extLinkAttributes}
 				>
 					<span>{formatNumber(item.tweet.metrics!.retweets + item.tweet.metrics!.quotes)}</span>
 					<RetweetIcon />
@@ -87,7 +104,7 @@ export default function TweetMetrics({ visible, item }: Props) {
 					title={`Like (${pluralize(item.tweet.metrics!.likes, 'like')})`}
 					className='hover:text-red-400 dark:hover:text-red-400'
 					href={`https://twitter.com/intent/like?tweet_id=${tweetID}`}
-					{...sharedAttrb}
+					{...extLinkAttributes}
 				>
 					<span>{formatNumber(item.tweet.metrics!.likes)}</span>
 					<LikeIcon />
@@ -96,7 +113,7 @@ export default function TweetMetrics({ visible, item }: Props) {
 					title={`View on Twitter (Posted ${item.tweet.created_at})`}
 					href={`https://twitter.com/${tweetHandle}/status/${tweetID}`}
 					className='hover:text-blue-400 dark:hover:text-blue-400'
-					{...sharedAttrb}
+					{...extLinkAttributes}
 				>
 					<span className='capitalize'>{item.tweet.created_at}</span>
 					<TwitterIcon />

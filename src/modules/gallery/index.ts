@@ -1,5 +1,5 @@
 import { signOut } from "next-auth/react";
-import toQueryString from "../twitterapi/types/params";
+import toQueryString from "modules/twitterapi/types/params";
 import Gallery from "./types/gallery";
 
 export type GalleryParams = {

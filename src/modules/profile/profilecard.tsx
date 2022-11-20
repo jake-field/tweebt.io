@@ -2,12 +2,12 @@
 
 import styles from './styles/profilecard.module.css';
 import Image from 'next/image';
-import { TwitterIcon } from '../../common/icons/twittericons';
-import { formatNumber, pluralize } from '../../common/utils/formatnumber';
-import formatTwitterText from '../../common/utils/richtwittertext';
+import { CheckBadgeIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { TwitterIcon } from 'common/icons/twittericons';
+import { formatNumber, pluralize } from 'common/utils/formatnumber';
+import formatTwitterText from 'common/utils/richtwittertext';
 import { ProfileData } from './types/profile';
 import { useEffect, useState } from 'react';
-import { CheckBadgeIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/solid';
 
 interface Props {
     profile: ProfileData;

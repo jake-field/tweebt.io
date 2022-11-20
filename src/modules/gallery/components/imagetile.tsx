@@ -1,20 +1,19 @@
 import styles from '../styles/tweet.module.css';
 import { MouseEventHandler, useState } from 'react';
-import SpinnerIcon from '../../../common/icons/spinnericon';
+import SpinnerIcon from 'common/icons/spinnericon';
 import { Media } from '../types/gallery.types';
 import SpoilerOverlay from './spoileroverlay';
-import TextOverlay from './textoverlay';
-import { TileViewContext } from '../../../common/contexts/appsettings/view';
+import { TileViewContext } from 'common/contexts/appsettings/view';
 import { GifIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import MediaComponent from './mediacomponent';
-import TweetMetrics from './tweetmetrics';
 
 interface Props {
 	item: Media;
 	onClick?: MouseEventHandler<any>;
+	onHover?: MouseEventHandler<any>;
 }
 
-export default function ImageTile({ item, onClick }: Props) {
+export default function ImageTile({ item, onClick, onHover }: Props) {
 	const [loaded, setLoaded] = useState(false); //true when image loads
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [hover, setHover] = useState(false);
@@ -24,18 +23,36 @@ export default function ImageTile({ item, onClick }: Props) {
 	//On any other device, clicking opens the popup since hover shows the overlay
 	function handleClick(e: any) {
 		if (touchScreenMode) {
-			if (!hover) setHover(true);
+			if (!hover) {
+				setHover(true);
+				if (onHover) onHover(e);
+			}
 			else if (onClick) onClick(e);
 		} else {
 			if (onClick) onClick(e);
 		}
 	}
 
+	function handleHover(e: any, isHovering?: boolean) {
+		if (touchScreenMode) {
+			if (!isHovering) {
+				setHover(false);
+				if (onHover) onHover(isHovering ? e : undefined);
+			}
+			return;
+		} else {
+			setHover(isHovering || false);
+			if (onHover) onHover(isHovering ? e : undefined);
+		}
+	}
+
 	return (
 		<div
 			className={styles.tile}
-			onMouseOver={() => setHover(true)}
-			onMouseOut={() => setHover(false)}
+			onMouseEnter={(e) => handleHover(e, true)}
+			onMouseLeave={(e) => handleHover(e)}
+			onClick={handleClick}
+			draggable={false}
 		>
 			<span className={styles.container} draggable={false}>
 				{item.flagged && <SpoilerOverlay />}
@@ -77,7 +94,6 @@ export default function ImageTile({ item, onClick }: Props) {
 									setVisible={(e) => setImgVisible(e)}
 									lowQuality
 									muted={!(hover && unmuteVideoOnHover && item.type === 'video')}
-									onClick={handleClick}
 									asImage={!autoplayGifs && item.type === 'animated_gif' || !autoplayVideos && item.type === 'video'}
 								/>
 							}
@@ -91,15 +107,10 @@ export default function ImageTile({ item, onClick }: Props) {
 							setLoaded={(e) => setLoaded(e)}
 							setVisible={(e) => setImgVisible(e)}
 							lowQuality
-							onClick={handleClick}
 						/>
 					)}
 				</a>
 			</span>
-			<TweetMetrics
-				item={item}
-				visible={hover}
-			/>
 		</div >
 	);
 }

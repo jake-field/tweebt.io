@@ -6,7 +6,6 @@
 	@apply overflow-hidden;
 	@apply transition-shadow ease-in-out duration-150;
 	@apply cursor-pointer select-none;
-	@apply md:hover:ring-2 ring-slate-400;
 	contain: content;
 }
 
@@ -65,7 +64,10 @@
 }
 
 .metriccontainer {
-	@apply absolute w-full h-full pointer-events-none;
+	@apply absolute rounded-lg w-full h-full pointer-events-none z-20;
+	@apply ring-2 ring-slate-400;
+	@apply transition-opacity ease-in-out duration-150;
+	contain: content;
 	/* box-shadow: inset 0px 0px 65px 60px rgba(55, 65, 81, 0.5); */
 }
 .metricauthors {

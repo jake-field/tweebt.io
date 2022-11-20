@@ -1,5 +1,5 @@
-import proxyMediaURL from "../../../common/utils/proxymediaurl";
-import UserProfileResponse from "../../twitterapi/types/user";
+import proxyMediaURL from "common/utils/proxymediaurl";
+import UserProfileResponse from "modules/twitterapi/types/user";
 
 export interface ProfileData {
 	id: string;

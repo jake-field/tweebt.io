@@ -1,17 +1,18 @@
 'use client';
 
-import { useContext, useEffect, useState } from "react";
-import { ResultsContext } from "../../../common/contexts/appsettings/results";
+import { MouseEventHandler, useContext, useEffect, useState } from "react";
+import { ResultsContext } from "common/contexts/appsettings/results";
 import getGallery, { GalleryParams } from "..";
 import Gallery from "../types/gallery";
-import { ProfileData } from "../../profile/types/profile";
+import { ProfileData } from "modules/profile/types/profile";
 import { Media } from "../types/gallery.types";
 import ImagePopup from "./imagepopup";
 import InfiniteScroll from "react-infinite-scroller";
 import Masonry from "react-masonry-css";
 import ImageTile from "./imagetile";
-import SpinnerIcon from "../../../common/icons/spinnericon";
+import SpinnerIcon from "common/icons/spinnericon";
 import { usePathname } from "next/navigation";
+import TileOverlay from "./tileoverlay";
 
 interface Props {
 	profile?: ProfileData;
@@ -34,6 +35,9 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 	const [loading, setLoading] = useState(false);
 	const [gallery, setGallery] = useState<Gallery>();
 	const [selectedGalleryItem, setSelectedGalleryItem] = useState<Media>();
+
+	const [hoveredItem, setHoveredItem] = useState<Media>();
+	const [hoveredElement, setHoveredElement] = useState<any>();
 
 	//Fetch gallery data on profile/search update, also update title as per Next13 head.tsx bug
 	useEffect(() => {
@@ -83,7 +87,15 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 
 	return (
 		<div className='flex flex-col items-center w-full text-center sm:px-3 md:px-3'>
-			{gallery && <ImagePopup item={selectedGalleryItem} onClick={() => setSelectedGalleryItem(undefined)} />}
+			{gallery && //Global UI
+				<>
+					<ImagePopup item={selectedGalleryItem} onClick={() => setSelectedGalleryItem(undefined)} />
+					<TileOverlay
+						item={hoveredItem}
+						target={hoveredElement}
+					/>
+				</>
+			}
 
 			<InfiniteScroll
 				className='w-full max-w-[2500px]'
@@ -94,7 +106,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 			>
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto'>
 					{gallery && gallery.items.map((item, index) => (
-						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} />
+						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} onHover={(e) => {setHoveredElement(e?.currentTarget); setHoveredItem(item)}} />
 					))}
 				</Masonry>
 			</InfiniteScroll>

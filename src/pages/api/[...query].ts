@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getToken } from 'next-auth/jwt';
-import Gallery from '../../modules/gallery/types/gallery';
-import { TwitterEndpoints } from '../../modules/twitterapi';
-import { BaseTweetParams, SearchParams, TimelineParams } from '../../modules/twitterapi/types/params';
-import Timeline from '../../modules/twitterapi/types/timeline';
+import Gallery from 'modules/gallery/types/gallery';
+import { TwitterEndpoints } from 'modules/twitterapi';
+import { BaseTweetParams, SearchParams, TimelineParams } from 'modules/twitterapi/types/params';
+import Timeline from 'modules/twitterapi/types/timeline';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { query: { query, q, max_results, exclude, next }, method } = req;

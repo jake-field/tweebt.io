@@ -1,8 +1,8 @@
-import ProfileCard from '../../modules/profile/profilecard';
-import { getProfile } from '../../modules/twitterapi';
-import Feed from '../../modules/gallery/components/feed';
+import ProfileCard from 'modules/profile/profilecard';
+import { getProfile } from 'modules/twitterapi';
+import Feed from 'modules/gallery/components/feed';
 import { unstable_getServerSession } from 'next-auth';
-import NavBar from '../../common/components/navbar';
+import NavBar from 'common/components/navbar';
 
 interface Props {
 	params: {

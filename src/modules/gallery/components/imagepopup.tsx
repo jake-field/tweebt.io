@@ -1,6 +1,6 @@
 import styles from '../styles/popup.module.css';
 import { MouseEventHandler, useEffect, useState } from 'react';
-import SpinnerIcon from '../../../common/icons/spinnericon';
+import SpinnerIcon from 'common/icons/spinnericon';
 import { Media } from '../types/gallery.types';
 import MediaComponent from './mediacomponent';
 

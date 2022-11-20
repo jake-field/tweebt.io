@@ -1,4 +1,4 @@
-import Title from "../../../common/components/title";
+import Title from "common/components/title";
 
 interface Props {
 	params: {

@@ -1,6 +1,6 @@
 import styles from '../styles/tweettext.module.css';
 import { useEffect, useState } from "react";
-import formatTwitterText from "../../../common/utils/richtwittertext";
+import formatTwitterText from "common/utils/richtwittertext";
 import { Media } from "../types/gallery.types"
 import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
 

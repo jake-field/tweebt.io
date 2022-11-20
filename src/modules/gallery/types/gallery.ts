@@ -1,7 +1,7 @@
-import { formatTimeAgo, shortenTimeAgo } from '../../../common/utils/formatnumber';
-import proxyMediaURL from '../../../common/utils/proxymediaurl';
-import { fixCarets } from '../../../common/utils/regextests';
-import Timeline, { Meta } from '../../twitterapi/types/timeline';
+import { formatTimeAgo, shortenTimeAgo } from 'common/utils/formatnumber';
+import proxyMediaURL from 'common/utils/proxymediaurl';
+import { fixCarets } from 'common/utils/regextests';
+import Timeline, { Meta } from 'modules/twitterapi/types/timeline';
 import { Error, Media, Tweet } from './gallery.types';
 
 export default class Gallery {

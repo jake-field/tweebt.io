@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { JWT } from 'next-auth/jwt';
-import proxyMediaURL from '../../../common/utils/proxymediaurl';
+import proxyMediaURL from 'common/utils/proxymediaurl';
 
 interface TwitterRefreshToken {
 	token_type: string;
@@ -59,6 +59,11 @@ export const authOptions: NextAuthOptions = {
 			}
 		}),
 	],
+
+	pages: {
+		signIn: '/', //Use root to hide NextAuth templates
+		error: '/',
+	},
 
 	callbacks: {
 		async jwt({ token, account }) {

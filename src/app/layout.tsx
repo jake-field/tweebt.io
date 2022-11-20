@@ -1,10 +1,10 @@
 import { unstable_getServerSession } from 'next-auth';
 import { cookies } from 'next/headers';
-import ScrollTop from '../common/components/scrolltop';
-import Providers from '../common/contexts/providers';
+import ScrollTop from 'common/components/scrolltop';
+import Providers from 'common/contexts/providers';
 
 //Global styles
-import '../common/styles/globals.css';
+import 'common/styles/globals.css';
 
 //Root layout which encompasses all layouts
 export default async function RootLayout({ children }: any) {

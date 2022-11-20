@@ -1,6 +1,6 @@
 import { unstable_getServerSession } from "next-auth";
-import Title from "../../common/components/title";
-import { getProfile } from "../../modules/twitterapi";
+import Title from "common/components/title";
+import { getProfile } from "modules/twitterapi";
 
 interface Props {
 	params: {

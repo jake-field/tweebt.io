@@ -27,7 +27,7 @@ export interface User {
 	id: string;
 	name: string;
 	username: string;
-	protected?:boolean;
+	protected?: boolean;
 	profile_image_url?: string;
 }
 
