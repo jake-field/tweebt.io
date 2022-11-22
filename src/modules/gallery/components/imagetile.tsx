@@ -1,42 +1,79 @@
 import styles from '../styles/tweet.module.css';
-import { PlayIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
 import { MouseEventHandler, useState } from 'react';
-import { SpinnerIcon } from '../../../common/icons/spinnericon';
-import { Media } from '../types/gallery';
-import TweetOverlay from './tweetoverlay';
+import SpinnerIcon from 'common/icons/spinnericon';
+import { Media } from '../types/gallery.types';
 import SpoilerOverlay from './spoileroverlay';
-import TextOverlay from './textoverlay';
+import { TileViewContext } from 'common/contexts/appsettings/view';
+import { GifIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import MediaComponent from './mediacomponent';
 
 interface Props {
 	item: Media;
 	onClick?: MouseEventHandler<any>;
+	onHover?: MouseEventHandler<any>;
 }
 
-export default function ImageTile({ item, onClick }: Props) {
+export default function ImageTile({ item, onClick, onHover }: Props) {
 	const [loaded, setLoaded] = useState(false); //true when image loads
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
 	const [hover, setHover] = useState(false);
 	const touchScreenMode = window.matchMedia('(any-pointer: coarse)').matches;
 
+	//On mobile, first click displays the overlay, second tap opens the popup
+	//On any other device, clicking opens the popup since hover shows the overlay
+	function handleClick(e: any) {
+		if (touchScreenMode) {
+			if (!hover) {
+				setHover(true);
+				if (onHover) onHover(e);
+			}
+			else if (onClick) onClick(e);
+		} else {
+			if (onClick) onClick(e);
+		}
+	}
+
+	function handleHover(e: any, isHovering?: boolean) {
+		if (touchScreenMode) {
+			if (!isHovering) {
+				setHover(false);
+				if (onHover) onHover(isHovering ? e : undefined);
+			}
+			return;
+		} else {
+			setHover(isHovering || false);
+			if (onHover) onHover(isHovering ? e : undefined);
+		}
+	}
+
 	return (
 		<div
 			className={styles.tile}
-			onMouseOver={() => setHover(true)}
-			onMouseOut={() => setHover(false)}
+			onMouseEnter={(e) => handleHover(e, true)}
+			onMouseLeave={(e) => handleHover(e)}
+			onClick={handleClick}
+			draggable={false}
 		>
 			<span className={styles.container} draggable={false}>
 				{item.flagged && <SpoilerOverlay />}
 
-				{(!loaded || item.type === 'video') &&
+				{(!loaded || !imgVisible) &&
 					<span className={styles.overlay}>
-						{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader + ` ${loaded ? 'opacity-0' : 'opacity-100'}`} />}
-						{item.type === 'video' && imgVisible && <PlayIcon className={styles.playbutton} />}
+						<SpinnerIcon className={styles.loader + ` ${loaded ? 'opacity-0' : 'opacity-100'}`} />
 					</span>
 				}
 
-				{(item.alt_text || item.tweet.text) && touchScreenMode &&
-					<TextOverlay item={item} showAltButton showTextButton parentVisibility={true} />
+				{(item.type !== 'photo' && imgVisible) &&
+					<span className={styles.overlay}>
+						<TileViewContext.Consumer>
+							{({ autoplayVideos, autoplayGifs }) =>
+								<>
+									{item.type === 'video' && !(hover && autoplayVideos) && <PlayCircleIcon className={styles.playbutton + ' rounded-full'} />}
+									{item.type === 'animated_gif' && !autoplayGifs && <GifIcon className={styles.playbutton + ' rounded-2xl px-[6px]'} />}
+								</>
+							}
+						</TileViewContext.Consumer>
+					</span>
 				}
 
 				<a
@@ -45,48 +82,35 @@ export default function ImageTile({ item, onClick }: Props) {
 					onClick={(e) => e.preventDefault()} //prevent navigating to the image itself
 					draggable={false}
 				>
-					{item.type === 'animated_gif' && (item.videolq_url || item.video_url) ? (
-						<video
-							className={styles.video}
-							poster={item.url} //required for safari/apple
-							width={item.width}
-							height={item.height}
-							autoPlay //consider swapping this for onHover(200ms)
-							playsInline //fails on iOS sometimes if there is an audio track (quicktime issue?)
-							loop
-							muted
-							onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
-							onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }} //iOS fix, only update if needed
-							onClick={onClick}
-							draggable={false}
-						>
-							<source src={item.videolq_url || item.video_url} type='video/mp4' />
-						</video>
+					{item.type !== 'photo' ? ( //Two seperate paths here to reduce re-render potential of context changes on all tiles
+						<TileViewContext.Consumer>
+							{({ autoplayGifs, autoplayVideos, unmuteVideoOnHover }) =>
+								<MediaComponent
+									className={styles.video}
+									item={item}
+									loaded={loaded}
+									visible={imgVisible}
+									setLoaded={(e) => setLoaded(e)}
+									setVisible={(e) => setImgVisible(e)}
+									lowQuality
+									muted={!(hover && unmuteVideoOnHover && item.type === 'video')}
+									asImage={!autoplayGifs && item.type === 'animated_gif' || !autoplayVideos && item.type === 'video'}
+								/>
+							}
+						</TileViewContext.Consumer>
 					) : (
-						<Image
-							className={styles.image + ` ${loaded ? 'opacity-100' : 'opacity-0'}`}
-							src={item.url + '?name=small'} //pull smaller pre-compressed image from twitter
-							width={item.width}
-							height={item.height}
-							alt={item.alt_text || item.tweet.text || ''}
-							placeholder='empty'
-							//quality={75} //consider changing this, but this is acceptable for mosaic formatting
-							unoptimized={true} //save server processing stress
-							onLoadingComplete={() => setLoaded(true)}
-							onTransitionEnd={() => setImgVisible(true)}
-							onClick={onClick}
-							draggable={false}
+						<MediaComponent
+							className={styles.image}
+							item={item}
+							loaded={loaded}
+							visible={imgVisible}
+							setLoaded={(e) => setLoaded(e)}
+							setVisible={(e) => setImgVisible(e)}
+							lowQuality
 						/>
 					)}
 				</a>
 			</span>
-			<TweetOverlay
-				item={item}
-				visible={hover || touchScreenMode}
-				showMetrics={true}
-				showTweetText={!touchScreenMode}
-				mobilemode={touchScreenMode}
-			/>
 		</div >
 	);
 }

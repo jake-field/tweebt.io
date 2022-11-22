@@ -1,11 +1,13 @@
+'use client';
+
 import styles from './styles/profilecard.module.css';
-import { BadgeCheckIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
-import { TwitterIcon } from '../../common/icons/twittericons';
-import { formatNumber, pluralize } from '../../common/utils/formatnumber';
-import FormatTwitterText from '../../common/utils/richtwittertext';
-import { ProfileData } from './types/profile';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { CheckBadgeIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/solid';
+import { TwitterIcon } from 'common/icons/twittericons';
+import { formatNumber, pluralize } from 'common/utils/formatnumber';
+import formatTwitterText from 'common/utils/richtwittertext';
+import { ProfileData } from './types/profile';
 
 interface Props {
     profile: ProfileData;
@@ -35,10 +37,13 @@ export default function ProfileCard({ profile }: Props) {
                 />
             </div>
             <div className={styles.card}>
+                <div className='h-1 absolute top-0 bg-gradient-to-r from-transparent via-slate-100 dark:via-slate-700 w-full' />
+                <div className='h-1 absolute bottom-0 bg-gradient-to-r from-transparent via-slate-100 dark:via-slate-700 w-full' />
+
                 <span className={styles.header}>
                     {profile.name}
                     {profile.protected && <p title='Protected'><LockClosedIcon /></p>}
-                    {profile.verified && <p title='Verified'><BadgeCheckIcon /></p>}
+                    {profile.verified && <p title='Verified'><CheckBadgeIcon /></p>}
                 </span>
                 <a
                     href={`https://twitter.com/${profile.handle}`}
@@ -50,7 +55,9 @@ export default function ProfileCard({ profile }: Props) {
                     @{profile.handle}<TwitterIcon />
                 </a>
 
-                {bio && <p className={styles.bio}>{FormatTwitterText(bio, true)}</p>}
+                {bio && <p className={styles.bio}>{formatTwitterText(bio, true)}</p>}
+                {!bio && profile.bio && <p className={styles.bio}>{profile.bio}</p>}
+
                 {profile.url &&
                     <a href={`https://${profile.url}`} className={styles.url} target='_blank' rel='noreferrer'>
                         <LinkIcon /><span>{profile.url}</span>

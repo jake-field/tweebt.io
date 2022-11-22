@@ -1,5 +1,5 @@
-import proxyUrl from "../../../common/utils/proxyurl";
-import User from "../../twitterapi/types/user";
+import proxyMediaURL from 'common/utils/proxymediaurl';
+import UserProfileResponse from 'modules/twitterapi/types/user';
 
 export interface ProfileData {
 	id: string;
@@ -23,7 +23,7 @@ export default class Profile {
 	data?: ProfileData;
 	error?: { title: string, details: string };
 
-	constructor(user?: User) {
+	constructor(user?: UserProfileResponse) {
 		//error on invalid user
 		if (!user || !user.data) {
 			this.error = {
@@ -42,7 +42,7 @@ export default class Profile {
 			name: encodeURI(user.data.name) === '%EF%B8%8F' ? user.data.username : user.data.name,
 
 			//route image through proxy and use full 400x400 image here
-			image: proxyUrl(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
+			image: proxyMediaURL(user.data.profile_image_url || '/media/user_normal.png')!.replace(/normal/gi, '400x400'), //enforce large profile image
 
 			//metrics
 			follower_count: user.data.public_metrics?.followers_count || 0,

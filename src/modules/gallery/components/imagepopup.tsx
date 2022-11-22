@@ -1,81 +1,62 @@
 import styles from '../styles/popup.module.css';
-import { XCircleIcon } from '@heroicons/react/solid';
-import Image from 'next/image';
 import { MouseEventHandler, useEffect, useState } from 'react';
-import { SpinnerIcon } from '../../../common/icons/spinnericon';
-import { Media } from '../types/gallery';
+import SpinnerIcon from 'common/icons/spinnericon';
+import { Media } from '../types/gallery.types';
+import MediaComponent from './mediacomponent';
 
 interface Props {
-	galleryItem?: Media;
-	visible: boolean;
+	item?: Media;
 	onClick: MouseEventHandler<HTMLDivElement>;
 }
 
-export default function ImagePopup({ galleryItem, visible, onClick }: Props) {
+export default function ImagePopup({ item, onClick }: Props) {
 	const [loaded, setLoaded] = useState(false);
-	const [videoVis, setVideoVis] = useState(true);
+	const [visible, setVisible] = useState(false);
 	const [imgVisible, setImgVisible] = useState(false); //true when image completes opacity animation
-
-	//testing for video fixes
-	const isAppleTouchDevice = /iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0);
 
 	//when galleryItem changes, force loaded to false so we get the loading indicator
 	useEffect(() => {
+		//Reset flags
 		setImgVisible(false);
 		setLoaded(false);
-	}, [galleryItem]);
+		setVisible(item !== undefined);
+	}, [item]);
 
-	function videoFix() {
-		setTimeout(() => setVideoVis(false), 200);
-		if (galleryItem?.video_url && !galleryItem.video_url.includes('?tag=12')) galleryItem.video_url += '?tag=12';
-		else if (galleryItem?.video_url) galleryItem.video_url = galleryItem.video_url.replace('?tag=12', '');
-		setTimeout(() => setVideoVis(true), 500);
-	}
+	useEffect(() => {
+		//hide scrollbars on open, force fixed for the sake of mobile, then restore scroll on close
+		const scroll = document.body.style.top;
+		const s = -(scrollY).toString();
+		document.body.style.overflowY = visible ? 'hidden' : '';
+		document.body.style.position = visible ? 'fixed' : '';
+		document.body.style.top = visible ? `${s}px` : '';
+		document.body.style.width = visible ? '100%' : '';
 
-	//don't render if no item
-	if (!galleryItem) return null;
+		if (!visible) {
+			const num = Number(scroll.substring(0, scroll.indexOf('px')));
+			scrollTo({ top: -num });
+		}
+
+		//if on mobile, make the background black so that the device browser has consistent ui colors
+		if (window.matchMedia('(pointer: coarse)').matches) document.body.style.backgroundColor = item ? 'black' : '';
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [visible]);
 
 	return (
-		<div
-			className={`${styles.container} ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-			onClick={onClick}
-		>
-			<div>
-				{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader} />}
-				{videoVis && visible && galleryItem.type !== 'photo' && galleryItem.video_url ? (
-					<video
-						width={galleryItem.width}
-						height={galleryItem.height}
-						poster={galleryItem.url}
-						playsInline
-						autoPlay //this will fail on iOS if we have to fix the video and it has audio (safari blocks autoplay on unmuted videos)
-						loop
-						controls={loaded && galleryItem.type === 'video'} //don't show controls on gifs
-						onClick={(e) => { if (galleryItem.type === 'video') e.stopPropagation() }} //prevent the popup from closing when clicking on a video (ignore for gif)
-						onPlay={() => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true) }}
-						onLoadedData={(e) => { if (!loaded || !imgVisible) setLoaded(true); setImgVisible(true); }}
-						onError={() => { if (isAppleTouchDevice) videoFix(); }} //dummy fix for iOS issues
-					>
-						<source src={galleryItem.video_url} type='video/mp4' />
-					</video>
-				) : visible && (
-					<Image
-						//src={galleryItem.url + '?name=orig'} //pull full size
-						src={galleryItem.url + '?name=medium'}
-						alt={galleryItem.alt_text || ''}
-						width={galleryItem.width}
-						height={galleryItem.height}
-						//quality={100}
-						unoptimized={true} //uses actual src rather than next/image (needs proxy to bypass adblockers)
-						priority={true} //give priority to the modal image
-						placeholder='empty'
-						onLoadStart={() => setLoaded(false)}
-						onLoadingComplete={() => setLoaded(true)}
-						onTransitionEnd={() => setImgVisible(visible)}
-						className={`${styles.image} ${loaded ? 'opacity-100' : 'opacity-0'}`}
+		<div className={`${styles.container} ${visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} onClick={onClick}>
+			{item &&
+				<div>
+					{(!loaded || !imgVisible) && <SpinnerIcon className={styles.loader} />}
+					<MediaComponent
+						item={item}
+						className={item.type === 'photo' ? styles.image : ''}
+						loaded={loaded}
+						visible={imgVisible}
+						setLoaded={setLoaded}
+						setVisible={setImgVisible}
+						asImage={!visible} //force poster image if popup not visible
 					/>
-				)}
-			</div>
+				</div>
+			}
 		</div>
 	)
 }

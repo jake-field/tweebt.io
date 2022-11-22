@@ -1,59 +1,8 @@
-import { formatTimeAgo, shortenTimeAgo } from '../../../common/utils/formatnumber';
-import proxyUrl from '../../../common/utils/proxyurl';
-import Timeline, { Meta } from '../../twitterapi/types/timeline';
-
-export interface Error {
-	title: string;
-	detail: string;
-}
-
-export interface Author {
-	id: string;
-	handle: string;
-	name: string;
-	image: string;
-}
-
-export interface Metrics {
-	retweets: number;
-	replies: number;
-	likes: number;
-	quotes: number;
-}
-
-export interface Tweet {
-	id: string;
-	type?: ('retweeted' | 'replied_to' | 'quoted'); //used by ref_tweets
-
-	author: Author;
-	metrics?: Metrics;
-	text?: string;
-	created_at: string;
-	created_at_short?: string;
-}
-
-//TODO: Rename this once cleanup is complete
-export interface Media {
-	id: string;
-	type: string; //image, video, animated_gif
-
-	tweet: Tweet;
-	ref_tweet?: Tweet; //optional, may not reference a tweet
-
-	url: string; //image url or video preview
-
-	width: number;
-	height: number;
-
-	alt_text?: string; //optional, may contain alternative text
-	flagged?: boolean; //optional, may be flagged by author/twitter as potentially sensitive
-
-	//video stuff
-	video_url?: string;
-	videolq_url?: string;
-	duration_ms?: number;
-	view_count?: number;
-}
+import { formatTimeAgo, shortenTimeAgo } from 'common/utils/formatnumber';
+import proxyMediaURL from 'common/utils/proxymediaurl';
+import { fixCarets } from 'common/utils/regextests';
+import Timeline, { Meta } from 'modules/twitterapi/types/timeline';
+import { Error, Media, Tweet } from './gallery.types';
 
 export default class Gallery {
 	meta: Meta;
@@ -62,7 +11,6 @@ export default class Gallery {
 
 	//Constructor from Timeline
 	constructor(timeline: Timeline) {
-		//TODO: meta sometimes comes back as undefined, usually an error is in tow
 		this.meta = timeline.meta || { result_count: 0 };
 		this.error = timeline.meta ? undefined : { title: 'Error', detail: 'No metadata' };
 		this.items = [];
@@ -71,7 +19,11 @@ export default class Gallery {
 			const leadingError = timeline.errors?.at(0);
 
 			if (leadingError !== undefined) {
-				if (leadingError.title.match(/auth/gi)) this.error = { title: 'Unable to view account', detail: 'Account is inacessible\n(Deleted/Suspended/Protected)' };
+				console.log(leadingError)
+				console.log(timeline.data);
+				if (leadingError.title.match(/auth/gi)) this.error = {
+					title: '403 - Unauthorized', detail: 'Inaccessible Account'
+				};
 			} else {
 				this.error = { title: 'Unknown Error', detail: 'Timeline error' };
 				console.log('Unhandled timeline error with missing metadata\n', timeline.errors);
@@ -85,18 +37,13 @@ export default class Gallery {
 				//look up tweet by matching media key
 				const tweet = timeline.data?.find(t => t.attachments?.media_keys?.includes(item.media_key));
 
-				if (!tweet) console.log('MISSING TWEET FOR MEDIA ITEM');
-
 				//if we found a matching tweet (this should always be true)
 				if (tweet) {
 					//find tweet author
 					const author = timeline.includes?.users?.find(u => u.id === tweet.author_id);
-					if (author === undefined) console.log('MISSING TWEET AUTHOR');
 
-					if (author && encodeURI(author.name) === '%EF%B8%8F') {
-						console.log('author is using an empty character, replacing with handle');
-						author.name = author.username;
-					}
+					//If user uses the null character as their twitter name, replace it with their handle for the sake of UI/UX
+					if (author && encodeURI(author.name) === '%EF%B8%8F') author.name = author.username;
 
 					//build the referencing object, taking the reference tweet and username (not id) of the tweet author
 					//this is mainly done to fix public-metrics as only retweets and tweetID are passed, not user or likes/replies
@@ -105,8 +52,6 @@ export default class Gallery {
 
 					//if there are referenced tweets
 					if (tweet.referenced_tweets) {
-						if (tweet.referenced_tweets.length > 1) console.log('FOR SOME REASON THERE IS MORE THAN ONE REFERENCED TWEET HERE');
-
 						//If refTweet cannot be found, then the Tweet is deleted or inacessible. (deleted, suspended/protected)
 						const refDesc = tweet.referenced_tweets[0];
 						const refTweet = timeline.includes?.tweets?.find(t => t.id === refDesc.id);
@@ -127,20 +72,30 @@ export default class Gallery {
 								//Sometimes user won't be valid due to a protected/deleted tweet
 								//In this case, try match the username from the tweet text
 								//	or use the author username as Twitter has a special redirect for threads
-								name: refAuthor?.name || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.name || '',
+								name: refAuthor?.name || '[Deleted Tweet]',
 								handle: refAuthor?.username || tweet.text.match(/^(?:@)(\w*)/i)?.at(1) || author?.username || '',
 
 								//try for their profile image, but if the tweet was deleted/protected this may be null, so use default profile image
-								image: proxyUrl(refAuthor?.profile_image_url) || '/media/user_normal.png',
+								image: proxyMediaURL(refAuthor?.profile_image_url) || '/media/user_normal.png',
 							},
 						};
+
+						//flag protected tweet if either accounts are protected
+						if ((refAuthor?.protected || author?.protected) && refDesc.type === 'retweeted') {
+							console.log('Found protected tweet, excluding from output to client')
+							ref.author.protected = true;
+
+							//Requesting the retweeted tweet to get the image will be hard on some profiles where all 100 tweets
+							//	will need to be refetched, consider the impacts of doing this.
+							return; //TODO: build a list of protected tweets to query the twitter API for the valid image url
+						}
 
 						ref.created_at_short = shortenTimeAgo(ref.created_at);
 					}
 
 					//prep tweet text by stripping the RT information and the 'twitter quick link' at the end of every tweet from the api
 					//don't strip the leading @ if we are referencing someone as there is no twitter prepended @
-					let tweetText = tweet.text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+					let tweetText = fixCarets(tweet.text);
 					if (ref) tweetText = tweetText.replace(/(^(RT )?@[a-z0-9_]*:? )|( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 					else tweetText = tweetText.replace(/( ?https:\/\/t.co\/\w* ?)*$/gim, '');
 
@@ -192,12 +147,13 @@ export default class Gallery {
 								id: author?.id || '',
 								handle: author?.username || 'unknown',
 								name: author?.name || 'unknown',
-								image: proxyUrl(author?.profile_image_url) || '/media/user_normal.png'
+								protected: author?.protected || false,
+								image: proxyMediaURL(author?.profile_image_url) || '/media/user_normal.png'
 							},
 						},
 						ref_tweet: ref,
 
-						url: proxyUrl(item.preview_image_url || item.url)!, //proxy for unoptimized images
+						url: proxyMediaURL(item.preview_image_url || item.url)!, //proxy for unoptimized images
 
 						width: item.width,
 						height: item.height,
@@ -208,8 +164,8 @@ export default class Gallery {
 						//video stuff
 						duration_ms: item.duration_ms,
 						view_count: item.public_metrics?.view_count,
-						video_url: proxyUrl(videoURL),
-						videolq_url: proxyUrl(videolqURL),
+						video_url: proxyMediaURL(videoURL),
+						videolq_url: proxyMediaURL(videolqURL),
 					});
 				}
 			});

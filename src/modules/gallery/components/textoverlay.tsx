@@ -1,8 +1,8 @@
 import styles from '../styles/tweettext.module.css';
-import { AnnotationIcon } from "@heroicons/react/solid";
-import { useEffect, useState } from "react";
-import FormatTwitterText from "../../../common/utils/richtwittertext";
-import { Media } from "../types/gallery"
+import { useEffect, useState } from 'react';
+import formatTwitterText from 'common/utils/richtwittertext';
+import { Media } from '../types/gallery.types'
+import { ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/solid';
 
 interface Props {
 	item: Media;
@@ -33,10 +33,10 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 
 	useEffect(() => {
 		//don't load/store tweet-text in state if we don't show the button, to save DOM elements
-		if (item.tweet.text && showTextButton) setFormattedText(FormatTwitterText(item.tweet.text));
+		if (item.tweet.text && showTextButton) setFormattedText(formatTwitterText(item.tweet.text));
 		else setFormattedText(<></>);
 
-		if (item.alt_text) setFormattedAltText(FormatTwitterText(item.alt_text));
+		if (item.alt_text) setFormattedAltText(formatTwitterText(item.alt_text));
 		else setFormattedAltText(<></>);
 	}, [item, showTextButton]);
 
@@ -79,7 +79,7 @@ export default function TextOverlay({ item, showAltButton, showTextButton, showO
 					onMouseEnter={() => { if (showOnHover) setShowText('text') }}
 					onMouseLeave={() => { if (isAppleTouchDevice) clearText(clearDelay) }} //fix for iOS
 				>
-					<AnnotationIcon />
+					<ChatBubbleBottomCenterTextIcon />
 				</button>
 			}
 		</div>

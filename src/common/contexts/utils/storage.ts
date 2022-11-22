@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 /**
  * Base class to include a generic setter function to any class that needs it

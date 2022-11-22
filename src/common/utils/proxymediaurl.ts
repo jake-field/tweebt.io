@@ -1,4 +1,4 @@
-export default function proxyUrl(url?: string) {
+export default function proxyMediaURL(url?: string) {
 	return url?.
 		//static
 		replace(/https:\/\/abs.twimg.com\/sticky\/default_profile_images\/default_profile/, '/media/user').
@@ -11,5 +11,8 @@ export default function proxyUrl(url?: string) {
 		replace(/https:\/\/(?:video|pbs).twimg.com\/amplify_video(?:_thumb)?\/(.+)\/(?:vid|img)\//, '/media/v2/$1/').
 
 		//gifs
-		replace(/https:\/\/(video|pbs).twimg.com\/tweet_video(_thumb)?\//, '/media/v/');
+		replace(/https:\/\/(video|pbs).twimg.com\/tweet_video(_thumb)?\//, '/media/v/').
+
+		//catch-all
+		replace(/https:\/\/(\w*).twimg.com\//, '/tmedia/$1/');
 }

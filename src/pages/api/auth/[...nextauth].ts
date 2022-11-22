@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { JWT } from 'next-auth/jwt';
-import proxyUrl from '../../../common/utils/proxyurl';
+import proxyMediaURL from 'common/utils/proxymediaurl';
 
 interface TwitterRefreshToken {
 	token_type: string;
@@ -15,19 +15,13 @@ interface TwitterRefreshToken {
 async function refreshAccessToken(token: JWT): Promise<JWT> {
 	try {
 		const url = `https://api.twitter.com/2/oauth2/token?grant_type=refresh_token&client_id=${process.env.TWITTER_CLIENT_ID}&refresh_token=${token.refreshToken}`;
-
 		const response = await fetch(url, {
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded',
-			},
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
 			method: 'POST',
 		});
 
 		const refreshedTokens = await response.json() as TwitterRefreshToken;
-
-		if (!response.ok) {
-			throw refreshedTokens;
-		}
+		if (!response.ok) throw refreshedTokens;
 
 		const res: JWT = {
 			...token,
@@ -38,7 +32,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 
 		return res;
 	} catch (error) {
-
 		return {
 			...token,
 			error: 'RefreshAccessTokenError',
@@ -46,9 +39,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
 	}
 }
 
-
-//seperate export for unstable_getServerSession
-// see: https://next-auth.js.org/configuration/nextjs#unstable_getserversession
 export const authOptions: NextAuthOptions = {
 	providers: [
 		TwitterProvider({
@@ -64,11 +54,16 @@ export const authOptions: NextAuthOptions = {
 					email: data.username, //Use email section for twitter handle
 
 					//relocate to local nextjs proxy to bypass adblockers
-					image: proxyUrl(data.profile_image_url),
+					image: proxyMediaURL(data.profile_image_url),
 				};
 			}
 		}),
 	],
+
+	pages: {
+		signIn: '/', //Use root to hide NextAuth templates
+		error: '/',
+	},
 
 	callbacks: {
 		async jwt({ token, account }) {

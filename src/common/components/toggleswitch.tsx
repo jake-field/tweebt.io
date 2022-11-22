@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler } from 'react';
 
 interface Props {
 	id?: string;
@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ToggleSwitch({ id, label, className, checked, disabled, hideLabel, onClick, children }: Props) {
-	if (id === undefined && label === undefined) console.log('toggle switch is missing both id and label, please include at least one to ensure functionality!');
+	if (id === undefined && label === undefined) console.warn('toggle switch is missing both id and label, please include at least one to ensure functionality!');
 	const inputId = id || `toggle-${label?.toLowerCase().replaceAll(' ', '-')}`;
 
 	return (
@@ -38,23 +38,18 @@ export default function ToggleSwitch({ id, label, className, checked, disabled, 
 				title={label}
 				htmlFor={inputId}
 				className='
-					rounded-full
+					flex items-center w-8 h-4 rounded-full shadow-inner
 					peer-enabled:cursor-pointer
 					peer-enabled:hover:ring-2
 					peer-checked:justify-end 
-					peer-enabled:peer-checked:bg-slate-400
-					peer-enabled:bg-slate-800
-					bg-slate-600
-					w-8
-					h-4
-					flex
-					items-center
+					peer-enabled:peer-checked:bg-lime-500
+					peer-enabled:bg-slate-400 bg-slate-300 dark:bg-slate-600
+					overflow-hidden
 				'
 			>
 				<span
 					title={disabled ? 'Disabled' : 'Toggle'}
-					className='rounded-full h-4 w-4'
-					style={{ backgroundColor: disabled ? 'slategrey' : 'white' }}
+					className={`rounded-full h-4 w-4 border dark:border-0 shadow-lg drop-shadow-lg ${disabled ? 'bg-slate-200 dark:bg-slate-500 border-slate-300' : 'bg-white border-slate-300'}`}
 				/>
 			</label>
 		</div>

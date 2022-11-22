@@ -1,5 +1,5 @@
-import React from "react";
-import useStorageState, { StorageState } from "../utils/storage";
+import React from 'react';
+import useStorageState, { StorageState } from '../utils/storage';
 
 export class ImageQuality {
 	/**
@@ -14,7 +14,7 @@ export class ImageQuality {
 	 * Quality of image to pull from Twitter. If imageOptimization is undefined, this is the image
 	 * directly served 1:1 via proxy to the client, so larger files may take longer to render.
 	 * 
-	 * Consider the implications of using `"orig"`:
+	 * Consider the implications of using `'orig'`:
 	 * - on mobile, low-end devices and slow or spotty connections
 	 * - when `imageOptization` is enabled, as the server has to process these to the desired format
 	 */
@@ -40,7 +40,9 @@ export class ModalViewState extends GenericView<ModalViewState> { }
 
 export class TileViewState extends GenericView<TileViewState> {
 	imageSettings: ImageQuality = { optimize: undefined, twitterQuality: 'small' };
-	autoplayVideos = false; //If true, videos will autoplay on the feed (gifs will still always autoplay)
+	autoplayGifs = true; //True by default
+	autoplayVideos = false; //If true, videos will autoplay on the feed
+	unmuteVideoOnHover = false; //If true, videos playing inline will unmute when user hovers over them
 	showAuthorIfOwnProfile = false; //show author if it's their own post on their profile [@handle = item.author on profile page] (doesn't apply to replies/retweets)
 }
 

@@ -1,5 +1,6 @@
-import { Error } from './errors';
+import { ResourceError } from './errors';
 import { PublicUserMetrics } from './metrics';
+import { User } from './timeline';
 
 interface Entities {
 	url?: {
@@ -33,17 +34,15 @@ interface Entities {
 	};
 }
 
-export default interface User {
-	data?: {
-		id: string;
-		name: string;
-		username: string;
-		profile_image_url: string;
-		description?: string;
-		protected?: boolean;
-		verified?: boolean;
-		public_metrics?: PublicUserMetrics;
-		entities?: Entities;
-	}
-	errors?: Error[];
+export interface UserProfile extends User {
+	description?: string;
+	protected?: boolean;
+	verified?: boolean;
+	public_metrics?: PublicUserMetrics;
+	entities?: Entities;
+}
+
+export default interface UserProfileResponse {
+	data?: UserProfile;
+	errors?: ResourceError[];
 }

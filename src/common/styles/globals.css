@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+	@apply bg-slate-200 dark:bg-slate-900 dark:text-white;
+}
+
 a {
 	@apply cursor-pointer;
 	@apply text-blue-600 hover:text-blue-800 visited:text-blue-600;
@@ -10,6 +14,16 @@ a {
 
 h1 {
 	@apply text-lg
+}
+
+.demoContainer {
+	@apply fixed z-50 w-full sm:w-3/4 max-w-[1080px] h-full;
+	@apply from-slate-200 dark:from-slate-900 via-transparent dark:via-transparent to-slate-200 dark:to-slate-900;
+}
+
+.demoBanner {
+	@apply absolute w-full flex flex-col items-center justify-center p-5 gap-2 select-none;
+	@apply bg-gradient-to-r from-slate-200 dark:from-slate-900 via-white dark:via-slate-700 to-slate-200 dark:to-slate-900;
 }
 
 /*Consider putting this elsewhere*/

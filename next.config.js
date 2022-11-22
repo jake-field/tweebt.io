@@ -1,14 +1,18 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: false, //when using dev, setting this to true causes double useEffect
+	reactStrictMode: false, //When using dev, setting this to true causes double useEffect
 	poweredByHeader: false,
+	experimental: {
+		appDir: true,
+		//runtime: 'experimental-edge', //Cannot use this as it breaks next-auth sessions
+	},
 }
 
 const ContentSecurityPolicy = `
 	default-src 'self';
 	img-src 'self' data:;
-	script-src 'self' 'unsafe-eval';
+	script-src 'self' 'unsafe-eval' 'unsafe-inline';
 	style-src 'self' 'unsafe-inline';
 `
 
@@ -19,7 +23,7 @@ const securityHeaders = [
 	},
 	{
 		key: 'Content-Security-Policy',
-		//key: 'Content-Security-Policy-Report-Only',
+		//key: 'Content-Security-Policy-Report-Only', //Debug only testing
 		value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim()
 	},
 	{
@@ -43,7 +47,7 @@ const securityHeaders = [
 module.exports = {
 	...nextConfig,
 
-	//set up security headers
+	//Set up security headers
 	async headers() {
 		return [
 			{
@@ -54,25 +58,11 @@ module.exports = {
 		]
 	},
 
-	//proxy for twitter content, helps with negating tracking and adblocker issues
+	//Proxy for twitter content, helps with negating tracking and adblocker issues
 	async rewrites() {
 		return {
 			beforeFiles: [
-				//original crunching
-				// {
-				// 	source: '/img/:path*',
-				// 	destination: 'https://pbs.twimg.com/:path*',
-				// },
-				// {
-				// 	source: '/simg/:path*',
-				// 	destination: 'https://abs.twimg.com/:path*',
-				// },
-				// {
-				// 	source: '/vimg/:path*',
-				// 	destination: 'https://video.twimg.com/:path*',
-				// },
-
-				//generic proxy url crunching (ORDER IS IMPORTANT HERE)
+				//Generic proxy url crunching (Order matters)
 				//videos
 				{
 					source: '/media/v/:id/:pu/:size/:file',
@@ -117,6 +107,12 @@ module.exports = {
 				{
 					source: '/media/:file',
 					destination: 'https://pbs.twimg.com/media/:file',
+				},
+
+				//catch-all url for anything new that pops up
+				{
+					source: '/tmedia/:s/:all*',
+					destination: 'https://:s.twimg.com/:all*',
 				},
 			]
 		}

@@ -1,35 +1,54 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-
 interface Props {
+	url?: string;
 	title?: string;
 	desc?: string;
 	image?: string;
 }
 
-export default function Title({ title, desc, image }: Props) {
-	const router = useRouter();
+//TODO: remove this function when Next13 fixes the head issue
+//Fix head issue, currently NextJS 13 head files are static and do not update with Next/Link routing
+export function tempHeadFix({ url, title, desc, image }: Props) {
+	if (typeof document === undefined) return; //client-side fix only
+
 	const appName = 'tweebt.io';
 	const ogTitle = title ? `${title}` : appName;
-	const description = 'Search Twitter or view your feed as rolling gallery of images to streamline your browsing.';
+	const description = desc ? desc : 'Search Twitter users, hashtags, topics, or your personal feed as a moasaic gallery of images to streamline your browsing';
+
+	document.title = title ? `${title} // ${appName}` : appName;
+
+	//iterate over meta tags
+	const tags = document.head.getElementsByTagName('meta');
+	for (let tag of tags) {
+		const type = tag.attributes.getNamedItem('property');
+		if (!type) continue; //skip other meta tags
+		if (type.value.match(/title/)) tag.setAttribute('content', ogTitle);
+		if (type.value.match(/description/)) tag.setAttribute('content', description);
+		if (url && type.value.match(/(url)|(domain)/)) tag.setAttribute('content', url);
+	}
+}
+
+export default function Title({ url, title, desc, image }: Props) {
+	const appName = 'tweebt.io';
+	const ogTitle = title ? `${title}` : appName;
+	const description = desc ? desc : 'Search Twitter users, hashtags, topics, or your personal feed as a moasaic gallery of images to streamline your browsing';
 
 	return (
-		<Head>
-			<title>{title ? `${title} // ${appName}` : appName}</title>
+		<>
 			<link rel='icon' href='/favicon.ico' />
 
-			<meta property='og:type' content='website' />
-			<meta property='description' content={desc ? desc : description} />
-
+			<title>{title ? `${title} // ${appName}` : appName}</title>
 			<meta property='og:title' content={ogTitle} />
 			<meta property='twitter:title' content={ogTitle} />
 
-			<meta property='og:description' content={desc ? desc : description} />
-			<meta property='twitter:description' content={desc ? desc : description} />
+			<meta property='og:type' content='website' />
 
-			<meta property='og:url' content={router.asPath} />
-			<meta property='twitter:url' content={router.asPath} />
-			<meta property='twitter:domain' content={router.asPath} />
+			<meta property='description' content={description} />
+			<meta property='og:description' content={description} />
+			<meta property='twitter:description' content={description} />
+
+			<meta property='og:url' content={url} />
+			<meta property='twitter:url' content={url} />
+			<meta property='twitter:domain' content={url} />
 
 			{image && image.length > 0 &&
 				<>
@@ -38,6 +57,6 @@ export default function Title({ title, desc, image }: Props) {
 					<meta property='og:image' content={image} />
 				</>
 			}
-		</Head>
+		</>
 	)
 }

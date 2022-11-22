@@ -12,8 +12,12 @@ export interface Tweet {
 		media_keys?: string[];
 	};
 
-	referenced_tweets?: {
-		type: 'retweeted' | 'replied_to' | 'quoted';
+	edit_history_tweet_ids?: {
 		id: string;
-	}[]
+	}[];
+
+	referenced_tweets?: {
+		type: ('retweeted' | 'replied_to' | 'quoted');
+		id: string;
+	}[];
 }
