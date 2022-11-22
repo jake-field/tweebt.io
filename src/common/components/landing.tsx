@@ -12,7 +12,7 @@ interface Props {
 
 export default function LandingPage({ profile }: Props) {
 	return (
-		<div className='flex flex-col items-center justify-center w-screen h-screen fixed overflow-hidden'>
+		<div className='flex flex-col items-center justify-center w-screen h-screen fixed overflow-hidden' style={{ contain: 'content' }}>
 			<div className='demoContainer bg-gradient-to-r' />
 			<div className='demoContainer bg-gradient-to-b flex items-center justify-center cursor-default select-none'>
 				<div className='demoBanner'>
