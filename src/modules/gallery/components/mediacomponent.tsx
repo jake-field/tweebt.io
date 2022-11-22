@@ -1,6 +1,6 @@
-import Image from "next/image";
-import React from "react";
-import { Media } from "../types/gallery.types";
+import Image from 'next/image';
+import React from 'react';
+import { Media } from '../types/gallery.types';
 
 interface Props {
 	className?: string;
@@ -67,6 +67,7 @@ export default function MediaComponent({ className, item, loaded, visible, setLo
 					playsInline
 					autoPlay
 					loop
+					disablePictureInPicture={true} //some browsers show a little icon which gets in the way
 					preload='auto'
 					controls={loaded && item.type === 'video' && !lowQuality} //don't show controls on gifs
 					onClick={onClick ? onClick : defaultClickHandler} //prevent the popup from closing when clicking on a video (ignore for gif)

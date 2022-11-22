@@ -87,7 +87,7 @@
 	@apply items-center justify-center;
 }
 .metriccontainer img {
-	@apply rounded-full border-2 border-slate-200 bg-slate-200;
+	@apply rounded-full border-2;
 	@apply min-w-[24px] min-h-[24px] sm:min-w-[36px] sm:min-h-[36px];
 	@apply max-w-[24px] max-h-[24px] sm:max-w-[36px] sm:max-h-[36px];
 }

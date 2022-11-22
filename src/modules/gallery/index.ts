@@ -1,6 +1,6 @@
-import { signOut } from "next-auth/react";
-import toQueryString from "modules/twitterapi/types/params";
-import Gallery from "./types/gallery";
+import { signOut } from 'next-auth/react';
+import toQueryString from 'modules/twitterapi/types/params';
+import Gallery from './types/gallery';
 
 export type GalleryParams = {
 	q?: string;

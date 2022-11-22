@@ -1,7 +1,7 @@
 'use client';
 
-import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
+import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 
 export default function ScrollTop() {
 	const [visible, setVisible] = useState(false);

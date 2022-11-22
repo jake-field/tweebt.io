@@ -11,6 +11,7 @@ Below are some issues I'm running into currently which hopefully be fixed soon e
 
 ## General Tasks:
 - Consider adjusting mosacic to pulled time differences (More than 2 hours ago, 1 day ago, 2 days ago, 1 year ago)
+- Address metadata bug introduced by Next13, remove title fixes once done. Right now metadata isn't updated but only shows on share sheets.
 
 ## Twitter Issues:
 - Accounts that were public, now protected, will contain media that fails to resolve. If a protected account unlocks, media can still fail to resolve (404)

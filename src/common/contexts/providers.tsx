@@ -1,9 +1,9 @@
 'use client';
 
-import { SessionProvider } from "next-auth/react";
-import ResultsProvider from "./appsettings/results";
-import ThemeProvider from "./appsettings/theme";
-import ViewProvider from "./appsettings/view";
+import { SessionProvider } from 'next-auth/react';
+import ResultsProvider from './appsettings/results';
+import ThemeProvider from './appsettings/theme';
+import ViewProvider from './appsettings/view';
 
 export default function Providers({ children, session }: any) {
 	return (

@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 //Format a number such that 10,500 becomes 10.5k
 export function formatNumber(n: number, precision: number = 1) {

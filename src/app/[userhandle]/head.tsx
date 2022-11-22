@@ -1,6 +1,6 @@
-import { unstable_getServerSession } from "next-auth";
-import Title from "common/components/title";
-import { getProfile } from "modules/twitterapi";
+import { unstable_getServerSession } from 'next-auth';
+import Title from 'common/components/title';
+import { getProfile } from 'modules/twitterapi';
 
 interface Props {
 	params: {
@@ -20,10 +20,10 @@ export default async function Head({ params: { userhandle } }: Props) {
 
 	return (
 		<Title
-			url={`tweebt.io/${userhandle}`}
+			url={`tweebt.io/@${profile.data.handle}`}
 			title={`${profile.data.name} (@${profile.data.handle})`}
 			image={profile.data.image.replace('400x400', '200x200')}
-			desc={`Check out ${profile.data.name}'s (@${profile.data.handle}) latest tweets as a rolling gallery without ads or distractions!`}
+			desc={profile.data.bio ? profile.data.bio : `Check out ${profile.data.name}'s (@${profile.data.handle}) latest tweets as a rolling gallery without ads or distractions!`}
 		/>
 	)
 }

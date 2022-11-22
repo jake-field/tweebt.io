@@ -1,6 +1,6 @@
 import styles from '../styles/tweet.module.css';
-import { useContext, useEffect, useState } from "react";
-import { TileBlurContext } from "common/contexts/appsettings/view";
+import { useContext, useEffect, useState } from 'react';
+import { TileBlurContext } from 'common/contexts/appsettings/view';
 import { EyeSlashIcon } from '@heroicons/react/24/outline';
 
 export default function SpoilerOverlay() {

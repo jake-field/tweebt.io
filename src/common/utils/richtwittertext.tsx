@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { fixCarets, twitterTextSplitterRegex, twitterTextMatchRegex } from "./regextests";
+import Link from 'next/link';
+import { fixCarets, twitterTextSplitterRegex, twitterTextMatchRegex } from './regextests';
 
 export default function formatTwitterText(s: string, prettifyLinks?: boolean, linkLength?: number) {
 	const t = fixCarets(s);

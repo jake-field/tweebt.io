@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import useStorageState, { StorageState } from "../utils/storage";
+import React, { useEffect } from 'react';
+import useStorageState, { StorageState } from '../utils/storage';
 
 //Types
 type theme = ('sys' | 'dark' | 'light');
 
 //Utils Functions
 export function getDeviceTheme(): theme {
-	return (typeof window !== "undefined") ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light' : 'light';
+	return (typeof window !== 'undefined') ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light' : 'light';
 }
 
 //State

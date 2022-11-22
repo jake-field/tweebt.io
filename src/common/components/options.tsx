@@ -1,16 +1,16 @@
 'use client';
 
-import { ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon, FilmIcon, FlagIcon } from "@heroicons/react/24/outline";
-import { Cog6ToothIcon, EyeSlashIcon, GifIcon, MoonIcon, SpeakerWaveIcon } from "@heroicons/react/24/solid";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ResultsContext } from "common/contexts/appsettings/results";
-import { getDeviceTheme, ThemeContext } from "common/contexts/appsettings/theme";
-import { TileBlurContext, TileViewContext } from "common/contexts/appsettings/view";
-import { ReplyIcon, RetweetIcon } from "common/icons/twittericons";
-import ToggleSwitch from "./toggleswitch";
+import { ArrowLeftOnRectangleIcon, ArrowRightOnRectangleIcon, FilmIcon, FlagIcon } from '@heroicons/react/24/outline';
+import { Cog6ToothIcon, EyeSlashIcon, GifIcon, MoonIcon, SpeakerWaveIcon } from '@heroicons/react/24/solid';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ResultsContext } from 'common/contexts/appsettings/results';
+import { getDeviceTheme, ThemeContext } from 'common/contexts/appsettings/theme';
+import { TileBlurContext, TileViewContext } from 'common/contexts/appsettings/view';
+import { ReplyIcon, RetweetIcon } from 'common/icons/twittericons';
+import ToggleSwitch from './toggleswitch';
 
 export default function Options() {
 	const pathname = usePathname();
@@ -19,8 +19,8 @@ export default function Options() {
 	const [disableMuteOption, setDisableMuteOption] = useState(false);
 
 	const liClassName = 'w-max sm-h:landscape:min-w-full portrait:min-w-full landscape:border-r portrait:border-b sm-h:landscape:border-r-0 sm-h:landscape:border-b last:border-b-0 border-slate-300 dark:border-slate-500 py-3 px-4 hover:bg-slate-200 hover:dark:bg-slate-500 cursor-pointer';
-	const isAppleTouchDevice = (typeof navigator !== "undefined") && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
-	const touchScreenMode = (typeof window !== "undefined") && window.matchMedia('(any-pointer: coarse)').matches;
+	const isAppleTouchDevice = (typeof navigator !== 'undefined') && (/iPhone|iPad|iPod/gi.test(navigator.userAgent) || (/AppleWebKit/gi.test(navigator.userAgent) && navigator.maxTouchPoints > 0));
+	const touchScreenMode = (typeof window !== 'undefined') && window.matchMedia('(any-pointer: coarse)').matches;
 
 	useEffect(() => {
 		setDisableMuteOption(isAppleTouchDevice || touchScreenMode);

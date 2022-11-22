@@ -1,6 +1,6 @@
-import { unstable_getServerSession } from "next-auth";
-import NavBar from "common/components/navbar";
-import Feed from "modules/gallery/components/feed";
+import { unstable_getServerSession } from 'next-auth';
+import NavBar from 'common/components/navbar';
+import Feed from 'modules/gallery/components/feed';
 
 interface Props {
 	params: {

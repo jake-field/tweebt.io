@@ -1,5 +1,5 @@
-import React from "react";
-import useStorageState, { StorageState } from "../utils/storage";
+import React from 'react';
+import useStorageState, { StorageState } from '../utils/storage';
 
 export class ResultOptions {
 	retweets = true; //[retweets, quotes]

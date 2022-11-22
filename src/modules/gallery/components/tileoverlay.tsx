@@ -1,11 +1,12 @@
 import styles from '../styles/tweet.module.css';
-import Image from "next/image";
-import { AnchorHTMLAttributes, useEffect, useState } from "react";
-import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from "common/icons/twittericons";
-import { formatNumber, pluralize } from "common/utils/formatnumber";
-import { Media } from "../types/gallery.types";
+import Image from 'next/image';
+import { AnchorHTMLAttributes, useEffect, useState } from 'react';
+import { LikeIcon, ReplyIcon, RetweetIcon, TwitterIcon } from 'common/icons/twittericons';
+import { formatNumber, pluralize } from 'common/utils/formatnumber';
+import { Media } from '../types/gallery.types';
 import { ArrowRightIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/solid';
 import { FilmIcon, GifIcon } from '@heroicons/react/24/outline';
+import useWindowDimensions from 'common/utils/windowresizehook';
 
 interface Props {
 	target?: HTMLElement;
@@ -16,6 +17,10 @@ export default function TileOverlay({ target, item }: Props) {
 	const [storedTarget, setStoredTarget] = useState<HTMLElement | undefined>();
 	const [visible, setVisible] = useState(false);
 	const [selfHover, setSelfHover] = useState(false);
+
+	//DO NOT DELETE THIS LINE
+	//Using a hook here to force a re-render on window resize, which updates the size/position of the overlay on resize
+	useWindowDimensions(); //Force component update on window resize
 
 	useEffect(() => {
 		setVisible(target ? true : false);

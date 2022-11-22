@@ -1,10 +1,10 @@
 'use client';
 
-import { signIn } from "next-auth/react";
-import Feed from "modules/gallery/components/feed";
-import { ProfileData } from "modules/profile/types/profile";
-import { TwitterIcon } from "common/icons/twittericons";
-import Searchbar from "./searchbar";
+import { signIn } from 'next-auth/react';
+import Feed from 'modules/gallery/components/feed';
+import { ProfileData } from 'modules/profile/types/profile';
+import { TwitterIcon } from 'common/icons/twittericons';
+import Searchbar from './searchbar';
 
 interface Props {
 	profile: ProfileData;
@@ -12,7 +12,7 @@ interface Props {
 
 export default function LandingPage({ profile }: Props) {
 	return (
-		<div className='flex flex-col items-center justify-center w-screen h-screen fixed overflow-hidden' style={{ contain: "content" }}>
+		<div className='flex flex-col items-center justify-center w-screen h-screen fixed overflow-hidden'>
 			<div className='demoContainer bg-gradient-to-r' />
 			<div className='demoContainer bg-gradient-to-b flex items-center justify-center cursor-default select-none'>
 				<div className='demoBanner'>

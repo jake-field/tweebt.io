@@ -1,13 +1,13 @@
 'use client';
 
 import styles from './styles/profilecard.module.css';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { CheckBadgeIcon, LinkIcon, LockClosedIcon, UserGroupIcon, UsersIcon } from '@heroicons/react/24/solid';
 import { TwitterIcon } from 'common/icons/twittericons';
 import { formatNumber, pluralize } from 'common/utils/formatnumber';
 import formatTwitterText from 'common/utils/richtwittertext';
 import { ProfileData } from './types/profile';
-import { useEffect, useState } from 'react';
 
 interface Props {
     profile: ProfileData;

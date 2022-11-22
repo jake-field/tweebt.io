@@ -1,5 +1,5 @@
-import React from "react";
-import useStorageState, { StorageState } from "../utils/storage";
+import React from 'react';
+import useStorageState, { StorageState } from '../utils/storage';
 
 export class ImageQuality {
 	/**
@@ -14,7 +14,7 @@ export class ImageQuality {
 	 * Quality of image to pull from Twitter. If imageOptimization is undefined, this is the image
 	 * directly served 1:1 via proxy to the client, so larger files may take longer to render.
 	 * 
-	 * Consider the implications of using `"orig"`:
+	 * Consider the implications of using `'orig'`:
 	 * - on mobile, low-end devices and slow or spotty connections
 	 * - when `imageOptization` is enabled, as the server has to process these to the desired format
 	 */

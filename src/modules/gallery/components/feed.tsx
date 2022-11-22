@@ -1,18 +1,19 @@
 'use client';
 
-import { MouseEventHandler, useContext, useEffect, useState } from "react";
-import { ResultsContext } from "common/contexts/appsettings/results";
-import getGallery, { GalleryParams } from "..";
-import Gallery from "../types/gallery";
-import { ProfileData } from "modules/profile/types/profile";
-import { Media } from "../types/gallery.types";
-import ImagePopup from "./imagepopup";
-import InfiniteScroll from "react-infinite-scroller";
-import Masonry from "react-masonry-css";
-import ImageTile from "./imagetile";
-import SpinnerIcon from "common/icons/spinnericon";
-import { usePathname } from "next/navigation";
-import TileOverlay from "./tileoverlay";
+import { useContext, useEffect, useState } from 'react';
+import { ResultsContext } from 'common/contexts/appsettings/results';
+import getGallery, { GalleryParams } from '..';
+import Gallery from '../types/gallery';
+import { ProfileData } from 'modules/profile/types/profile';
+import { Media } from '../types/gallery.types';
+import ImagePopup from './imagepopup';
+import InfiniteScroll from 'react-infinite-scroller';
+import Masonry from 'react-masonry-css';
+import ImageTile from './imagetile';
+import SpinnerIcon from 'common/icons/spinnericon';
+import { usePathname } from 'next/navigation';
+import TileOverlay from './tileoverlay';
+import { tempHeadFix } from 'common/components/title';
 
 interface Props {
 	profile?: ProfileData;
@@ -42,8 +43,20 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 	//Fetch gallery data on profile/search update, also update title as per Next13 head.tsx bug
 	useEffect(() => {
 		//TODO: fix for Next13 bug (pathname check for root demo)
-		if (searchQuery) document.title = `${searchQuery} // tweebt.io`;
-		if (profile && pathname !== '/') document.title = `${profile.name} (@${profile.handle}) // tweebt.io`;
+		if (searchQuery) {
+			tempHeadFix({
+				url: `tweebt.io/search?q=${searchQuery}`,
+				title: searchQuery,
+				desc: `Image search results for ${searchQuery}`,
+			});
+		} else if (profile && pathname !== '/') {
+			tempHeadFix({
+				url: `tweebt.io/${profile.handle}`,
+				title: `${profile.name} (@${profile.handle})`,
+				image: profile.image.replace('400x400', '200x200'),
+				desc: profile.bio ? profile.bio : `Check out ${profile.name}'s (@${profile.handle}) latest tweets as a rolling gallery without ads or distractions!`,
+			});
+		}
 
 		//force a gallery wipe if searching
 		fetchData(0, searchQuery !== undefined);
@@ -87,7 +100,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 
 	return (
 		<div className='flex flex-col items-center w-full text-center sm:px-3 md:px-3'>
-			{gallery && //Global UI
+			{!demo && gallery && //Global UI
 				<>
 					<ImagePopup item={selectedGalleryItem} onClick={() => setSelectedGalleryItem(undefined)} />
 					<TileOverlay
@@ -106,7 +119,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 			>
 				<Masonry breakpointCols={breakpointColumnsObj} className='flex w-auto'>
 					{gallery && gallery.items.map((item, index) => (
-						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} onHover={(e) => {setHoveredElement(e?.currentTarget); setHoveredItem(item)}} />
+						<ImageTile key={index} item={item} onClick={() => setSelectedGalleryItem(item)} onHover={(e) => { setHoveredElement(e?.currentTarget); setHoveredItem(item) }} />
 					))}
 				</Masonry>
 			</InfiniteScroll>
@@ -116,7 +129,7 @@ export default function Feed({ profile, searchQuery, maxResults, demo }: Props) 
 					{gallery?.error ? gallery.error.title.startsWith('403') && profile ? `${profile.handle}'s profile is inaccessible because it is ${profile.protected ? 'protected.\nMake sure you\'re logged in to an account that can see their posts!' : 'deleted/suspended.'}`
 						: `${gallery?.error?.title}\n${gallery?.error?.detail}`
 						: gallery?.items.length === 0 ? 'Nothing but crickets...'
-							: "You've gone as far back as I can show!"}
+							: 'You\'ve gone as far back as I can show!'}
 				</div>
 			) : (
 				<div key='loader' className='flex flex-row items-center justify-center h-48'>

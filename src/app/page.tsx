@@ -1,8 +1,8 @@
-import { unstable_getServerSession } from "next-auth";
-import LandingPage from "common/components/landing";
-import NavBar from "common/components/navbar";
-import Feed from "modules/gallery/components/feed";
-import { getProfile } from "modules/twitterapi";
+import { unstable_getServerSession } from 'next-auth';
+import LandingPage from 'common/components/landing';
+import NavBar from 'common/components/navbar';
+import Feed from 'modules/gallery/components/feed';
+import { getProfile } from 'modules/twitterapi';
 
 export default async function AppHome() {
 	const session = await unstable_getServerSession();
